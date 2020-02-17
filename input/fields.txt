@@ -1,0 +1,19 @@
+Art
+Biology
+Business
+Computer Science
+Chemistry
+Economics
+Engineering
+Environmental Science
+Geography
+Geology
+History
+Materials Science
+Mathematics
+Medicine
+Philosophy
+Physics
+Political Science
+Psychology
+Sociology
