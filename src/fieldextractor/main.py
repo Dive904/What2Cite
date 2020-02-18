@@ -11,7 +11,6 @@ from src.fileutils import file_abstract_creator
 fos = "Computer Science"
 dir_path = "D:\\Università\\Corsi\\Tesi\\SemanticScolarDataset"
 
-
 files = os.listdir(dir_path)[2:-1]
 inputfile = files[0]
 print("INFO: Switching to archive " + inputfile)
@@ -27,7 +26,6 @@ print("Done ✓")
 
 print("INFO: Loading JSON and filtering", end="... ")
 result_dic = []
-# data = [json.loads(line) for line in open(filecontent_name, 'r', encoding="utf-8")]
 for line in open(filecontent_name, 'r', encoding="utf-8"):
     d = json.loads(line)
     if utils.apply_filter(d):
