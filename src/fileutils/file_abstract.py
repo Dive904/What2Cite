@@ -20,6 +20,11 @@ def txt_abstract_creator(filename, list_dic):
 
 
 def txt_only_abstract_reader(filepath):
+    """
+    Use this method to read an abstract file
+    :param filepath: filepath
+    :return: a list where every element is a python dictionary with title and abstract
+    """
     result = []
     d = {}
 
