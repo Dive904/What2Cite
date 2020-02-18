@@ -6,7 +6,7 @@ import json
 import shutil
 
 from src.fieldextractor import utils
-from src.fileutils import file_abstract_creator
+from src.fileutils import file_abstract
 
 fos = "Computer Science"
 dir_path = "D:\\Università\\Corsi\\Tesi\\SemanticScolarDataset"
@@ -35,7 +35,7 @@ for inputfile in files:
     print("Done ✓")
 
     print("INFO: Writing output file", end="... ")
-    file_abstract_creator.txt_abstract_creator(filecontent_name, result_dic)
+    file_abstract.txt_abstract_creator(filecontent_name, result_dic)
     print("Done ✓", end="\n\n")
 
     os.remove(filecontent_name)
