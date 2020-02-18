@@ -16,7 +16,8 @@ for inputfile in files:
     print("INFO: Switching to archive " + inputfile)
 
     file_path = "D:\\Università\\Corsi\\Tesi\\SemanticScolarDataset\\" + inputfile
-    filecontent_name = "../../output/txtabstract/" + inputfile[:-3] + "_extracted"
+    filecontent_name = "C:\\Users\\Davide\\Desktop\\TesiAPP\\" + inputfile[:-3] + "_extracted"
+    # filecontent_name = "../../output/txtabstract/" + inputfile[:-3] + "_extracted"
 
     print("INFO: Extracting archive", end="... ")
     with gzip.open(file_path, 'rb') as f_in:
@@ -35,6 +36,6 @@ for inputfile in files:
 
     print("INFO: Writing output file", end="... ")
     file_abstract_creator.txt_abstract_creator(filecontent_name, result_dic)
-    print("Done ✓")
+    print("Done ✓", end="\n\n")
 
     os.remove(filecontent_name)
