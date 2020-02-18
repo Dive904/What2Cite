@@ -6,27 +6,37 @@ import json
 import shutil
 
 from src.fieldextractor import utils
+from src.fileutils import file_abstract_creator
 
 fos = "Computer Science"
-path = "D:\\Università\\Corsi\\Tesi\\SemanticScolarDataset"
+dir_path = "D:\\Università\\Corsi\\Tesi\\SemanticScolarDataset"
 
-"""
-files = os.listdir(path)[2:-1]
-for file in files:
-    print(file)
-"""
 
-file_path = "D:\\Università\\Corsi\\Tesi\\SemanticScolarDataset\\sample-S2-records.gz"
-filecontent_name = "../../output/sample-S2-records_extracted"
+files = os.listdir(dir_path)[2:-1]
+inputfile = files[0]
+print("INFO: Switching to archive " + inputfile)
 
+file_path = "D:\\Università\\Corsi\\Tesi\\SemanticScolarDataset\\" + inputfile
+filecontent_name = "../../output/" + inputfile[:-3] + "_extracted"
+
+print("INFO: Extracting archive", end="... ")
 with gzip.open(file_path, 'rb') as f_in:
     with open(filecontent_name, 'wb') as f_out:
         shutil.copyfileobj(f_in, f_out)
+print("Done ✓")
 
-data = [json.loads(line) for line in open(filecontent_name, 'r', encoding="utf-8")]
-
-for d in data:
+print("INFO: Loading JSON and filtering", end="... ")
+result_dic = []
+# data = [json.loads(line) for line in open(filecontent_name, 'r', encoding="utf-8")]
+for line in open(filecontent_name, 'r', encoding="utf-8"):
+    d = json.loads(line)
     if utils.apply_filter(d):
-        print(d["paperAbstract"])
+        result_dic.append(d)
 
-# os.remove(filecontent_name)
+print("Done ✓")
+
+print("INFO: Writing output file", end="... ")
+file_abstract_creator.txt_abstract_creator(filecontent_name, result_dic)
+print("Done ✓")
+
+os.remove(filecontent_name)
