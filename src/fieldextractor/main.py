@@ -16,7 +16,7 @@ inputfile = files[0]
 print("INFO: Switching to archive " + inputfile)
 
 file_path = "D:\\Università\\Corsi\\Tesi\\SemanticScolarDataset\\" + inputfile
-filecontent_name = "../../output/" + inputfile[:-3] + "_extracted"
+filecontent_name = "../../output/txtabstract/" + inputfile[:-3] + "_extracted"
 
 print("INFO: Extracting archive", end="... ")
 with gzip.open(file_path, 'rb') as f_in:
