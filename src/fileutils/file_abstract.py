@@ -19,7 +19,7 @@ def txt_abstract_creator(filename, list_dic):
             f.write("---" + "\n")
 
 
-def txt_only_abstract_reader(filepath):
+def txt_abstract_reader(filepath):
     """
     Use this method to read an abstract file
     :param filepath: filepath
@@ -27,7 +27,6 @@ def txt_only_abstract_reader(filepath):
     """
     result = []
     d = {}
-
     state = "e"
     with io.open(filepath, "r", encoding="utf-8") as f:
         lines = f.readlines()
@@ -47,5 +46,34 @@ def txt_only_abstract_reader(filepath):
                     d["title"] += line[:-1]
                 elif state == "a":
                     d["paperAbstract"] += line[:-1]
+
+    return result
+
+
+def txt_only_abstract_reader(filepath):
+    """
+    Use this method to read ONLY an abstract from file
+    :param filepath:
+    :return: a list of abstract
+    """
+    result = []
+    state = "e"
+    tmp_abstract = ""
+    with io.open(filepath, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+        for line in lines:
+
+            if line.startswith("*** TITLE: "):
+                state = "t"
+            elif line.startswith("*** ABSTRACT: "):
+                state = "a"
+                tmp_abstract = line.split("*** ABSTRACT: ")[1][:-1]
+            elif line.startswith("---"):
+                result.append(tmp_abstract)
+                state = "e"
+                tmp_abstract = ""
+            else:
+                if state == "a":
+                    tmp_abstract += line[:-1]
 
     return result
