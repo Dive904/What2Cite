@@ -1,5 +1,4 @@
 from nltk.stem import WordNetLemmatizer
-from spellchecker import SpellChecker
 
 import os
 
