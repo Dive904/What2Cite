@@ -17,7 +17,7 @@ for inputfile in files:
 
     file_path = "D:\\Università\\Corsi\\Tesi\\SemanticScolarDataset\\" + inputfile
     filecontent_name = "C:\\Users\\Davide\\Desktop\\TesiAPP\\" + inputfile[:-3] + "_extracted"
-    # filecontent_name = "../../output/ldadataset/" + inputfile[:-3] + "_extracted"
+    # filecontent_name = "../../output/ldatest/" + inputfile[:-3] + "_extracted"
 
     print("INFO: Extracting archive", end="... ")
     with gzip.open(file_path, 'rb') as f_in:
