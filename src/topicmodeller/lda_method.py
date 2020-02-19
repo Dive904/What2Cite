@@ -1,6 +1,5 @@
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation as LDA
-from datetime import datetime
 import io
 
 from src.topicmodeller import tm_utils
