@@ -1,7 +1,6 @@
 from datetime import datetime
 import io
 
-from src.topicmodeller import tm_utils
 from src.topicmodeller import lda_method
 
 # Number of Batch, Number of Topic
