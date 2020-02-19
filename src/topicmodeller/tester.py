@@ -5,8 +5,8 @@ from src.topicmodeller import tm_utils
 from src.topicmodeller import lda_method
 
 # Number of Batch, Number of Topic
-# test_index = [(25, 25), (25, 50), (30, 25), (30, 50), (45, 25), (55, 25), (55, 50)]
-test_index = [(1, 25), (1, 50), (3, 25), (3, 50)]
+test_index = [(25, 25), (25, 50), (50, 25), (50, 50), (65, 25), (65, 50)]
+# test_index = [(1, 25), (1, 50), (3, 25), (3, 50)]
 
 batch_number = 0
 number_topic = 0
