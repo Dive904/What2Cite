@@ -10,7 +10,7 @@ def compute(batch_number, number_topics):
     # Tweak the parameter below
     number_words = 5
 
-    print("INFO: Extracting " + str(batch_number) + " abstract", end="... ")
+    print("INFO: Extracting " + str(batch_number) + " batch abstract", end="... ")
     abstracts = tm_utils.extract_abstract("C:\\Users\\Davide\\Desktop\\TesiAPP\\", batch_number)
     print("Done ✓")
 
@@ -27,6 +27,7 @@ def compute(batch_number, number_topics):
     print("Done ✓", end="\n\n")
 
     print("-----------------------------------")
+    print("Number of batch: " + batch_number)
     print("Number of abstract: " + str(len(abstracts)))
     print("Number of topic: " + str(number_topics))
     print("Number of words: " + str(number_words))
@@ -34,6 +35,7 @@ def compute(batch_number, number_topics):
 
     filename = "../../output/ldatest/" + str(batch_number) + "_" + str(number_topics) + ".txt"
     with io.open(filename, "w", encoding="utf-8") as f:
+        f.write("Number of batch: " + batch_number + "\n")
         f.write("Number of abstract: " + str(len(abstracts)) + "\n")
         f.write("Number of topic: " + str(number_topics) + "\n")
         f.write("Number of words: " + str(number_words) + "\n")
