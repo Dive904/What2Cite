@@ -10,7 +10,7 @@ from src.fileutils import file_abstract
 def extract_abstract(dir_path):
     files = os.listdir(dir_path)
     ris = []
-    for file in files[0:1]:  # change file number here
+    for file in files:  # change file number here
         ris += file_abstract.txt_only_abstract_reader(dir_path + file)
 
     return ris
