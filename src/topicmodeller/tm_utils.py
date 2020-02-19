@@ -5,7 +5,7 @@ import io
 from src.fileutils import file_abstract
 
 
-# change dataset or files number if you want to reduce LDA input data
+# change dataset if you want to reduce LDA input data
 def extract_abstract(dir_path, abstract_batch):
     files = os.listdir(dir_path)
     ris = []
