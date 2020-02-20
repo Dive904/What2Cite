@@ -1,4 +1,5 @@
 from nltk.stem import WordNetLemmatizer
+from langdetect import detect
 import os
 import io
 
@@ -16,16 +17,25 @@ def extract_abstract(dir_path, prev_bn, batch_number):
 
 
 def preprocess_abstract(abstracts):
+    additional_stopwords = ["paper", "method", "large", "model", "proposed", "study", "based", "using", "approach"]
     ris = []
     lem = WordNetLemmatizer()
     for abstract in abstracts:
-        tmp = []
-        a = abstract.split()
-        for word in a:
-            w = word.lower()  # Convert to lowercase
-            w = lem.lemmatize(w)  # Lemmatize word
-            tmp.append(w)
-        ris.append(" ".join(tmp))
+        lang = "x"
+        try:
+            lang = detect(abstract)
+        except:
+            lang = "x"
+
+        if lang == "en":
+            tmp = []
+            a = abstract.split()
+            for word in a:
+                w = word.lower()  # Convert to lowercase
+                w = lem.lemmatize(w)  # Lemmatize word
+                if w not in additional_stopwords:
+                    tmp.append(w)
+            ris.append(" ".join(tmp))
     return ris
 
 
@@ -43,4 +53,3 @@ def print_topics_in_file(model, count_vectorizer, n_top_words, filename):
         for topic_idx, topic in enumerate(model.components_):
             f.write("\nTopic #%d: " % topic_idx)
             f.write(" ".join([words[i] for i in topic.argsort()[:-n_top_words - 1:-1]]))
-
