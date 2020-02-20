@@ -1,4 +1,4 @@
-# import string
+from langdetect import detect
 
 
 def apply_filter(d):
@@ -9,22 +9,11 @@ def apply_filter(d):
     return False
 
 
-"""
 def check_if_abstract_is_english(abstract):
-    abstract = abstract.translate(str.maketrans("", "", string.punctuation))
-    abstract = abstract.split()
-    new_abstract = []
-    for word in abstract:
-        if not check_has_upper(word):
-            new_abstract.append(word)
+    lang = "x"
+    try:
+        lang = detect(abstract)
+    except:
+        lang = "x"
 
-    if len(new_abstract) == 0:
-        return False
-
-
-def check_has_upper(word):
-    for w in word:
-        if "A" <= w <= "Z":
-            return True
-    return False
-"""
+    return lang == "en"

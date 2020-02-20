@@ -16,8 +16,7 @@ for inputfile in files:
     print("INFO: Switching to archive " + inputfile)
 
     file_path = "D:\\Università\\Corsi\\Tesi\\SemanticScolarDataset\\" + inputfile
-    filecontent_name = "C:\\Users\\Davide\\Desktop\\TesiAPP\\" + inputfile[:-3] + "_extracted"
-    # filecontent_name = "../../output/ldatest/" + inputfile[:-3] + "_extracted"
+    filecontent_name = "C:\\Users\\Davide\\Desktop\\TesiAPPimproved\\" + inputfile[:-3] + "_extracted"
 
     print("INFO: Extracting archive", end="... ")
     with gzip.open(file_path, 'rb') as f_in:
@@ -30,6 +29,10 @@ for inputfile in files:
     for line in open(filecontent_name, 'r', encoding="utf-8"):
         d = json.loads(line)
         if utils.apply_filter(d):
+            d["paperAbstract"] = d["paperAbstract"].replace("\n", "")
+            d["paperAbstract"] = d["paperAbstract"].replace("    ", "")
+            d["paperAbstract"] = d["paperAbstract"].replace("   ", "")
+            d["paperAbstract"] = d["paperAbstract"].replace("  ", "")
             result_dic.append(d)
 
     print("Done ✓")

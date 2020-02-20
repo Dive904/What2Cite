@@ -1,7 +1,8 @@
 from nltk.stem import WordNetLemmatizer
-from langdetect import detect
+from langdetect import detect  # TODO: maybe checking language in this phase will not necessary anymore
 import os
 import io
+import string
 
 from src.fileutils import file_abstract
 
@@ -32,6 +33,7 @@ def preprocess_abstract(abstracts):
 
         if lang == "en":
             tmp = []
+            abstract.translate(str.maketrans("", "", string.punctuation))  # Remove punctuation
             a = abstract.split()
             for word in a:
                 w = word.lower()  # Convert to lowercase
