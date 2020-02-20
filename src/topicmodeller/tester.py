@@ -6,7 +6,7 @@ from src.topicmodeller import lda_method
 
 # Number of Batch, Number of Topic
 # test_index = [(25, 25), (25, 50), (50, 25), (50, 50), (65, 25), (65, 50)]
-test_index = [(1, 25)]
+test_index = [(65, 45), (65, 50), (65, 55)]
 
 batch_number = 0
 number_topic = 0
@@ -24,7 +24,8 @@ for index in test_index:
         d_prep = 0
     else:
         print("INFO: Extracting " + str(batch_number) + " batch abstract", end="... ")
-        abstracts_extracted = tm_utils.extract_abstract("C:\\Users\\Davide\\Desktop\\TesiAPP\\", prev_bn, batch_number)
+        abstracts_extracted = tm_utils.extract_abstract("C:\\Users\\Davide\\Desktop\\TesiAPPimproved\\", prev_bn,
+                                                        batch_number)
         print("Done ✓")
         print("INFO: Preprocessing asbtract", end="... ")
         start_prep = datetime.now()

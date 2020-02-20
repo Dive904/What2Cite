@@ -1,5 +1,4 @@
 from nltk.stem import WordNetLemmatizer
-from langdetect import detect  # TODO: maybe checking language in this phase will not necessary anymore
 import os
 import io
 import string
@@ -25,22 +24,15 @@ def preprocess_abstract(abstracts):
     ris = []
     lem = WordNetLemmatizer()
     for abstract in abstracts:
-        lang = "x"
-        try:
-            lang = detect(abstract)
-        except:
-            lang = "x"
-
-        if lang == "en":
-            tmp = []
-            abstract.translate(str.maketrans("", "", string.punctuation))  # Remove punctuation
-            a = abstract.split()
-            for word in a:
-                w = word.lower()  # Convert to lowercase
-                w = lem.lemmatize(w)  # Lemmatize word
-                if w not in additional_stopwords:
-                    tmp.append(w)
-            ris.append(" ".join(tmp))
+        tmp = []
+        abstract.translate(str.maketrans("", "", string.punctuation))  # Remove punctuation
+        a = abstract.split()
+        for word in a:
+            w = word.lower()  # Convert to lowercase
+            w = lem.lemmatize(w)  # Lemmatize word
+            if w not in additional_stopwords:
+                tmp.append(w)
+        ris.append(" ".join(tmp))
     return ris
 
 
