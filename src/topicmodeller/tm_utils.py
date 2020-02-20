@@ -6,12 +6,15 @@ import io
 from src.fileutils import file_abstract
 
 
-# change dataset if you want to reduce LDA input data
-def extract_abstract(dir_path, prev_bn, batch_number):
+def extract_abstract(dir_path, start=None, end=None):
     files = os.listdir(dir_path)
     ris = []
-    for file in files[prev_bn:batch_number]:  # change file number here
-        ris += file_abstract.txt_only_abstract_reader(dir_path + file)
+    if start is None and end is None:
+        for file in files:
+            ris += file_abstract.txt_only_abstract_reader(dir_path + file)
+    else:
+        for file in files[start:end]:
+            ris += file_abstract.txt_only_abstract_reader(dir_path + file)
 
     return ris
 
