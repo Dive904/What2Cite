@@ -33,7 +33,8 @@ for inputfile in files:
             d["paperAbstract"] = d["paperAbstract"].replace("    ", "")
             d["paperAbstract"] = d["paperAbstract"].replace("   ", "")
             d["paperAbstract"] = d["paperAbstract"].replace("  ", "")
-            result_dic.append(d)
+            if utils.check_if_abstract_is_english(d["paperAbstract"]):
+                result_dic.append(d)
 
     print("Done ✓")
 

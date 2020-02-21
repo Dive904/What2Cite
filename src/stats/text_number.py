@@ -3,7 +3,7 @@
 import os
 import io
 
-dir_path = "C:\\Users\\Davide\\Desktop\\TesiAPP\\subsetLDA\\"
+dir_path = "C:\\Users\\Davide\\Desktop\\TesiAPPimproved\\"
 files = os.listdir(dir_path)
 total_count = 0
 
