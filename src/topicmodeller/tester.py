@@ -24,8 +24,8 @@ for index in test_index:
         d_prep = 0
     else:
         print("INFO: Extracting " + str(batch_number) + " batch abstract", end="... ")
-        abstracts_extracted = tm_utils.extract_abstract("C:\\Users\\Davide\\Desktop\\TesiAPPimproved\\", prev_bn,
-                                                        batch_number)
+        abstracts_extracted = tm_utils.extract_only_abstract("C:\\Users\\Davide\\Desktop\\TesiAPPimproved\\", prev_bn,
+                                                             batch_number)
         print("Done ✓")
         print("INFO: Preprocessing asbtract", end="... ")
         start_prep = datetime.now()

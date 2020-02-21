@@ -6,15 +6,32 @@ import string
 from src.fileutils import file_abstract
 
 
-def extract_abstract(dir_path, start=None, end=None):
+def extract_only_abstract(dir_path, start=None, end=None):
     files = os.listdir(dir_path)
     ris = []
-    if start is None and end is None:
-        for file in files:
-            ris += file_abstract.txt_only_abstract_reader(dir_path + file)
-    else:
-        for file in files[start:end]:
-            ris += file_abstract.txt_only_abstract_reader(dir_path + file)
+
+    if start is None:
+        start = 0
+    if end is None:
+        end = len(files) - 1
+
+    for file in files[start:end]:
+        ris += file_abstract.txt_only_abstract_reader(dir_path + file)
+
+    return ris
+
+
+def extract_paper_id_title_abs(dir_path, start=None, end=None):
+    files = os.listdir(dir_path)
+    ris = []
+
+    if start is None:
+        start = 0
+    if end is None:
+        end = len(files) - 1
+
+    for file in files[start:end]:
+        ris += file_abstract.txt_dataset_reader(dir_path + file)
 
     return ris
 
