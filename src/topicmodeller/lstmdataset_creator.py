@@ -41,19 +41,26 @@ def compute(number_topics, paper_info, abstracts):
         paper_info[n] = x
     print("Done ✓")
 
+    words = count_vectorizer.get_feature_names()
+    topics = []
+    for topic_idx, topic in enumerate(lda.components_):
+        strng = ""
+        strng += " ".join([words[i] for i in topic.argsort()[:-number_words - 1:-1]])
+        topics.append(strng)
+
     print("INFO: Writing output file", end="... ")
     with io.open("../../output/lstmdataset/final.txt", "w", encoding="utf-8") as f:
         for elem in paper_info:
             f.write("*** ID: " + elem["id"] + "\n")
             f.write("*** TITLE: " + elem["title"] + "\n")
             f.write("*** ABSTRACT: " + elem["paperAbstract"] + "\n")
-            f.write("*** TOPIC: " + str(elem["topic"]) + "\n")
+            f.write("*** TOPIC: " + str(elem["topic"]) + " - " + topics[int(elem["topic"])] + "\n")
             f.write("---" + "\n")
     print("Done ✓")
 
 
 batch_number = 65  # change this for test
-number_topic = 55
+number_topic = 55  # change this for test
 
 print("INFO: Extracting " + str(batch_number) + " batch abstract", end="... ")
 paper_info = tm_utils.extract_paper_id_title_abs("C:\\Users\\Davide\\Desktop\\TesiAPPimproved\\",
