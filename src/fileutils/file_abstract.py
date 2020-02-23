@@ -58,3 +58,24 @@ def txt_only_abstract_reader(filepath):
                 result.append(line.split("*** ABSTRACT: ")[1][:-1])
 
     return result
+
+
+def txt_lstm_dataset_reader(filepath):
+    result = []
+    d = {}
+    with io.open(filepath, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+        for line in lines:
+            if line.startswith("*** ID: "):
+                d["id"] = line.split("*** ID: ")[1][:-1]
+            elif line.startswith("*** TITLE: "):
+                d["title"] = line.split("*** TITLE: ")[1][:-1]
+            elif line.startswith("*** ABSTRACT: "):
+                d["paperAbstract"] = line.split("*** ABSTRACT: ")[1][:-1]
+            elif line.startswith("*** TOPIC: "):
+                d["topic"] = line.split("*** TOPIC: ")[1][:-1]
+            elif line.startswith("---"):
+                result.append(d)
+                d = {}
+
+    return result
