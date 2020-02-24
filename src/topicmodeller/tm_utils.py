@@ -1,7 +1,7 @@
 from nltk.stem import WordNetLemmatizer
 import os
 import io
-import string
+import re
 
 from src.fileutils import file_abstract
 
@@ -42,7 +42,7 @@ def preprocess_abstract(abstracts):
     lem = WordNetLemmatizer()
     for abstract in abstracts:
         tmp = []
-        abstract.translate(str.maketrans("", "", string.punctuation))  # Remove punctuation
+        abstract = re.sub(r'[^\w\s]', '', abstract)  # Remove punctuation
         a = abstract.split()
         for word in a:
             w = word.lower()  # Convert to lowercase
