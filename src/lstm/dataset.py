@@ -24,7 +24,7 @@ import re
 import matplotlib.pyplot as plt
 
 print("INFO: Reading csv", end="... ")
-abstracts = pd.read_csv("../../output/lstmdataset/data_multilabel.csv")
+abstracts = pd.read_csv("../../output/lstmdataset/data_multilabel_reduced.csv")
 print("Done ✓")
 
 abstracts_labels = abstracts[[str(i) for i in range(55)]]
