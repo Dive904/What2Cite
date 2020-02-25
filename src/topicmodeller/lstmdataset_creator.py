@@ -63,9 +63,9 @@ batch_number = 65  # change this for test
 number_topic = 55  # change this for test
 
 print("INFO: Extracting " + str(batch_number) + " batch abstract", end="... ")
-paper_info = tm_utils.extract_paper_id_title_abs("C:\\Users\\Davide\\Desktop\\TesiAPPimproved\\",
+paper_info = tm_utils.extract_paper_id_title_abs("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\",
                                                  end=batch_number)
-abstracts_extracted = tm_utils.extract_only_abstract("C:\\Users\\Davide\\Desktop\\TesiAPPimproved\\", end=batch_number)
+abstracts_extracted = tm_utils.extract_only_abstract("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\", end=batch_number)
 print("Done ✓")
 print("INFO: Preprocessing asbtract", end="... ")
 abstracts_extracted = tm_utils.preprocess_abstract(abstracts_extracted)
