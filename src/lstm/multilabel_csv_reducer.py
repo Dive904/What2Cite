@@ -20,5 +20,5 @@ label_list = [str(i) for i in range(55)]
 with open('../../output/lstmdataset/data_multilabel_reduced.csv', 'w', newline='', encoding="utf-8") as file:
     writer = csv.writer(file)
     writer.writerow(["text"] + label_list)
-    for d in inputrows[:5000]:
+    for d in inputrows[:7000]:
         writer.writerow(d)

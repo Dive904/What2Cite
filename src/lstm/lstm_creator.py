@@ -99,6 +99,13 @@ print("INFO: Evaluating model", end="... ")
 score = model.evaluate(X_test, y_test, verbose=1)
 print("Done ✓")
 
+print("INFO: Saving model to disk", end="... ")
+model_json = model.to_json()
+with open("../../output/models/lstm.json", "w") as json_file:
+    json_file.write(model_json)
+model.save_weights("../../output/models/lstm_weights.h5")
+print("Done ✓")
+
 print("Test Score:", score[0])
 print("Test Accuracy:", score[1])
 
