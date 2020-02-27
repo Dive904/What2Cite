@@ -59,6 +59,7 @@ def compute(number_topics, paper_info, abstracts):
                 f.write(elem["outCitations"][i])
                 if i != len(elem["outCitations"]) - 1:
                     f.write(", ")
+            f.write("\n")
             f.write("*** TOPIC: " + str(elem["topic"]) + " - " + topics[int(elem["topic"])] + "\n")
             f.write("---" + "\n")
     print("Done ✓")
