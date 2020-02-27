@@ -21,6 +21,21 @@ def extract_only_abstract(dir_path, start=None, end=None):
     return ris
 
 
+def extract_only_citations(dir_path, start=None, end=None):
+    files = os.listdir(dir_path)
+    ris = []
+
+    if start is None:
+        start = 0
+    if end is None:
+        end = len(files) - 1
+
+    for file in files[start:end]:
+        ris += file_abstract.txt_only_citations_reader(dir_path + file)
+
+    return ris
+
+
 def extract_paper_info(dir_path, start=None, end=None):
     files = os.listdir(dir_path)
     ris = []

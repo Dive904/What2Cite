@@ -68,6 +68,22 @@ def txt_only_abstract_reader(filepath):
     return result
 
 
+def txt_only_citations_reader(filepath):
+    """
+    Use this method to read ONLY citations from file
+    :param filepath:
+    :return: a list of citations
+    """
+    result = []
+    with io.open(filepath, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+        for line in lines:
+            if line.startswith("*** OUTCITATIONS: "):
+                result.append(line.split("*** OUTCITATIONS: ")[1][:-1])
+
+    return result
+
+
 def txt_lstm_dataset_reader(filepath):
     result = []
     d = {}
