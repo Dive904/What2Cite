@@ -6,11 +6,19 @@ from src.topicmodeller import tm_utils
 out_filename = "../../output/citations/topics_cits.txt"
 batch_number = 65
 number_topics = 55
-number_words = 5
+number_words = 10
 
 print("INFO: Extracting citations", end="... ")
 citations_extracted = tm_utils.extract_only_citations("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\",
                                                       end=batch_number)
+print("Done ✓")
+
+new_citations = []
+
+print("INFO: Removing empty citations", end="... ")
+for cit in citations_extracted:
+    if len(cit) != 0:
+        new_citations.append(cit)
 print("Done ✓")
 
 # Initialise the count vectorizer with the English stop words
@@ -18,7 +26,7 @@ count_vectorizer = CountVectorizer(max_df=0.8, min_df=2, stop_words='english')
 
 # Fit and transform the processed titles
 print("INFO: Fitting count vectorizer", end="... ")
-count_data = count_vectorizer.fit_transform(citations_extracted)
+count_data = count_vectorizer.fit_transform(new_citations)
 print("Done ✓")
 
 # Create and fit the LDA model
