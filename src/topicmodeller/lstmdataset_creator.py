@@ -54,6 +54,11 @@ def compute(number_topics, paper_info, abstracts):
             f.write("*** ID: " + elem["id"] + "\n")
             f.write("*** TITLE: " + elem["title"] + "\n")
             f.write("*** ABSTRACT: " + elem["paperAbstract"] + "\n")
+            f.write("*** OUTCITATIONS: ")
+            for i in range(len(elem["outCitations"])):
+                f.write(elem["outCitations"][i])
+                if i != len(elem["outCitations"]) - 1:
+                    f.write(", ")
             f.write("*** TOPIC: " + str(elem["topic"]) + " - " + topics[int(elem["topic"])] + "\n")
             f.write("---" + "\n")
     print("Done ✓")
@@ -63,8 +68,8 @@ batch_number = 65  # change this for test
 number_topic = 55  # change this for test
 
 print("INFO: Extracting " + str(batch_number) + " batch abstract", end="... ")
-paper_info = tm_utils.extract_paper_id_title_abs("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\",
-                                                 end=batch_number)
+paper_info = tm_utils.extract_paper_info("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\",
+                                         end=batch_number)
 abstracts_extracted = tm_utils.extract_only_abstract("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\", end=batch_number)
 print("Done ✓")
 print("INFO: Preprocessing asbtract", end="... ")

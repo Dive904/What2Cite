@@ -3,8 +3,7 @@ from langdetect import detect
 
 def apply_filter(d):
     if "paperAbstract" in d.keys() and "title" in d.keys() and "fieldsOfStudy" in d.keys() and "sources" in d.keys():
-        if len(d["paperAbstract"]) > 0 and "DBLP" in d["sources"] and "Computer Science" in d["fieldsOfStudy"]:
-            return True
+        return len(d["paperAbstract"]) > 0 and "DBLP" in d["sources"] and "Computer Science" in d["fieldsOfStudy"]
 
     return False
 

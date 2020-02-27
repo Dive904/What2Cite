@@ -17,6 +17,12 @@ def txt_abstract_creator(filename, list_dic):
             f.write("*** ID: " + d["id"] + "\n")
             f.write("*** TITLE: " + d["title"] + "\n")
             f.write("*** ABSTRACT: " + d["paperAbstract"] + "\n")
+            f.write("*** OUTCITATIONS: ")
+            for i in range(len(d["outCitations"])):
+                f.write(d["outCitations"][i])
+                if i != len(d["outCitations"]) - 1:
+                    f.write(", ")
+            f.write("\n")
             f.write("---" + "\n")
 
 
@@ -37,6 +43,8 @@ def txt_dataset_reader(filepath):
                 d["title"] = line.split("*** TITLE: ")[1][:-1]
             elif line.startswith("*** ABSTRACT: "):
                 d["paperAbstract"] = line.split("*** ABSTRACT: ")[1][:-1]
+            elif line.startswith("*** OUTCITATIONS: "):
+                d["outCitations"] = line.split("*** OUTCITATIONS: ")[1][:-1].split(", ")
             elif line.startswith("---"):
                 result.append(d)
                 d = {}

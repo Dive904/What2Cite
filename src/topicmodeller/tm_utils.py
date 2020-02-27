@@ -21,7 +21,7 @@ def extract_only_abstract(dir_path, start=None, end=None):
     return ris
 
 
-def extract_paper_id_title_abs(dir_path, start=None, end=None):
+def extract_paper_info(dir_path, start=None, end=None):
     files = os.listdir(dir_path)
     ris = []
 
