@@ -96,6 +96,8 @@ def txt_lstm_dataset_reader(filepath):
                 d["title"] = line.split("*** TITLE: ")[1][:-1]
             elif line.startswith("*** ABSTRACT: "):
                 d["paperAbstract"] = line.split("*** ABSTRACT: ")[1][:-1]
+            elif line.startswith("*** OUTCITATIONS: "):
+                d["outCitations"] = line.split("*** OUTCITATIONS: ")[1][:-1].split(", ")
             elif line.startswith("*** TOPIC: "):
                 d["topic"] = line.split("*** TOPIC: ")[1][:-1]
             elif line.startswith("---"):
