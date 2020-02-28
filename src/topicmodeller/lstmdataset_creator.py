@@ -20,7 +20,7 @@ def compute(number_topics, paper_info, abstracts):
 
     # Create and fit the LDA model
     print("INFO: Computing LDA", end="... ")
-    lda = LDA(n_components=number_topics, n_jobs=-1)
+    lda = LDA(n_components=number_topics, n_jobs=1)
     lda.fit(count_data)  # Print the topics found by the LDA model
     print("Done ✓")
 

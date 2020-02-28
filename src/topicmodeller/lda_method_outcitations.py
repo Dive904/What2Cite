@@ -4,8 +4,8 @@ from sklearn.decomposition import LatentDirichletAllocation as LDA
 from src.topicmodeller import tm_utils
 
 out_filename = "../../output/citations/topics_cits.txt"
-batch_number = 65
-number_topics = 55
+batch_number = 55
+number_topics = 40
 number_words = 10
 
 print("INFO: Extracting citations", end="... ")
@@ -31,7 +31,7 @@ print("Done ✓")
 
 # Create and fit the LDA model
 print("INFO: Computing LDA", end="... ")
-lda = LDA(n_components=number_topics, n_jobs=-1)
+lda = LDA(n_components=number_topics, n_jobs=1)
 lda.fit(count_data)  # Print the topics found by the LDA model
 print("Done ✓")
 
