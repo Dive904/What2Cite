@@ -1,27 +1,34 @@
-import warnings
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+import csv
+import tensorflow as tf
 import numpy as np
-from wordcloud import WordCloud
-import re
-import os
-import datetime as dt
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
 from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
-from nltk.stem.snowball import SnowballStemmer
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.multiclass import OneVsRestClassifier
-from sklearn.linear_model import SGDClassifier
-from sklearn import metrics
-from sklearn.metrics import f1_score,precision_score,recall_score
-from sklearn import svm
-from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import GaussianNB
-from datetime import datetime
-from bs4 import BeautifulSoup
-from sklearn.model_selection import GridSearchCV
+STOPWORDS = set(stopwords.words('english'))
 
-warnings.filterwarnings("ignore")
+print(tf.__version__)
+vocab_size = 5000
+embedding_dim = 64
+max_length = 200
+trunc_type = 'post'
+padding_type = 'post'
+oov_tok = '<OOV>'
+training_portion = .8
 
+articles = []
+labels = []
+
+with open("../../output/lstmdataset/data_reduced.csv", encoding="utf-8") as csvfile:
+    reader = csv.reader(csvfile, delimiter=',')
+    next(reader)
+    for row in reader:
+        labels.append(row[1])
+        article = row[0]
+        for word in STOPWORDS:
+            token = ' ' + word + ' '
+            article = article.replace(token, ' ')
+            article = article.replace(' ', ' ')
+        articles.append(article)
+
+print(len(labels))
+print(len(articles))
