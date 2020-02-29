@@ -1,3 +1,5 @@
+# https://towardsdatascience.com/multi-class-text-classification-with-lstm-using-tensorflow-2-0-d88627c10a35
+
 import csv
 import tensorflow as tf
 import numpy as np
@@ -56,3 +58,34 @@ print(dict(list(word_index.items())[0:10]))
 
 train_sequences = tokenizer.texts_to_sequences(train_articles)
 print(train_sequences[10])
+
+train_padded = pad_sequences(train_sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type)
+print(len(train_sequences[0]))
+print(len(train_padded[0]))
+
+print(len(train_sequences[1]))
+print(len(train_padded[1]))
+
+print(len(train_sequences[10]))
+print(len(train_padded[10]))
+
+validation_sequences = tokenizer.texts_to_sequences(validation_articles)
+validation_padded = pad_sequences(validation_sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type)
+
+print(len(validation_sequences))
+print(validation_padded.shape)
+
+label_tokenizer = Tokenizer()
+label_tokenizer.fit_on_texts(labels)
+
+training_label_seq = np.array(label_tokenizer.texts_to_sequences(train_labels))
+validation_label_seq = np.array(label_tokenizer.texts_to_sequences(validation_labels))
+print(training_label_seq[0])
+print(training_label_seq[1])
+print(training_label_seq[2])
+print(training_label_seq.shape)
+
+print(validation_label_seq[0])
+print(validation_label_seq[1])
+print(validation_label_seq[2])
+print(validation_label_seq.shape)
