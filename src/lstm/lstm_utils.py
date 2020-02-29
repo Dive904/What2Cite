@@ -3,6 +3,7 @@ import re
 
 
 from nltk.stem import WordNetLemmatizer
+from sklearn.metrics import f1_score
 
 
 def extract_topic_from_dataset(topic_dataset):
@@ -32,3 +33,7 @@ def preprocess_text(text):
     text_preprocessed = " ".join(tmp)
 
     return text_preprocessed
+
+
+def f1micro(y_true, y_pred):
+    return tf.py_func(f1_score(y_true, y_pred,average='micro'),tf.double)
