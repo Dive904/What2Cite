@@ -42,7 +42,6 @@ print("INFO: Splitting into training and test", end="... ")
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
 print("Done ✓")
 
-
 print("INFO: Fitting tokenizer", end="... ")
 tokenizer = Tokenizer(num_words=5000)
 tokenizer.fit_on_texts(X_train)
