@@ -7,6 +7,8 @@ from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from nltk.corpus import stopwords
 
+from src.lstm import lstm_utils
+
 additional_stopwords = ["paper", "method", "large", "model", "proposed", "study", "based", "using", "approach", "also"]
 STOPWORDS = set(stopwords.words('english')).union(set(additional_stopwords))
 
@@ -89,3 +91,34 @@ print(validation_label_seq[0])
 print(validation_label_seq[1])
 print(validation_label_seq[2])
 print(validation_label_seq.shape)
+
+reverse_word_index = dict([(value, key) for (key, value) in word_index.items()])
+
+print(lstm_utils.decode_article(reverse_word_index, train_padded[10]))
+print('---')
+print(train_articles[10])
+
+model = tf.keras.Sequential([
+    # Add an Embedding layer expecting input vocab of size 5000,
+    # and output embedding dimension of size 64 we set at the top
+    tf.keras.layers.Embedding(vocab_size, embedding_dim),
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(embedding_dim)),
+    # tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
+    # use ReLU in place of tanh function since they are very good alternatives of each other.
+    tf.keras.layers.Dense(embedding_dim, activation='relu'),
+    # Add a Dense layer with 6 units and softmax activation.
+    # When we have multiple outputs, softmax convert outputs layers into a probability distribution.
+    tf.keras.layers.Dense(55, activation='softmax')
+])
+model.summary()
+
+model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+num_epochs = 10
+history = model.fit(train_padded, training_label_seq,
+                    epochs=num_epochs,
+                    validation_data=(validation_padded, validation_label_seq),
+                    verbose=2)
+
+lstm_utils.plot_graphs(history, "accuracy")
+lstm_utils.plot_graphs(history, "loss")

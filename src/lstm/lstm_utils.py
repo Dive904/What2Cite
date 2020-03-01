@@ -3,6 +3,7 @@ import re
 
 
 from nltk.stem import WordNetLemmatizer
+import matplotlib.pyplot as plt
 from sklearn.metrics import f1_score
 
 
@@ -35,5 +36,14 @@ def preprocess_text(text):
     return text_preprocessed
 
 
-def f1micro(y_true, y_pred):
-    return tf.py_func(f1_score(y_true, y_pred,average='micro'),tf.double)
+def decode_article(reverse_word_index, text):
+    return ' '.join([reverse_word_index.get(i, '?') for i in text])
+
+
+def plot_graphs(history, string):
+    plt.plot(history.history[string])
+    plt.plot(history.history['val_' + string])
+    plt.xlabel("Epochs")
+    plt.ylabel(string)
+    plt.legend([string, 'val_' + string])
+    plt.show()
