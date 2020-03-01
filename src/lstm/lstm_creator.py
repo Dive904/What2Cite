@@ -12,9 +12,9 @@ from src.lstm import lstm_utils
 additional_stopwords = ["paper", "method", "large", "model", "proposed", "study", "based", "using", "approach", "also"]
 STOPWORDS = set(stopwords.words('english')).union(set(additional_stopwords))
 
-vocab_size = 5000
+vocab_size = 10000
 embedding_dim = 64
-max_length = 200
+max_length = 1000
 trunc_type = 'post'
 padding_type = 'post'
 oov_tok = '<OOV>'
@@ -113,11 +113,16 @@ model.summary()
 
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-num_epochs = 15
+num_epochs = 10
 history = model.fit(train_padded, training_label_seq,
                     epochs=num_epochs,
                     validation_data=(validation_padded, validation_label_seq),
                     verbose=2)
+
+model_json = model.to_json()
+with open("../../output/models/new_lstm.json", "w") as json_file:
+    json_file.write(model_json)
+model.save_weights("../../output/models/new_lstm_weights.h5")
 
 lstm_utils.plot_graphs(history, "accuracy")
 lstm_utils.plot_graphs(history, "loss")

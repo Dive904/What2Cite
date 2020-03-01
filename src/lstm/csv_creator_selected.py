@@ -1,0 +1,38 @@
+import csv
+
+from src.fileutils import file_abstract
+from src.lstm import lstm_utils
+
+import matplotlib.pyplot as plt;
+import numpy as np
+import matplotlib.pyplot as plt
+
+print("INFO: Extracting dataset", end="... ")
+dataset = file_abstract.txt_lstm_dataset_reader("../../output/lstmdataset/final.txt")
+inputrows = []
+print("Done ✓")
+
+labels = [str(i) for i in range(55)]
+
+dic = {}
+
+for l in labels:
+    dic[l] = 0
+
+for data in dataset:
+    dic[lstm_utils.extract_topic_from_dataset(data["topic"])] += 1
+
+labels = []
+values = []
+for key in dic.keys():
+    labels.append(key)
+    values.append(dic[key])
+
+plt.rcdefaults()
+y_pos = np.arange(len(labels))
+plt.barh(y_pos, values, align='center', alpha=0.5)
+plt.yticks(y_pos, labels)
+plt.xlabel('Abstracts')
+plt.title('Distribution of Topics')
+
+plt.savefig("topic_distribution.jpg")
