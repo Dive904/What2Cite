@@ -3,7 +3,7 @@ import csv
 from src.fileutils import file_abstract
 from src.lstm import lstm_utils
 
-import matplotlib.pyplot as plt;
+import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.pyplot as plt
 
