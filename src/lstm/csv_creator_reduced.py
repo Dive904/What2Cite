@@ -15,7 +15,7 @@ for data in dataset:
     inputrows.append(tmp_row)
 print("Done ✓")
 
-rows = 10000
+rows = 15000
 print("INFO: Writing csv", end="... ")
 with open('../../output/lstmdataset/data_reduced.csv', 'w', newline='', encoding="utf-8") as file:
     writer = csv.writer(file)

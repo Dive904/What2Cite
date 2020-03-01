@@ -12,7 +12,6 @@ from src.lstm import lstm_utils
 additional_stopwords = ["paper", "method", "large", "model", "proposed", "study", "based", "using", "approach", "also"]
 STOPWORDS = set(stopwords.words('english')).union(set(additional_stopwords))
 
-print(tf.__version__)
 vocab_size = 5000
 embedding_dim = 64
 max_length = 200
@@ -108,13 +107,13 @@ model = tf.keras.Sequential([
     tf.keras.layers.Dense(embedding_dim, activation='relu'),
     # Add a Dense layer with 6 units and softmax activation.
     # When we have multiple outputs, softmax convert outputs layers into a probability distribution.
-    tf.keras.layers.Dense(55, activation='softmax')
+    tf.keras.layers.Dense(56, activation='softmax')
 ])
 model.summary()
 
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-num_epochs = 10
+num_epochs = 15
 history = model.fit(train_padded, training_label_seq,
                     epochs=num_epochs,
                     validation_data=(validation_padded, validation_label_seq),
