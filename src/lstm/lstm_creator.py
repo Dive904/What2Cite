@@ -1,127 +1,128 @@
-from numpy import array
-from keras.preprocessing.text import one_hot
-from keras.preprocessing.sequence import pad_sequences
-from keras.models import Sequential
-from keras.layers.core import Activation, Dropout, Dense
-from keras.layers import Flatten, LSTM
-from keras.layers import GlobalMaxPooling1D
-from keras.models import Model
-from keras.layers.embeddings import Embedding
-from sklearn.model_selection import train_test_split
+# https://towardsdatascience.com/multi-class-text-classification-with-lstm-using-tensorflow-2-0-d88627c10a35
+
+import csv
+import tensorflow as tf
+import numpy as np
 from keras.preprocessing.text import Tokenizer
-from keras.layers import Input
-from keras.layers.merge import Concatenate
-from numpy import array
-from numpy import asarray
-from numpy import zeros
+from keras.preprocessing.sequence import pad_sequences
+from nltk.corpus import stopwords
 
 from src.lstm import lstm_utils
-import tensorflow
 
-import pandas as pd
-import numpy as np
-import re
-import matplotlib.pyplot as plt
+additional_stopwords = ["paper", "method", "large", "model", "proposed", "study", "based", "using", "approach", "also"]
+STOPWORDS = set(stopwords.words('english')).union(set(additional_stopwords))
 
-print("INFO: Reading csv", end="... ")
-abstracts = pd.read_csv("../../output/lstmdataset/data_multilabel_reduced.csv")
-print("Done ✓")
+vocab_size = 10000
+embedding_dim = 64
+max_length = 1000
+trunc_type = 'post'
+padding_type = 'post'
+oov_tok = '<OOV>'
+training_portion = .8
 
-abstracts_labels = abstracts[[str(i) for i in range(55)]]
+articles = []
+labels = []
 
-print("INFO: Preprocessing", end="... ")
-X = []
-sentences = list(abstracts["text"])
-for sen in sentences:
-    X.append(lstm_utils.preprocess_text(sen))
-print("Done ✓")
+with open("../../output/lstmdataset/data_reduced.csv", encoding="utf-8") as csvfile:
+    reader = csv.reader(csvfile, delimiter=',')
+    next(reader)
+    for row in reader:
+        labels.append(row[1])
+        article = row[0].lower()
+        for word in STOPWORDS:
+            token = ' ' + word + ' '
+            article = article.replace(token, ' ')
+            article = article.replace(' ', ' ')
+        articles.append(article)
 
-y = abstracts_labels.values
+print(len(labels))
+print(len(articles))
 
-print("INFO: Splitting into training and test", end="... ")
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
-print("Done ✓")
+train_size = int(len(articles) * training_portion)
 
-print("INFO: Fitting tokenizer", end="... ")
-tokenizer = Tokenizer(num_words=5000)
-tokenizer.fit_on_texts(X_train)
-print("Done ✓")
+train_articles = articles[0: train_size]
+train_labels = labels[0: train_size]
 
-X_train = tokenizer.texts_to_sequences(X_train)
-X_test = tokenizer.texts_to_sequences(X_test)
+validation_articles = articles[train_size:]
+validation_labels = labels[train_size:]
 
-vocab_size = len(tokenizer.word_index) + 1
+print(train_size)
+print(len(train_articles))
+print(len(train_labels))
+print(len(validation_articles))
+print(len(validation_labels))
 
-maxlen = 200
+tokenizer = Tokenizer(num_words=vocab_size, oov_token=oov_tok)
+tokenizer.fit_on_texts(train_articles)
+word_index = tokenizer.word_index
+print(dict(list(word_index.items())[0:10]))
 
-print("INFO: Padding", end="... ")
-X_train = pad_sequences(X_train, padding='post', maxlen=maxlen)
-X_test = pad_sequences(X_test, padding='post', maxlen=maxlen)
-print("Done ✓")
+train_sequences = tokenizer.texts_to_sequences(train_articles)
+print(train_sequences[10])
 
-embeddings_dictionary = dict()
+train_padded = pad_sequences(train_sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type)
+print(len(train_sequences[0]))
+print(len(train_padded[0]))
 
-glove_file = open("../../input/glove.6B.100d.txt", encoding="utf8")
+print(len(train_sequences[1]))
+print(len(train_padded[1]))
 
-print("INFO: Embedding", end="... ")
-for line in glove_file:
-    records = line.split()
-    word = records[0]
-    vector_dimensions = asarray(records[1:], dtype='float32')
-    embeddings_dictionary[word] = vector_dimensions
-glove_file.close()
+print(len(train_sequences[10]))
+print(len(train_padded[10]))
 
-embedding_matrix = zeros((vocab_size, 100))
-for word, index in tokenizer.word_index.items():
-    embedding_vector = embeddings_dictionary.get(word)
-    if embedding_vector is not None:
-        embedding_matrix[index] = embedding_vector
-print("Done ✓")
+validation_sequences = tokenizer.texts_to_sequences(validation_articles)
+validation_padded = pad_sequences(validation_sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type)
 
-print("INFO: Creating model", end="... ")
-deep_inputs = Input(shape=(maxlen,))
-embedding_layer = Embedding(vocab_size, 100, weights=[embedding_matrix], trainable=False)(deep_inputs)
-LSTM_Layer_1 = LSTM(128)(embedding_layer)
-dense_layer_1 = Dense(55, activation='sigmoid')(LSTM_Layer_1)
-model = Model(inputs=deep_inputs, outputs=dense_layer_1)
+print(len(validation_sequences))
+print(validation_padded.shape)
 
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
-print("Done ✓")
+label_tokenizer = Tokenizer()
+label_tokenizer.fit_on_texts(labels)
 
-print(model.summary())
+training_label_seq = np.array(label_tokenizer.texts_to_sequences(train_labels))
+validation_label_seq = np.array(label_tokenizer.texts_to_sequences(validation_labels))
+print(training_label_seq[0])
+print(training_label_seq[1])
+print(training_label_seq[2])
+print(training_label_seq.shape)
 
-print("INFO: Fitting model", end="... ")
-history = model.fit(X_train, y_train, batch_size=128, epochs=5, verbose=1, validation_split=0.2)
-print("Done ✓")
+print(validation_label_seq[0])
+print(validation_label_seq[1])
+print(validation_label_seq[2])
+print(validation_label_seq.shape)
 
-print("INFO: Evaluating model", end="... ")
-score = model.evaluate(X_test, y_test, verbose=1)
-print("Done ✓")
+reverse_word_index = dict([(value, key) for (key, value) in word_index.items()])
 
-print("INFO: Saving model to disk", end="... ")
+print(lstm_utils.decode_article(reverse_word_index, train_padded[10]))
+print('---')
+print(train_articles[10])
+
+model = tf.keras.Sequential([
+    # Add an Embedding layer expecting input vocab of size 5000,
+    # and output embedding dimension of size 64 we set at the top
+    tf.keras.layers.Embedding(vocab_size, embedding_dim),
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(embedding_dim)),
+    # tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
+    # use ReLU in place of tanh function since they are very good alternatives of each other.
+    tf.keras.layers.Dense(embedding_dim, activation='relu'),
+    # Add a Dense layer with 6 units and softmax activation.
+    # When we have multiple outputs, softmax convert outputs layers into a probability distribution.
+    tf.keras.layers.Dense(56, activation='softmax')
+])
+model.summary()
+
+model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+num_epochs = 10
+history = model.fit(train_padded, training_label_seq,
+                    epochs=num_epochs,
+                    validation_data=(validation_padded, validation_label_seq),
+                    verbose=2)
+
 model_json = model.to_json()
-with open("../../output/models/lstm.json", "w") as json_file:
+with open("../../output/models/new_lstm.json", "w") as json_file:
     json_file.write(model_json)
-model.save_weights("../../output/models/lstm_weights.h5")
-print("Done ✓")
+model.save_weights("../../output/models/new_lstm_weights.h5")
 
-print("Test Score:", score[0])
-print("Test Accuracy:", score[1])
-
-plt.plot(history.history['acc'])
-plt.plot(history.history['val_acc'])
-
-plt.title('model accuracy')
-plt.ylabel('accuracy')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-plt.show()
-
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-
-plt.title('model loss')
-plt.ylabel('loss')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-plt.show()
+lstm_utils.plot_graphs(history, "accuracy")
+lstm_utils.plot_graphs(history, "loss")
