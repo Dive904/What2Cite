@@ -1,6 +1,5 @@
 # This script is used to count extracted text number
 
-import os
 import io
 
 path = "../../output/lstmdataset/final.txt"
