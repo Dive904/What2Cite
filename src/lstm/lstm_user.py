@@ -4,7 +4,7 @@ from keras_preprocessing.text import Tokenizer
 
 import numpy as np
 
-from src.lstm import lstm_utils
+from src.datasetcreator import utils
 
 json_file = open('../../output/models/lstm.json', 'r')
 loaded_model_json = json_file.read()
@@ -18,7 +18,7 @@ text = ["This article looks at some of the challenges related to the deployment 
         "wrapper of limited efficacy. IoT security (IoTSec) is needed at all ‘layers’ of the IoT environment and may "
         "be specific to the IoT ‘layer’ in question."]
 
-text[0] = lstm_utils.preprocess_text(text[0])
+text[0] = utils.preprocess_text(text[0])
 
 tokenizer = Tokenizer(num_words=5000)
 seq = tokenizer.texts_to_sequences(text)

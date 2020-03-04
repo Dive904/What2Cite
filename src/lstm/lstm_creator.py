@@ -7,7 +7,7 @@ from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from nltk.corpus import stopwords
 
-from src.lstm import lstm_utils
+from src.datasetcreator import utils
 
 additional_stopwords = ["paper", "method", "large", "model", "proposed", "study", "based", "using", "approach", "also"]
 STOPWORDS = set(stopwords.words('english')).union(set(additional_stopwords))
@@ -93,7 +93,7 @@ print(validation_label_seq.shape)
 
 reverse_word_index = dict([(value, key) for (key, value) in word_index.items()])
 
-print(lstm_utils.decode_article(reverse_word_index, train_padded[10]))
+print(utils.decode_article(reverse_word_index, train_padded[10]))
 print('---')
 print(train_articles[10])
 
@@ -124,5 +124,5 @@ with open("../../output/models/new_lstm.json", "w") as json_file:
     json_file.write(model_json)
 model.save_weights("../../output/models/new_lstm_weights.h5")
 
-lstm_utils.plot_graphs(history, "accuracy")
-lstm_utils.plot_graphs(history, "loss")
+utils.plot_graphs(history, "accuracy")
+utils.plot_graphs(history, "loss")

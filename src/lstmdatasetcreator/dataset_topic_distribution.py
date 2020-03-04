@@ -1,5 +1,5 @@
 from src.fileutils import file_abstract
-from src.lstm import lstm_utils
+from src.lstmdatasetcreator import utils
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -20,7 +20,7 @@ for l in labels:
 
 print("INFO: Analyzing dataset", end="... ")
 for data in dataset:
-    dic[lstm_utils.extract_topic_from_dataset(data["topic"])] += 1
+    dic[utils.extract_topic_from_dataset(data["topic"])] += 1
 
 labels = []
 values = []

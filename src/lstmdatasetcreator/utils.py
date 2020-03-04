@@ -4,7 +4,6 @@ import re
 
 from nltk.stem import WordNetLemmatizer
 import matplotlib.pyplot as plt
-from sklearn.metrics import f1_score
 
 
 def extract_topic_from_dataset(topic_dataset):
