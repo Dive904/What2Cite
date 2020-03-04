@@ -5,8 +5,8 @@ import io
 
 from src.topicmodeller import tm_utils
 
-batch_number = 65  # change this for test
-number_topic = 45  # change this for test
+batch_number = 90  # change this for test
+number_topic = 40  # change this for test
 
 print("INFO: Extracting " + str(batch_number) + " batch abstract", end="... ")
 paper_info = tm_utils.extract_paper_info("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\",
