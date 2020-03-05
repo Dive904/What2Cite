@@ -7,7 +7,7 @@ from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from nltk.corpus import stopwords
 
-from src.datasetcreator import utils
+from src.lstmdatasetcreator import utils
 
 additional_stopwords = ["paper", "method", "large", "model", "proposed", "study", "based", "using", "approach", "also"]
 STOPWORDS = set(stopwords.words('english')).union(set(additional_stopwords))

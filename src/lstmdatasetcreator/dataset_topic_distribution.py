@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 
 print("INFO: Extracting dataset", end="... ")
 dataset = file_abstract.txt_lstm_dataset_reader("../../output/lstmdataset/final.txt")
-inputrows = []
 print("Done ✓")
 
 number_topic = 40
