@@ -1,4 +1,5 @@
 # https://towardsdatascience.com/multi-class-text-classification-with-lstm-using-tensorflow-2-0-d88627c10a35
+# https://machinelearningmastery.com/diagnose-overfitting-underfitting-lstm-models/ <-- diagnose Over/Under fitting
 
 import csv
 import tensorflow as tf
@@ -12,7 +13,7 @@ from src.lstmdatasetcreator import utils
 additional_stopwords = ["paper", "method", "large", "model", "proposed", "study", "based", "using", "approach", "also"]
 STOPWORDS = set(stopwords.words('english')).union(set(additional_stopwords))
 
-vocab_size = 10000
+vocab_size = 6000
 embedding_dim = 64
 max_length = 1000
 trunc_type = 'post'
@@ -20,44 +21,56 @@ padding_type = 'post'
 oov_tok = '<OOV>'
 training_portion = .8
 
-articles = []
-labels = []
+training_articles = []
+training_labels = []
 
-with open("../../output/lstmdataset/data_reduced.csv", encoding="utf-8") as csvfile:
+print("INFO: Extracting Training dataset", end="... ")
+with open("../../output/lstmdataset/trainingdataset.csv", encoding="utf-8") as csvfile:
     reader = csv.reader(csvfile, delimiter=',')
     next(reader)
     for row in reader:
-        labels.append(row[1])
+        training_labels.append(row[1])
         article = row[0].lower()
         for word in STOPWORDS:
             token = ' ' + word + ' '
             article = article.replace(token, ' ')
             article = article.replace(' ', ' ')
-        articles.append(article)
+        training_articles.append(article)
+print("Done ✓", end="\n\n")
 
-print(len(labels))
-print(len(articles))
+print(len(training_labels))
+print(len(training_articles))
 
-train_size = int(len(articles) * training_portion)
+validation_articles = []
+validation_labels = []
 
-train_articles = articles[0: train_size]
-train_labels = labels[0: train_size]
+print("INFO: Extracting Validation dataset", end="... ")
+with open("../../output/lstmdataset/valdataset.csv", encoding="utf-8") as csvfile:
+    reader = csv.reader(csvfile, delimiter=',')
+    next(reader)
+    for row in reader:
+        validation_labels.append(row[1])
+        article = row[0].lower()
+        for word in STOPWORDS:
+            token = ' ' + word + ' '
+            article = article.replace(token, ' ')
+            article = article.replace(' ', ' ')
+        validation_articles.append(article)
+print("Done ✓", end="\n\n")
 
-validation_articles = articles[train_size:]
-validation_labels = labels[train_size:]
-
-print(train_size)
-print(len(train_articles))
-print(len(train_labels))
+print(len(training_articles))
+print(len(training_labels))
 print(len(validation_articles))
 print(len(validation_labels))
 
+print("INFO: Fitting Tokenizer", end="... ")
 tokenizer = Tokenizer(num_words=vocab_size, oov_token=oov_tok)
-tokenizer.fit_on_texts(train_articles)
+tokenizer.fit_on_texts(training_articles)
 word_index = tokenizer.word_index
 print(dict(list(word_index.items())[0:10]))
+print("Done ✓", end="\n\n")
 
-train_sequences = tokenizer.texts_to_sequences(train_articles)
+train_sequences = tokenizer.texts_to_sequences(training_articles)
 print(train_sequences[10])
 
 train_padded = pad_sequences(train_sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type)
@@ -77,9 +90,9 @@ print(len(validation_sequences))
 print(validation_padded.shape)
 
 label_tokenizer = Tokenizer()
-label_tokenizer.fit_on_texts(labels)
+label_tokenizer.fit_on_texts(training_labels)
 
-training_label_seq = np.array(label_tokenizer.texts_to_sequences(train_labels))
+training_label_seq = np.array(label_tokenizer.texts_to_sequences(training_labels))
 validation_label_seq = np.array(label_tokenizer.texts_to_sequences(validation_labels))
 print(training_label_seq[0])
 print(training_label_seq[1])
@@ -95,7 +108,7 @@ reverse_word_index = dict([(value, key) for (key, value) in word_index.items()])
 
 print(utils.decode_article(reverse_word_index, train_padded[10]))
 print('---')
-print(train_articles[10])
+print(training_articles[10])
 
 model = tf.keras.Sequential([
     # Add an Embedding layer expecting input vocab of size 5000,
@@ -107,13 +120,13 @@ model = tf.keras.Sequential([
     tf.keras.layers.Dense(embedding_dim, activation='relu'),
     # Add a Dense layer with 6 units and softmax activation.
     # When we have multiple outputs, softmax convert outputs layers into a probability distribution.
-    tf.keras.layers.Dense(56, activation='softmax')
+    tf.keras.layers.Dense(41, activation='softmax')
 ])
 model.summary()
 
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-num_epochs = 10
+num_epochs = 12
 history = model.fit(train_padded, training_label_seq,
                     epochs=num_epochs,
                     validation_data=(validation_padded, validation_label_seq),

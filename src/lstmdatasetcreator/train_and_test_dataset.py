@@ -4,7 +4,12 @@ from src.lstmdatasetcreator import utils
 from src.fileutils import file_abstract
 
 
-threshold = 18500
+# threshold must not be higher than 18500
+threshold = 1000
+val_dataset_length_perc = 10  # per topic
+training_dataset_length_perc = 60  # per topic
+test_dataset_length_perc = 30  # per topic
+
 number_topic = 40
 result_dataset = {}
 
@@ -23,10 +28,6 @@ for data in dataset:
     if len(result_dataset[topic]) < threshold:
         result_dataset[topic].append(data["paperAbstract"])
 print("Done ✓")
-
-val_dataset_length_perc = 10  # per topic
-training_dataset_length_perc = 60  # per topic
-test_dataset_length_perc = 30  # per topic
 
 val_dataset_length = int((threshold * val_dataset_length_perc) / 100)
 training_dataset_length = int((threshold * training_dataset_length_perc) / 100)
