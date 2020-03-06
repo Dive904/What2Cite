@@ -6,9 +6,9 @@ from src.fileutils import file_abstract
 
 # threshold must not be higher than 18500
 threshold = 1000
-val_dataset_length_perc = 10  # per topic
+val_dataset_length_perc = 20  # per topic
 training_dataset_length_perc = 60  # per topic
-test_dataset_length_perc = 30  # per topic
+test_dataset_length_perc = 20  # per topic
 
 number_topic = 40
 result_dataset = {}

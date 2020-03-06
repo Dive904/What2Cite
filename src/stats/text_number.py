@@ -1,11 +1,8 @@
 # This script is used to count extracted text number
-
-import io
-
 path = "../../output/lstmdataset/final.txt"
 total_count = 0
 
-with io.open(path, "r", encoding="utf-8") as f:
+with open(path, "r", encoding="utf-8") as f:
     lines = f.readlines()
     for line in lines:
         if line.startswith("---"):
