@@ -78,7 +78,7 @@ print("Done ✓")
 print("INFO: Writing test file", end="... ")
 with open("../../output/lstmdataset/testdataset_multilabel.csv", "w", newline='', encoding="utf-8") as test_file:
     writer = csv.writer(test_file)
-    writer.writerow(["text", "label"])
+    writer.writerow(["text"] + labels)
     for topic in labels:
         abstracts = test_dataset[topic]
         for i in range(len(abstracts)):
@@ -90,7 +90,7 @@ print("Done ✓")
 print("INFO: Writing validation file", end="... ")
 with open("../../output/lstmdataset/valdataset_multilabel.csv", "w", newline='', encoding="utf-8") as val_file:
     writer = csv.writer(val_file)
-    writer.writerow(["text", "label"])
+    writer.writerow(["text"] + labels)
     for topic in labels:
         abstracts = val_dataset[topic]
         for i in range(len(abstracts)):
