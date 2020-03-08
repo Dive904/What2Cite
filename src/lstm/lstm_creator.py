@@ -13,13 +13,12 @@ from src.lstmdatasetcreator import utils
 additional_stopwords = ["paper", "method", "large", "model", "proposed", "study", "based", "using", "approach", "also"]
 STOPWORDS = set(stopwords.words('english')).union(set(additional_stopwords))
 
-vocab_size = 6000
-embedding_dim = 64
+vocab_size = 2000
+embedding_dim = 700
 max_length = 1000
 trunc_type = 'post'
 padding_type = 'post'
 oov_tok = '<OOV>'
-training_portion = .8
 
 training_articles = []
 training_labels = []
@@ -114,7 +113,7 @@ model = tf.keras.Sequential([
     # Add an Embedding layer expecting input vocab of size 5000,
     # and output embedding dimension of size 64 we set at the top
     tf.keras.layers.Embedding(vocab_size, embedding_dim),
-    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(embedding_dim)),
+    tf.keras.layers.LSTM(embedding_dim),
     # tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
     # use ReLU in place of tanh function since they are very good alternatives of each other.
     tf.keras.layers.Dense(embedding_dim, activation='relu'),
@@ -126,7 +125,7 @@ model.summary()
 
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-num_epochs = 12
+num_epochs = 100
 history = model.fit(train_padded, training_label_seq,
                     epochs=num_epochs,
                     validation_data=(validation_padded, validation_label_seq),
