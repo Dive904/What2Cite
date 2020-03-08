@@ -1,140 +1,120 @@
-# https://towardsdatascience.com/multi-class-text-classification-with-lstm-using-tensorflow-2-0-d88627c10a35
-# https://machinelearningmastery.com/diagnose-overfitting-underfitting-lstm-models/ <-- diagnose Over/Under fitting
+# https://stackabuse.com/python-for-nlp-multi-label-text-classification-with-keras/ <-- tutorial
 
-import csv
-import tensorflow as tf
-import numpy as np
-from keras.preprocessing.text import Tokenizer
+from numpy import array
+from numpy import asarray
+from numpy import zeros
+
+from keras.preprocessing.text import one_hot
 from keras.preprocessing.sequence import pad_sequences
-from nltk.corpus import stopwords
+from keras.models import Sequential
+from keras.layers.core import Activation, Dropout, Dense
+from keras.layers import Flatten, LSTM
+from keras.layers import GlobalMaxPooling1D
+from keras.models import Model
+from keras.layers.embeddings import Embedding
+from sklearn.model_selection import train_test_split
+from keras.preprocessing.text import Tokenizer
+from keras.layers import Input
+from keras.layers.merge import Concatenate
 
-from src.lstmdatasetcreator import utils
+import pandas as pd
+import numpy as np
+import re
 
-additional_stopwords = ["paper", "method", "large", "model", "proposed", "study", "based", "using", "approach", "also"]
-STOPWORDS = set(stopwords.words('english')).union(set(additional_stopwords))
+import matplotlib.pyplot as plt
 
-vocab_size = 2000
-embedding_dim = 700
-max_length = 1000
-trunc_type = 'post'
-padding_type = 'post'
-oov_tok = '<OOV>'
 
-training_articles = []
-training_labels = []
+def preprocess_text(s):
+    # Remove punctuations and numbers
+    sentence = re.sub('[^a-zA-Z]', ' ', s)
+
+    # Single character removal
+    sentence = re.sub(r"\s+[a-zA-Z]\s+", ' ', sentence)
+
+    # Removing multiple spaces
+    sentence = re.sub(r'\s+', ' ', sentence)
+
+    return sentence
+
 
 print("INFO: Extracting Training dataset", end="... ")
-with open("../../output/lstmdataset/trainingdataset.csv", encoding="utf-8") as csvfile:
-    reader = csv.reader(csvfile, delimiter=',')
-    next(reader)
-    for row in reader:
-        training_labels.append(row[1])
-        article = row[0].lower()
-        for word in STOPWORDS:
-            token = ' ' + word + ' '
-            article = article.replace(token, ' ')
-            article = article.replace(' ', ' ')
-        training_articles.append(article)
+abstracts_training = pd.read_csv("../../output/lstmdataset/trainingdataset_multilabel.csv")
 print("Done ✓", end="\n\n")
 
-print(len(training_labels))
-print(len(training_articles))
+print("INFO: Preprocessing Training dataset", end="... ")
+X_train = []
+sentences = list(abstracts_training["text"])
+for sen in sentences:
+    X_train.append(preprocess_text(sen))
+print("Done ✓", end="\n\n")
 
-validation_articles = []
-validation_labels = []
+abstracts_train_labels = abstracts_training[[str(i) for i in range(40)]]
+
+print("INFO: Extracting Test dataset", end="... ")
+abstracts_test = pd.read_csv("../../output/lstmdataset/testdataset_multilabel.csv")
+print("Done ✓", end="\n\n")
+
+print("INFO: Preprocessing Test dataset", end="... ")
+X_test = []
+sentences = list(abstracts_test["text"])
+for sen in sentences:
+    X_test.append(preprocess_text(sen))
+print("Done ✓", end="\n\n")
+
+abstracts_test_labels = abstracts_test[[str(i) for i in range(40)]]
 
 print("INFO: Extracting Validation dataset", end="... ")
-with open("../../output/lstmdataset/valdataset.csv", encoding="utf-8") as csvfile:
-    reader = csv.reader(csvfile, delimiter=',')
-    next(reader)
-    for row in reader:
-        validation_labels.append(row[1])
-        article = row[0].lower()
-        for word in STOPWORDS:
-            token = ' ' + word + ' '
-            article = article.replace(token, ' ')
-            article = article.replace(' ', ' ')
-        validation_articles.append(article)
+abstracts_validation = pd.read_csv("../../output/lstmdataset/valdataset_multilabel.csv")
 print("Done ✓", end="\n\n")
 
-print(len(training_articles))
-print(len(training_labels))
-print(len(validation_articles))
-print(len(validation_labels))
-
-print("INFO: Fitting Tokenizer", end="... ")
-tokenizer = Tokenizer(num_words=vocab_size, oov_token=oov_tok)
-tokenizer.fit_on_texts(training_articles)
-word_index = tokenizer.word_index
-print(dict(list(word_index.items())[0:10]))
+print("INFO: Preprocessing Validation dataset", end="... ")
+X_val = []
+sentences = list(abstracts_validation["text"])
+for sen in sentences:
+    X_val.append(preprocess_text(sen))
 print("Done ✓", end="\n\n")
 
-train_sequences = tokenizer.texts_to_sequences(training_articles)
-print(train_sequences[10])
+abstracts_val_labels = abstracts_validation[[str(i) for i in range(40)]]
 
-train_padded = pad_sequences(train_sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type)
-print(len(train_sequences[0]))
-print(len(train_padded[0]))
+tokenizer = Tokenizer(num_words=5000)
+tokenizer.fit_on_texts(X_train)
 
-print(len(train_sequences[1]))
-print(len(train_padded[1]))
+X_train = tokenizer.texts_to_sequences(X_train)
+X_test = tokenizer.texts_to_sequences(X_test)
+X_val = tokenizer.texts_to_sequences(X_val)
 
-print(len(train_sequences[10]))
-print(len(train_padded[10]))
+vocab_size = len(tokenizer.word_index) + 1
 
-validation_sequences = tokenizer.texts_to_sequences(validation_articles)
-validation_padded = pad_sequences(validation_sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type)
+maxlen = 200
 
-print(len(validation_sequences))
-print(validation_padded.shape)
+X_train = pad_sequences(X_train, padding='post', maxlen=maxlen)
+X_test = pad_sequences(X_test, padding='post', maxlen=maxlen)
+X_val = pad_sequences(X_val, padding='post', maxlen=maxlen)
 
-label_tokenizer = Tokenizer()
-label_tokenizer.fit_on_texts(training_labels)
+embeddings_dictionary = dict()
 
-training_label_seq = np.array(label_tokenizer.texts_to_sequences(training_labels))
-validation_label_seq = np.array(label_tokenizer.texts_to_sequences(validation_labels))
-print(training_label_seq[0])
-print(training_label_seq[1])
-print(training_label_seq[2])
-print(training_label_seq.shape)
+glove_file = open('../../input/glove.6B.100d.txt', encoding="utf8")
 
-print(validation_label_seq[0])
-print(validation_label_seq[1])
-print(validation_label_seq[2])
-print(validation_label_seq.shape)
+for line in glove_file:
+    records = line.split()
+    word = records[0]
+    vector_dimensions = asarray(records[1:], dtype='float32')
+    embeddings_dictionary[word] = vector_dimensions
+glove_file.close()
 
-reverse_word_index = dict([(value, key) for (key, value) in word_index.items()])
+embedding_matrix = zeros((vocab_size, 100))
+for word, index in tokenizer.word_index.items():
+    embedding_vector = embeddings_dictionary.get(word)
+    if embedding_vector is not None:
+        embedding_matrix[index] = embedding_vector
 
-print(utils.decode_article(reverse_word_index, train_padded[10]))
-print('---')
-print(training_articles[10])
+deep_inputs = Input(shape=(maxlen,))
+embedding_layer = Embedding(vocab_size, 100, weights=[embedding_matrix], trainable=False)(deep_inputs)
+LSTM_Layer_1 = LSTM(128)(embedding_layer)
+dense_layer_1 = Dense(6, activation='sigmoid')(LSTM_Layer_1)
+model = Model(inputs=deep_inputs, outputs=dense_layer_1)
 
-model = tf.keras.Sequential([
-    # Add an Embedding layer expecting input vocab of size 5000,
-    # and output embedding dimension of size 64 we set at the top
-    tf.keras.layers.Embedding(vocab_size, embedding_dim),
-    tf.keras.layers.LSTM(embedding_dim),
-    # tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
-    # use ReLU in place of tanh function since they are very good alternatives of each other.
-    tf.keras.layers.Dense(embedding_dim, activation='relu'),
-    # Add a Dense layer with 6 units and softmax activation.
-    # When we have multiple outputs, softmax convert outputs layers into a probability distribution.
-    tf.keras.layers.Dense(41, activation='softmax')
-])
-model.summary()
-
-model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-
-num_epochs = 100
-history = model.fit(train_padded, training_label_seq,
-                    epochs=num_epochs,
-                    validation_data=(validation_padded, validation_label_seq),
-                    verbose=2)
-
-model_json = model.to_json()
-with open("../../output/models/new_lstm.json", "w") as json_file:
-    json_file.write(model_json)
-model.save_weights("../../output/models/new_lstm_weights.h5")
-
-utils.plot_graphs(history, "accuracy")
-utils.plot_graphs(history, "loss")
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
+print(model.summary())
+history = model.fit(X_train, abstracts_train_labels, batch_size=128, epochs=5, verbose=1,
+                    validation_data=(X_val, abstracts_val_labels))
