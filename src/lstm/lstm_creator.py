@@ -1,24 +1,17 @@
 # https://stackabuse.com/python-for-nlp-multi-label-text-classification-with-keras/ <-- tutorial
 
-from numpy import array
+
 from numpy import asarray
 from numpy import zeros
 
-from keras.preprocessing.text import one_hot
+import keras.layers as kl
+
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import Sequential
-from keras.layers.core import Activation, Dropout, Dense
-from keras.layers import Flatten, LSTM
-from keras.layers import GlobalMaxPooling1D
-from keras.models import Model
-from keras.layers.embeddings import Embedding
-from sklearn.model_selection import train_test_split
 from keras.preprocessing.text import Tokenizer
-from keras.layers import Input
-from keras.layers.merge import Concatenate
 
 import pandas as pd
-import numpy as np
+import pickle
 
 from src.lstm import lstm_utils
 
@@ -100,15 +93,14 @@ for word, index in tokenizer.word_index.items():
         embedding_matrix[index] = embedding_vector
 print("Done ✓")
 
-deep_inputs = Input(shape=(maxlen,))
-embedding_layer = Embedding(vocab_size, 100, weights=[embedding_matrix], trainable=False)(deep_inputs)
-LSTM_Layer_1 = LSTM(128)(embedding_layer)
-dense_layer_1 = Dense(40, activation='sigmoid')(LSTM_Layer_1)
-model = Model(inputs=deep_inputs, outputs=dense_layer_1)
+model = Sequential()
+model.add(kl.Embedding(vocab_size, 100, weights=[embedding_matrix], trainable=False))
+model.add(kl.LSTM(128))
+model.add(kl.Dense(40, activation='sigmoid'))
 
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
 print(model.summary())
-history = model.fit(X_train, abstracts_train_labels, batch_size=128, epochs=2, verbose=1,
+history = model.fit(X_train, abstracts_train_labels, batch_size=1000, epochs=2, verbose=1,
                     validation_data=(X_val, abstracts_val_labels))
 
 """
@@ -118,9 +110,11 @@ with open("../../output/models/new_lstm.json", "w") as json_file:
 model.save_weights("../../output/models/new_lstm_weights.h5")
 """
 
-model.save("../../output/models/new_lstm_final_model.h5")
+model.save("../../output/models/lstm.h5")
+with open("../../output/models/tokenizer.pickle", "wb") as handle:
+    pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 score = model.evaluate(X_test, abstracts_test_labels, verbose=1)
 
-print("Test Score:", score[0])
+print("Test Loss:", score[0])
 print("Test Accuracy:", score[1])
