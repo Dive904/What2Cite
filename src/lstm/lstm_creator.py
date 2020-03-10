@@ -19,22 +19,8 @@ from keras.layers.merge import Concatenate
 
 import pandas as pd
 import numpy as np
-import re
 
-import matplotlib.pyplot as plt
-
-
-def preprocess_text(s):
-    # Remove punctuations and numbers
-    sentence = re.sub('[^a-zA-Z]', ' ', s)
-
-    # Single character removal
-    sentence = re.sub(r"\s+[a-zA-Z]\s+", ' ', sentence)
-
-    # Removing multiple spaces
-    sentence = re.sub(r'\s+', ' ', sentence)
-
-    return sentence
+from src.lstm import lstm_utils
 
 
 print("INFO: Extracting Training dataset", end="... ")
@@ -45,7 +31,7 @@ print("INFO: Preprocessing Training dataset", end="... ")
 X_train = []
 sentences = list(abstracts_training["text"])
 for sen in sentences:
-    X_train.append(preprocess_text(sen))
+    X_train.append(lstm_utils.preprocess_text(sen))
 print("Done ✓", end="\n\n")
 
 abstracts_train_labels = abstracts_training[[str(i) for i in range(40)]]
@@ -58,7 +44,7 @@ print("INFO: Preprocessing Test dataset", end="... ")
 X_test = []
 sentences = list(abstracts_test["text"])
 for sen in sentences:
-    X_test.append(preprocess_text(sen))
+    X_test.append(lstm_utils.preprocess_text(sen))
 print("Done ✓", end="\n\n")
 
 abstracts_test_labels = abstracts_test[[str(i) for i in range(40)]]
@@ -71,7 +57,7 @@ print("INFO: Preprocessing Validation dataset", end="... ")
 X_val = []
 sentences = list(abstracts_validation["text"])
 for sen in sentences:
-    X_val.append(preprocess_text(sen))
+    X_val.append(lstm_utils.preprocess_text(sen))
 print("Done ✓", end="\n\n")
 
 abstracts_val_labels = abstracts_validation[[str(i) for i in range(40)]]
@@ -125,10 +111,14 @@ print(model.summary())
 history = model.fit(X_train, abstracts_train_labels, batch_size=128, epochs=2, verbose=1,
                     validation_data=(X_val, abstracts_val_labels))
 
+"""
 model_json = model.to_json()
 with open("../../output/models/new_lstm.json", "w") as json_file:
     json_file.write(model_json)
 model.save_weights("../../output/models/new_lstm_weights.h5")
+"""
+
+model.save("../../output/models/new_lstm_final_model.h5")
 
 score = model.evaluate(X_test, abstracts_test_labels, verbose=1)
 
