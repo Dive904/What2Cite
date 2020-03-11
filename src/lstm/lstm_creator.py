@@ -95,12 +95,12 @@ print("Done ✓")
 
 model = Sequential()
 model.add(kl.Embedding(vocab_size, 100, weights=[embedding_matrix], trainable=False))
-model.add(kl.LSTM(128))
-model.add(kl.Dense(40, activation='sigmoid'))
+model.add(kl.LSTM(400))
+model.add(kl.Dense(40, activation='softmax'))
 
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
 print(model.summary())
-history = model.fit(X_train, abstracts_train_labels, batch_size=1000, epochs=2, verbose=1,
+history = model.fit(X_train, abstracts_train_labels, batch_size=128, epochs=40, verbose=1,
                     validation_data=(X_val, abstracts_val_labels))
 
 """

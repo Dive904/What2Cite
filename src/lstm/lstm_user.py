@@ -15,5 +15,5 @@ seq = tokenizer.texts_to_sequences(text)
 # load model from single file
 model = load_model("../../output/models/lstm.h5")
 # make predictions
-yhat = model.predict(seq)
+yhat = model.predict_proba(seq)
 print(yhat)
