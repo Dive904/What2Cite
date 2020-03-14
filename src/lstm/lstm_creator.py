@@ -1,6 +1,5 @@
 # https://stackabuse.com/python-for-nlp-multi-label-text-classification-with-keras/ <-- tutorial
-
-
+from keras import regularizers
 from numpy import asarray
 from numpy import zeros
 
@@ -10,11 +9,11 @@ from keras.preprocessing.sequence import pad_sequences
 from keras.models import Sequential
 from keras.preprocessing.text import Tokenizer
 
+import matplotlib.pyplot as plt
 import pandas as pd
 import pickle
 
 from src.lstm import lstm_utils
-
 
 print("INFO: Extracting Training dataset", end="... ")
 abstracts_training = pd.read_csv("../../output/lstmdataset/trainingdataset_multilabel.csv")
@@ -56,7 +55,7 @@ print("Done ✓", end="\n\n")
 abstracts_val_labels = abstracts_validation[[str(i) for i in range(40)]]
 
 tokenizer = Tokenizer(num_words=5000)
-tokenizer.fit_on_texts(X_train)
+tokenizer.fit_on_texts(X_train + X_test + X_val)
 
 print("INFO: Tokenizing sequences", end="... ")
 X_train = tokenizer.texts_to_sequences(X_train)
@@ -76,31 +75,40 @@ print("Done ✓")
 
 embeddings_dictionary = dict()
 
-glove_file = open('../../input/glove.6B.100d.txt', encoding="utf8")
+embedding_col_number = 300
+embedding_file = open('../../input/glove.6B.300d.txt', encoding="utf8")
 
 print("INFO: Embedding words", end="... ")
-for line in glove_file:
+for line in embedding_file:
     records = line.split()
     word = records[0]
     vector_dimensions = asarray(records[1:], dtype='float32')
     embeddings_dictionary[word] = vector_dimensions
-glove_file.close()
+embedding_file.close()
 
-embedding_matrix = zeros((vocab_size, 100))
+embedding_matrix = zeros((vocab_size, embedding_col_number))
 for word, index in tokenizer.word_index.items():
     embedding_vector = embeddings_dictionary.get(word)
     if embedding_vector is not None:
         embedding_matrix[index] = embedding_vector
-print("Done ✓")
+print("\nDone ✓")
 
+# 63% acc
 model = Sequential()
-model.add(kl.Embedding(vocab_size, 100, weights=[embedding_matrix], trainable=False))
-model.add(kl.LSTM(400))
-model.add(kl.Dense(40, activation='softmax'))
+model.add(kl.Embedding(vocab_size, embedding_col_number, weights=[embedding_matrix], trainable=False))
+model.add(kl.Dropout(0.5))
+# model.add(kl.Conv1D(filters=500, kernel_size=10, strides=3, padding="same", activation="sigmoid"))
+# model.add(kl.MaxPool1D(pool_size=10, padding="same"))
+model.add(kl.Bidirectional(kl.LSTM(500, activation='tanh')))
+# model.add(kl.LSTM(500, activation='tanh'))
+model.add(kl.Dropout(0.4))
+model.add(kl.Dense(40, activation='softmax',
+                   activity_regularizer=regularizers.l1(0.01),
+                   kernel_regularizer=regularizers.l2(0.01)))
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
 print(model.summary())
-history = model.fit(X_train, abstracts_train_labels, batch_size=128, epochs=40, verbose=1,
+history = model.fit(X_train, abstracts_train_labels, batch_size=128, epochs=15, verbose=1,
                     validation_data=(X_val, abstracts_val_labels))
 
 """
@@ -118,3 +126,21 @@ score = model.evaluate(X_test, abstracts_test_labels, verbose=1)
 
 print("Test Loss:", score[0])
 print("Test Accuracy:", score[1])
+
+# Plot training & validation accuracy values
+plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
+plt.title('Model accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Val'], loc='upper left')
+plt.show()
+
+# Plot training & validation loss values
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('Model loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Val'], loc='upper left')
+plt.show()
