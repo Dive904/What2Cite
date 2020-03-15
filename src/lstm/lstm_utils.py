@@ -11,7 +11,7 @@ stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
 
 
-def text_to_sequence(vectorizer, sentences, index_dict):
+def texts_to_sequence(vectorizer, sentences, index_dict):
     text_sequence = []
     for sentence in sentences:
         tmp_sequence = []
@@ -22,7 +22,8 @@ def text_to_sequence(vectorizer, sentences, index_dict):
                 index_to_add = vectorizer.vocabulary_.get(b)
             else:
                 index_to_add = vectorizer.vocabulary_.get(bigram[0])
-            tmp_sequence.append(index_to_add)
+            if index_to_add is not None:
+                tmp_sequence.append(index_to_add)
         text_sequence.append(tmp_sequence)
 
     return np.asarray(text_sequence)

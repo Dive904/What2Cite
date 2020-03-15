@@ -5,15 +5,24 @@ from numpy import zeros
 
 import keras.layers as kl
 
-from keras.preprocessing.sequence import pad_sequences
 from keras.models import Sequential
-from keras.preprocessing.text import Tokenizer
 
 import matplotlib.pyplot as plt
 import pandas as pd
 import pickle
+import json
+
+from sklearn.feature_extraction.text import CountVectorizer
 
 from src.lstm import lstm_utils
+
+file_pathname = "C:\\Users\\Davide\\Desktop\\word2vec-unigram-bigrams-\\" \
+                "word2vec_bi_gram\\word2vec_bi_gram\\word2vec_bi_gram.syn0.npy"
+json_pathname = "C:\\Users\\Davide\\Desktop\\word2vec-unigram-bigrams-\\word2vec_bi_gram\\" \
+                "word2vec_bi_gram\\word2vec_bi_gram.vocab.json"
+
+with open(json_pathname) as json_file:
+    json_data = json.load(json_file)
 
 print("INFO: Extracting Training dataset", end="... ")
 abstracts_training = pd.read_csv("../../output/lstmdataset/trainingdataset_multilabel.csv")
@@ -54,16 +63,16 @@ print("Done ✓", end="\n\n")
 
 abstracts_val_labels = abstracts_validation[[str(i) for i in range(40)]]
 
-tokenizer = Tokenizer(num_words=5000)
-tokenizer.fit_on_texts(X_train + X_test + X_val)
+vectorizer = CountVectorizer(ngram_range=(1, 2))
+vectorizer.fit_transform(X_train + X_val)
 
 print("INFO: Tokenizing sequences", end="... ")
-X_train = tokenizer.texts_to_sequences(X_train)
-X_test = tokenizer.texts_to_sequences(X_test)
-X_val = tokenizer.texts_to_sequences(X_val)
+X_train = lstm_utils.texts_to_sequence(vectorizer, X_train, json_data)
+X_test = lstm_utils.texts_to_sequence(vectorizer, X_test, json_data)
+X_val = lstm_utils.texts_to_sequence(vectorizer, X_val, json_data)
 print("Done ✓")
 
-vocab_size = len(tokenizer.word_index) + 1
+vocab_size = len(vectorizer.vocabulary_.keys()) + 1
 
 """
 maxlen = 200
