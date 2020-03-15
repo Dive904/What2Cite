@@ -5,7 +5,6 @@ from nltk import ngrams
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
-from sklearn.feature_extraction.text import CountVectorizer
 
 stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
@@ -18,9 +17,10 @@ def texts_to_sequence(vectorizer, sentences, index_dict):
         bigrams = list(ngrams(sentence.split(), 2))
         for bigram in bigrams:
             b = bigram[0] + " " + bigram[1]
+            index_to_add = None
             if index_dict.get(b) is not None:
                 index_to_add = vectorizer.vocabulary_.get(b)
-            else:
+            elif index_dict.get(bigram[0]) is not None:
                 index_to_add = vectorizer.vocabulary_.get(bigram[0])
             if index_to_add is not None:
                 tmp_sequence.append(index_to_add)

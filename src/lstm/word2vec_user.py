@@ -47,9 +47,11 @@ for sentence in text:
     bigrams = list(ngrams(sentence.split(), 2))
     for bigram in bigrams:
         b = bigram[0] + " " + bigram[1]
+        a = 0
+        index_to_add = None
         if json_data.get(b) is not None:
             index_to_add = vectorizer.vocabulary_.get(b)
-        else:
+        elif json_data.get(bigram[0]) is not None:
             index_to_add = vectorizer.vocabulary_.get(bigram[0])
         if index_to_add is not None:
             tmp_sequence.append(index_to_add)

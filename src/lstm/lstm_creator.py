@@ -9,8 +9,8 @@ from keras.models import Sequential
 
 import matplotlib.pyplot as plt
 import pandas as pd
-import pickle
 import json
+import numpy as np
 
 from sklearn.feature_extraction.text import CountVectorizer
 
@@ -21,8 +21,14 @@ file_pathname = "C:\\Users\\Davide\\Desktop\\word2vec-unigram-bigrams-\\" \
 json_pathname = "C:\\Users\\Davide\\Desktop\\word2vec-unigram-bigrams-\\word2vec_bi_gram\\" \
                 "word2vec_bi_gram\\word2vec_bi_gram.vocab.json"
 
+print("INFO: Reading JSON index file", end="... ")
 with open(json_pathname) as json_file:
     json_data = json.load(json_file)
+print("Done ✓")
+
+print("INFO: Reading embedding file", end="... ")
+embedding_file = np.load(file_pathname)
+print("Done ✓", end="\n\n")
 
 print("INFO: Extracting Training dataset", end="... ")
 abstracts_training = pd.read_csv("../../output/lstmdataset/trainingdataset_multilabel.csv")
@@ -86,22 +92,15 @@ print("Done ✓")
 
 embeddings_dictionary = dict()
 
-embedding_col_number = 300
-embedding_file = open('../../input/glove.6B.300d.txt', encoding="utf8")
+embedding_col_number = 128
 
 print("INFO: Embedding words", end="... ")
-for line in embedding_file:
-    records = line.split()
-    word = records[0]
-    vector_dimensions = asarray(records[1:], dtype='float32')
-    embeddings_dictionary[word] = vector_dimensions
-embedding_file.close()
-
 embedding_matrix = zeros((vocab_size, embedding_col_number))
-for word, index in tokenizer.word_index.items():
-    embedding_vector = embeddings_dictionary.get(word)
-    if embedding_vector is not None:
-        embedding_matrix[index] = embedding_vector
+for word in vectorizer.vocabulary_.keys():
+    index = vectorizer.vocabulary_.get(word)
+    emb_index = json_data.get(word)
+    if emb_index is not None:
+        embedding_matrix[vectorizer.vocabulary_.get(word)] = embedding_file[emb_index]
 print("\nDone ✓")
 
 # 63% acc
@@ -122,16 +121,7 @@ print(model.summary())
 history = model.fit(X_train, abstracts_train_labels, batch_size=128, epochs=15, verbose=1,
                     validation_data=(X_val, abstracts_val_labels))
 
-"""
-model_json = model.to_json()
-with open("../../output/models/new_lstm.json", "w") as json_file:
-    json_file.write(model_json)
-model.save_weights("../../output/models/new_lstm_weights.h5")
-"""
-
 model.save("../../output/models/lstm.h5")
-with open("../../output/models/tokenizer.pickle", "wb") as handle:
-    pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 score = model.evaluate(X_test, abstracts_test_labels, verbose=1)
 
