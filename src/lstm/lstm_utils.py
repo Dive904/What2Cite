@@ -1,18 +1,15 @@
 import re
+
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-from nltk.stem import PorterStemmer
+from nltk.stem import WordNetLemmatizer
 
 stop_words = set(stopwords.words('english'))
-porter = PorterStemmer()
+lemmatizer = WordNetLemmatizer()
 
 
 def preprocess_text(s):
-    s_stemmed = []
-    for w in s.split():
-        s_stemmed.append(porter.stem(w))
-
-    s = ' '.join(s_stemmed)
+    s = s.lower()
 
     # Remove punctuations and numbers
     sentence = re.sub('[^a-zA-Z]', ' ', s)
@@ -22,6 +19,12 @@ def preprocess_text(s):
 
     # Removing multiple spaces
     sentence = re.sub(r'\s+', ' ', sentence)
+
+    s_lemmatized = []
+    for w in sentence.split():
+        s_lemmatized.append(lemmatizer.lemmatize(w))
+
+    s = ' '.join(s_lemmatized)
 
     word_tokens = word_tokenize(s)
 
