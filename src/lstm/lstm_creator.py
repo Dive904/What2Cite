@@ -80,6 +80,11 @@ print("Done ✓")
 
 vocab_size = len(vectorizer.vocabulary_.keys()) + 1
 
+max_len = lstm_utils.max_len_sequence(X_train + X_val + X_test)
+X_train = lstm_utils.pad_sequences(X_train, max_len)
+X_test = lstm_utils.pad_sequences(X_test, max_len)
+X_val = lstm_utils.pad_sequences(X_val, max_len)
+
 """
 maxlen = 200
 

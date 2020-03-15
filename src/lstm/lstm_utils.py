@@ -10,6 +10,17 @@ stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
 
 
+def max_len_sequence(sequences):
+    return max([len(l) for l in sequences])
+
+
+def pad_sequences(sequences, max_len):
+    for i in range(len(sequences)):
+        sequences[i] = sequences[i] + [0] * (max_len - len(sequences[i]))
+
+    return sequences
+
+
 def texts_to_sequence(vectorizer, sentences, index_dict):
     text_sequence = []
     for sentence in sentences:
