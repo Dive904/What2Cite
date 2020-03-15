@@ -65,6 +65,7 @@ print("Done ✓")
 
 vocab_size = len(tokenizer.word_index) + 1
 
+"""
 maxlen = 200
 
 print("INFO: Padding sequences", end="... ")
@@ -72,6 +73,7 @@ X_train = pad_sequences(X_train, padding='post', maxlen=maxlen)
 X_test = pad_sequences(X_test, padding='post', maxlen=maxlen)
 X_val = pad_sequences(X_val, padding='post', maxlen=maxlen)
 print("Done ✓")
+"""
 
 embeddings_dictionary = dict()
 
