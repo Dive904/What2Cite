@@ -5,9 +5,40 @@ from nltk import ngrams
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
+from sklearn.feature_extraction.text import CountVectorizer
 
 stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
+
+
+def create_count_vectorizer(sentences, index_dict):
+    for i in range(len(sentences)):
+        sentences[i] = preprocess_text(sentences[i])
+
+    texts_to_fit = []
+    for t in sentences:
+        bigrams = list(ngrams(t.split(), 2))
+        for b in bigrams:
+            bi = b[0] + " " + b[1]
+            if index_dict.get(bi) is not None:
+                texts_to_fit.append(bi)
+
+    vectorizer = CountVectorizer(ngram_range=(1, 2))
+    vectorizer.fit_transform(texts_to_fit)
+
+    return vectorizer
+
+
+def clean_vectorizer_vocabulary(vectorizer, index_dict):
+    to_remove = []
+    for key in vectorizer.vocabulary_.keys():
+        if index_dict.get(key) is None:
+            to_remove.append(key)
+
+    for r in to_remove:
+        del vectorizer.vocabulary_[r]
+
+    return vectorizer
 
 
 def max_len_sequence(sequences):
@@ -16,7 +47,10 @@ def max_len_sequence(sequences):
 
 def pad_sequences(sequences, max_len):
     for i in range(len(sequences)):
-        sequences[i] = sequences[i] + [0] * (max_len - len(sequences[i]))
+        if len(sequences[i]) < max_len:
+            sequences[i] = sequences[i] + [0] * (max_len - len(sequences[i]))
+        elif len(sequences[i]) > max_len:
+            del sequences[i][max_len:]
 
     return sequences
 
@@ -37,7 +71,7 @@ def texts_to_sequence(vectorizer, sentences, index_dict):
                 tmp_sequence.append(index_to_add)
         text_sequence.append(tmp_sequence)
 
-    return np.asarray(text_sequence)
+    return text_sequence
 
 
 def preprocess_text(s):

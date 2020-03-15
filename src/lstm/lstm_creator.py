@@ -1,18 +1,14 @@
 # https://stackabuse.com/python-for-nlp-multi-label-text-classification-with-keras/ <-- tutorial
 from keras import regularizers
-from numpy import asarray
 from numpy import zeros
-
-import keras.layers as kl
-
 from keras.models import Sequential
+from sklearn.feature_extraction.text import CountVectorizer
 
 import matplotlib.pyplot as plt
 import pandas as pd
 import json
 import numpy as np
-
-from sklearn.feature_extraction.text import CountVectorizer
+import keras.layers as kl
 
 from src.lstm import lstm_utils
 
@@ -69,8 +65,15 @@ print("Done ✓", end="\n\n")
 
 abstracts_val_labels = abstracts_validation[[str(i) for i in range(40)]]
 
-vectorizer = CountVectorizer(ngram_range=(1, 2))
-vectorizer.fit_transform(X_train + X_val)
+print("INFO: Creating CountVectorizer", end="... ")
+vectorizer = lstm_utils.create_count_vectorizer(X_train + X_val, json_data)
+print("Done ✓")
+
+print("INFO: Cleaning CountVectorizer vocabulary", end="... ")
+vectorizer = lstm_utils.clean_vectorizer_vocabulary(vectorizer, json_data)
+print("Done ✓")
+
+vocab_size = len(vectorizer.vocabulary_.keys()) + 1
 
 print("INFO: Tokenizing sequences", end="... ")
 X_train = lstm_utils.texts_to_sequence(vectorizer, X_train, json_data)
@@ -78,12 +81,13 @@ X_test = lstm_utils.texts_to_sequence(vectorizer, X_test, json_data)
 X_val = lstm_utils.texts_to_sequence(vectorizer, X_val, json_data)
 print("Done ✓")
 
-vocab_size = len(vectorizer.vocabulary_.keys()) + 1
+max_len = 1000
 
-max_len = lstm_utils.max_len_sequence(X_train + X_val + X_test)
+print("INFO: Padding sequences", end="... ")
 X_train = lstm_utils.pad_sequences(X_train, max_len)
 X_test = lstm_utils.pad_sequences(X_test, max_len)
 X_val = lstm_utils.pad_sequences(X_val, max_len)
+print("Done ✓")
 
 """
 maxlen = 200
