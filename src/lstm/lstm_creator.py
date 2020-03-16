@@ -1,4 +1,3 @@
-# https://stackabuse.com/python-for-nlp-multi-label-text-classification-with-keras/ <-- tutorial
 from keras import regularizers
 from numpy import zeros
 from keras.models import Sequential
@@ -81,25 +80,13 @@ X_test = lstm_utils.texts_to_sequence(vectorizer, X_test, json_data)
 X_val = lstm_utils.texts_to_sequence(vectorizer, X_val, json_data)
 print("Done ✓")
 
-max_len = 1000
+max_len = 600
 
 print("INFO: Padding sequences", end="... ")
 X_train = lstm_utils.pad_sequences(X_train, max_len)
 X_test = lstm_utils.pad_sequences(X_test, max_len)
 X_val = lstm_utils.pad_sequences(X_val, max_len)
 print("Done ✓")
-
-"""
-maxlen = 200
-
-print("INFO: Padding sequences", end="... ")
-X_train = pad_sequences(X_train, padding='post', maxlen=maxlen)
-X_test = pad_sequences(X_test, padding='post', maxlen=maxlen)
-X_val = pad_sequences(X_val, padding='post', maxlen=maxlen)
-print("Done ✓")
-"""
-
-embeddings_dictionary = dict()
 
 embedding_col_number = 128
 
@@ -110,12 +97,17 @@ for word in vectorizer.vocabulary_.keys():
     emb_index = json_data.get(word)
     if emb_index is not None:
         embedding_matrix[vectorizer.vocabulary_.get(word)] = embedding_file[emb_index]
-print("\nDone ✓")
+print("Done ✓")
+
+print("INFO: Converting to NumPy array", end="... ")
+X_train = np.asarray(X_train)
+X_test = np.asarray(X_test)
+X_val = np.asarray(X_val)
+print("Done ✓")
 
 # 63% acc
 model = Sequential()
 model.add(kl.Embedding(vocab_size, embedding_col_number, weights=[embedding_matrix], trainable=False))
-model.add(kl.Dropout(0.5))
 # model.add(kl.Conv1D(filters=500, kernel_size=10, strides=3, padding="same", activation="sigmoid"))
 # model.add(kl.MaxPool1D(pool_size=10, padding="same"))
 model.add(kl.Bidirectional(kl.LSTM(500, activation='tanh')))
