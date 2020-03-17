@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import json
 import numpy as np
+import gc
 import keras.layers as kl
 
 from src.lstm import lstm_utils
@@ -80,7 +81,7 @@ X_test = lstm_utils.texts_to_sequence(vectorizer, X_test, json_data)
 X_val = lstm_utils.texts_to_sequence(vectorizer, X_val, json_data)
 print("Done ✓")
 
-max_len = 600
+max_len = 300
 
 print("INFO: Padding sequences", end="... ")
 X_train = lstm_utils.pad_sequences(X_train, max_len)
@@ -103,6 +104,12 @@ print("INFO: Converting to NumPy array", end="... ")
 X_train = np.asarray(X_train)
 X_test = np.asarray(X_test)
 X_val = np.asarray(X_val)
+print("Done ✓")
+
+print("INFO: Cleaning memory", end="... ")
+embedding_file = None
+json_data = None
+gc.collect()
 print("Done ✓")
 
 # 63% acc
