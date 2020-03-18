@@ -54,7 +54,7 @@ print("Done ✓", end="\n\n")
 
 abstracts_val_labels = abstracts_validation[[str(i) for i in range(40)]]
 
-tokenizer = Tokenizer(num_words=5000)
+tokenizer = Tokenizer(num_words=35000)
 tokenizer.fit_on_texts(X_train + X_test + X_val)
 
 print("INFO: Tokenizing sequences", end="... ")
@@ -76,14 +76,17 @@ print("Done ✓")
 embeddings_dictionary = dict()
 
 embedding_col_number = 300
-embedding_file = open('../../input/glove.6B.300d.txt', encoding="utf8")
+embedding_file = open('../../input/glove.840B.300d.txt', encoding="utf8")
 
 print("INFO: Embedding words", end="... ")
 for line in embedding_file:
     records = line.split()
     word = records[0]
-    vector_dimensions = asarray(records[1:], dtype='float32')
-    embeddings_dictionary[word] = vector_dimensions
+    try:
+        vector_dimensions = asarray(records[1:], dtype='float32')
+        embeddings_dictionary[word] = vector_dimensions
+    except ValueError:
+        print("Value Error")
 embedding_file.close()
 
 embedding_matrix = zeros((vocab_size, embedding_col_number))
@@ -93,14 +96,11 @@ for word, index in tokenizer.word_index.items():
         embedding_matrix[index] = embedding_vector
 print("\nDone ✓")
 
-# 63% acc
+# 73% acc
 model = Sequential()
 model.add(kl.Embedding(vocab_size, embedding_col_number, weights=[embedding_matrix], trainable=False))
 model.add(kl.Dropout(0.5))
-# model.add(kl.Conv1D(filters=500, kernel_size=10, strides=3, padding="same", activation="sigmoid"))
-# model.add(kl.MaxPool1D(pool_size=10, padding="same"))
 model.add(kl.Bidirectional(kl.LSTM(500, activation='tanh')))
-# model.add(kl.LSTM(500, activation='tanh'))
 model.add(kl.Dropout(0.4))
 model.add(kl.Dense(40, activation='softmax',
                    activity_regularizer=regularizers.l1(0.01),
