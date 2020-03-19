@@ -111,13 +111,6 @@ print(model.summary())
 history = model.fit(X_train, abstracts_train_labels, batch_size=128, epochs=15, verbose=1,
                     validation_data=(X_val, abstracts_val_labels))
 
-"""
-model_json = model.to_json()
-with open("../../output/models/new_lstm.json", "w") as json_file:
-    json_file.write(model_json)
-model.save_weights("../../output/models/new_lstm_weights.h5")
-"""
-
 model.save("../../output/models/lstm.h5")
 with open("../../output/models/tokenizer.pickle", "wb") as handle:
     pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
