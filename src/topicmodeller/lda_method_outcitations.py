@@ -4,7 +4,7 @@ from sklearn.decomposition import LatentDirichletAllocation as LDA
 from src.topicmodeller import tm_utils
 
 out_filename = "../../output/citations/topics_cits.txt"
-batch_number = 55
+batch_number = 1
 number_topics = 40
 number_words = 10
 
