@@ -13,10 +13,10 @@ batch_number = 90
 topic_citations_filename = "../../output/citations/topics_cits.txt"
 topic_filename = "../../output/lstmdataset/topics.txt"
 lstm_dataset = "../../output/lstmdataset/final.txt"
-'''
+
 print("INFO: Reading first part of dataset", end="... ")
 dataset = file_abstract.txt_lstm_dataset_reader(lstm_dataset)
-print("Done ✓")'''
+print("Done ✓")
 
 citations = []
 print("INFO: Reading Citation Topic", end="... ")
