@@ -2,6 +2,7 @@ from nltk.stem import WordNetLemmatizer
 import os
 import io
 import re
+import operator
 
 from src.fileutils import file_abstract
 
@@ -76,9 +77,19 @@ def print_topics(model, count_vectorizer, n_top_words):
                         for i in topic.argsort()[:-n_top_words - 1:-1]]))
 
 
-def print_topics_in_file(model, count_vectorizer, n_top_words, filename):
+def print_topics_in_file(model, count_vectorizer, n_top_words, filename, mode="a+"):
     words = count_vectorizer.get_feature_names()
-    with io.open(filename, "a+", encoding="utf-8") as f:
+    with io.open(filename, mode, encoding="utf-8") as f:
         for topic_idx, topic in enumerate(model.components_):
             f.write("\nTopic #%d: " % topic_idx)
             f.write(" ".join([words[i] for i in topic.argsort()[:-n_top_words - 1:-1]]))
+
+
+def find_n_maximum(items, n):
+    indexed = list(enumerate(items))
+    sorted_list = sorted(indexed, key=operator.itemgetter(1), reverse=True)
+    top_3 = []
+    for i in range(n):
+        top_3.append(sorted_list[i][0])
+
+    return top_3
