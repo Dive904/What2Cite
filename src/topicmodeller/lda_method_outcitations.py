@@ -7,7 +7,7 @@ import gc
 from src.topicmodeller import tm_utils
 
 out_filename = "../../output/citations/topics_cits.txt"
-end_batch_number = 90
+end_batch_number = 1
 number_topics = 40
 number_words = 10
 
@@ -45,9 +45,10 @@ lda.fit(count_data)  # Print the topics found by the LDA model
 print("Done ✓")
 
 print("INFO: Writing topics on file", end="... ")
-tm_utils.print_topics_in_file(lda, count_vectorizer, number_words, out_filename)
+tm_utils.print_topics(lda, count_vectorizer, number_words)
 print("Done ✓")
 
-print("INFO: Saving model", end="... ")
+print("INFO: Saving models", end="... ")
 dump(lda, "../../output/models/lda_cit_topic.jlb")
+dump(count_vectorizer, "../../output/models/countvect_cit_topic.jlb")
 print("Done ✓")
