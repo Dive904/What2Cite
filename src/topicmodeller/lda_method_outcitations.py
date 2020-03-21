@@ -67,7 +67,7 @@ df_topic_keywords = pd.DataFrame(lda.components_)
 df_topic_keywords.columns = count_vectorizer.get_feature_names()
 df_topic_keywords.index = topicnames
 
-topic_keywords = tm_utils.show_topics(count_vectorizer, lda, number_words)
+topic_keywords = tm_utils.get_topic_keywords(count_vectorizer, lda, number_words)
 topic_keywords_perc = []
 
 for i in range(len(topic_keywords)):

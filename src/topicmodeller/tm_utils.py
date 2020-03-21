@@ -105,7 +105,7 @@ def find_n_maximum(items, n):
     return top_3
 
 
-def show_topics(vectorizer, lda, n_words):
+def get_topic_keywords(vectorizer, lda, n_words):
     keywords = np.array(vectorizer.get_feature_names())
     topic_keywords = []
     for topic_weights in lda.components_:
@@ -113,3 +113,19 @@ def show_topics(vectorizer, lda, n_words):
         topic_keywords.append(keywords.take(top_keyword_locs))
 
     return topic_keywords
+
+
+def convert_df_to_list(df, number_words):
+    final_list = []
+    placeholder = "(Word;Perc)_"
+    for index, row in df.iterrows():
+        tmp_list = []
+        for i in range(number_words):
+            first = row[placeholder + str(i)].split(", ")[0]
+            second = row[placeholder + str(i)].split(", ")[1]
+            first = str(first[2:-1])
+            second = float(second[:-1])
+            tmp_list.append((first, second))
+        final_list.append(tmp_list)
+
+    return final_list
