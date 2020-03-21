@@ -8,14 +8,13 @@ import numpy as np
 
 from src.topicmodeller import tm_utils
 
-batch_number = 1  # change this for test
+batch_number = 100  # change this for test
 number_topic = 40  # change this for test
 number_words = 7
 
 print("INFO: Extracting " + str(batch_number) + " batch abstract and preprocessing", end="... ")
 paper_info = tm_utils.extract_paper_info("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\", end=batch_number)
 abstracts_extracted = []
-paper_info = paper_info[:500]
 for data in paper_info:
     abstracts_extracted.append(tm_utils.preprocess_abstract(data["paperAbstract"]))
 print("Done ✓")

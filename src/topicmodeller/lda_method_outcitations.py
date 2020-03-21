@@ -8,15 +8,14 @@ import numpy as np
 
 from src.topicmodeller import tm_utils
 
-end_batch_number = 1
+end_batch_number = 100
 number_topics = 40
-number_words = 30
+number_words = 20
 
 print("INFO: Extracting " + str(end_batch_number) + " batch citations and removing empty citations", end="... ")
 paper_info = tm_utils.extract_paper_info("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\",
                                          end=end_batch_number)
 citations = []
-paper_info = paper_info[:500]
 for data in paper_info:
     out_cit = data["outCitations"]
     if len(out_cit) != 0:
