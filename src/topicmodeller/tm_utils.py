@@ -3,8 +3,10 @@ import os
 import io
 import re
 import operator
+import numpy as np
 
 from src.fileutils import file_abstract
+from src.lstm import lstm_utils
 
 
 def extract_only_abstract(dir_path, start=None, end=None):
@@ -53,19 +55,27 @@ def extract_paper_info(dir_path, start=None, end=None):
 
 
 def preprocess_abstract(abstracts):
-    additional_stopwords = ["paper", "method", "large", "model", "proposed", "study", "based", "using", "approach"]
+    additional_stopwords = ["paper", "method", "large", "model", "proposed", "study",
+                            "based", "using", "approach", "data", "result", "ha", "wa"]
     ris = []
-    lem = WordNetLemmatizer()
-    for abstract in abstracts:
-        tmp = []
-        abstract = re.sub(r'[^\w\s]', '', abstract)  # Remove punctuation
-        a = abstract.split()
-        for word in a:
-            w = word.lower()  # Convert to lowercase
-            w = lem.lemmatize(w)  # Lemmatize word
+
+    if isinstance(abstracts, list):
+        for a in abstracts:
+            x = lstm_utils.preprocess_text(a)
+            y = []
+            for w in x.split():
+                if w not in additional_stopwords:
+                    y.append(w)
+            x = " ".join(y)
+            ris.append(x)
+    else:
+        x = lstm_utils.preprocess_text(abstracts)
+        y = []
+        for w in x.split():
             if w not in additional_stopwords:
-                tmp.append(w)
-        ris.append(" ".join(tmp))
+                y.append(w)
+        ris = " ".join(y)
+
     return ris
 
 
@@ -93,3 +103,13 @@ def find_n_maximum(items, n):
         top_3.append(sorted_list[i][0])
 
     return top_3
+
+
+def show_topics(vectorizer, lda, n_words):
+    keywords = np.array(vectorizer.get_feature_names())
+    topic_keywords = []
+    for topic_weights in lda.components_:
+        top_keyword_locs = (-topic_weights).argsort()[:n_words]
+        topic_keywords.append(keywords.take(top_keyword_locs))
+
+    return topic_keywords
