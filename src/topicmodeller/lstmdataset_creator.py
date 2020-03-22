@@ -5,10 +5,11 @@ from joblib import dump
 import io
 import pandas as pd
 import numpy as np
+import gc
 
 from src.topicmodeller import tm_utils
 
-batch_number = 100  # change this for test
+batch_number = 90  # change this for test
 number_topic = 40  # change this for test
 number_words = 7
 
@@ -22,6 +23,11 @@ print("Done ✓")
 print("INFO: Fitting count vectorizer", end="... ")
 vectorizer = CountVectorizer(max_df=0.8, min_df=2, stop_words='english')
 data_vectorized = vectorizer.fit_transform(abstracts_extracted)
+print("Done ✓")
+
+print("INFO: Cleaning memory", end="... ")
+abstracts_extracted = None
+gc.collect()
 print("Done ✓")
 
 print("INFO: Computing LDA", end="... ")

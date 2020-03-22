@@ -4,7 +4,7 @@ from src.lstmdatasetcreator import utils
 from src.fileutils import file_abstract
 
 
-# threshold must not be higher than 18500
+# threshold must not be higher than 2000
 threshold = 2000
 val_dataset_length_perc = 10  # per topic
 training_dataset_length_perc = 60  # per topic

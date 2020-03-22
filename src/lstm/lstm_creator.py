@@ -2,6 +2,7 @@
 from keras import regularizers
 from numpy import asarray
 from numpy import zeros
+import keras
 
 import keras.layers as kl
 
@@ -14,6 +15,11 @@ import pandas as pd
 import pickle
 
 from src.lstm import lstm_utils
+
+n_epoch = 20
+bacth_size = 128
+n_words_tokenizer = 35000
+maxlen = 200
 
 print("INFO: Extracting Training dataset", end="... ")
 abstracts_training = pd.read_csv("../../output/lstmdataset/trainingdataset_multilabel.csv")
@@ -54,8 +60,8 @@ print("Done ✓", end="\n\n")
 
 abstracts_val_labels = abstracts_validation[[str(i) for i in range(40)]]
 
-tokenizer = Tokenizer(num_words=35000)
-tokenizer.fit_on_texts(X_train + X_test + X_val)
+tokenizer = Tokenizer(num_words=n_words_tokenizer)
+tokenizer.fit_on_texts(X_train + X_val)
 
 print("INFO: Tokenizing sequences", end="... ")
 X_train = tokenizer.texts_to_sequences(X_train)
@@ -64,8 +70,6 @@ X_val = tokenizer.texts_to_sequences(X_val)
 print("Done ✓")
 
 vocab_size = len(tokenizer.word_index) + 1
-
-maxlen = 200
 
 print("INFO: Padding sequences", end="... ")
 X_train = pad_sequences(X_train, padding='post', maxlen=maxlen)
@@ -78,7 +82,7 @@ embeddings_dictionary = dict()
 embedding_col_number = 300
 embedding_file = open('../../input/glove.840B.300d.txt', encoding="utf8")
 
-print("INFO: Embedding words", end="... ")
+print("INFO: Embedding words", end="...")
 for line in embedding_file:
     records = line.split()
     word = records[0]
@@ -86,7 +90,7 @@ for line in embedding_file:
         vector_dimensions = asarray(records[1:], dtype='float32')
         embeddings_dictionary[word] = vector_dimensions
     except ValueError:
-        print("Value Error")
+        print(" - Value Error", end="")
 embedding_file.close()
 
 embedding_matrix = zeros((vocab_size, embedding_col_number))
@@ -94,31 +98,35 @@ for word, index in tokenizer.word_index.items():
     embedding_vector = embeddings_dictionary.get(word)
     if embedding_vector is not None:
         embedding_matrix[index] = embedding_vector
-print("\nDone ✓")
+print(" Done ✓")
 
 # 73% acc
 model = Sequential()
 model.add(kl.Embedding(vocab_size, embedding_col_number, weights=[embedding_matrix], trainable=False))
 model.add(kl.Dropout(0.5))
-model.add(kl.Bidirectional(kl.LSTM(500, activation='tanh')))
+model.add(kl.Bidirectional(kl.LSTM(550, activation='tanh')))
 model.add(kl.Dropout(0.4))
 model.add(kl.Dense(40, activation='softmax',
                    activity_regularizer=regularizers.l1(0.01),
                    kernel_regularizer=regularizers.l2(0.01)))
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-print(model.summary())
-history = model.fit(X_train, abstracts_train_labels, batch_size=128, epochs=15, verbose=1,
-                    validation_data=(X_val, abstracts_val_labels))
 
-model.save("../../output/models/lstm.h5")
-with open("../../output/models/tokenizer.pickle", "wb") as handle:
-    pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
+checkpoint = keras.callbacks.ModelCheckpoint('../../output/modeltrain/lstm{epoch:08d}.h5', period=1)
+
+history = model.fit(X_train, abstracts_train_labels, batch_size=bacth_size, epochs=n_epoch, verbose=1,
+                    validation_data=(X_val, abstracts_val_labels),
+                    callbacks=[checkpoint])
 
 score = model.evaluate(X_test, abstracts_test_labels, verbose=1)
 
 print("Test Loss:", score[0])
 print("Test Accuracy:", score[1])
+
+with open("../../output/modeltrain/tokenizer.pickle", "wb") as handle:
+    pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+model.save("../../output/modeltrain/lstmfinal.h5")
 
 # Plot training & validation accuracy values
 plt.plot(history.history['acc'])
