@@ -114,6 +114,9 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc']
 
 checkpoint = keras.callbacks.ModelCheckpoint('../../output/modeltrain/lstm{epoch:08d}.h5', period=1)
 
+with open("../../output/modeltrain/tokenizer.pickle", "wb") as handle:
+    pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
 history = model.fit(X_train, abstracts_train_labels, batch_size=bacth_size, epochs=n_epoch, verbose=1,
                     validation_data=(X_val, abstracts_val_labels),
                     callbacks=[checkpoint])
@@ -122,9 +125,6 @@ score = model.evaluate(X_test, abstracts_test_labels, verbose=1)
 
 print("Test Loss:", score[0])
 print("Test Accuracy:", score[1])
-
-with open("../../output/modeltrain/tokenizer.pickle", "wb") as handle:
-    pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 model.save("../../output/modeltrain/lstmfinal.h5")
 
