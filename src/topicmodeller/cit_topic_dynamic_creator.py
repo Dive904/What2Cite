@@ -4,7 +4,7 @@ from src.topicmodeller import tm_utils
 
 input_file = "../../output/doctopic/cit_topic_keywords.csv"
 out_filename = "../../output/citations/topics_cits.txt"
-number_words = 30
+number_words = 20
 t = 10
 
 df = pd.read_csv(input_file)

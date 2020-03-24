@@ -4,11 +4,10 @@ from joblib import dump
 
 import gc
 import pandas as pd
-import numpy as np
 
 from src.topicmodeller import tm_utils
 
-end_batch_number = 100
+end_batch_number = 55
 number_topics = 40
 number_words = 20
 
@@ -22,9 +21,8 @@ for data in paper_info:
         citations.append(" ".join(out_cit))
 print("Done ✓")
 
-count_vectorizer = CountVectorizer(max_df=0.9, min_df=2, stop_words='english')
+count_vectorizer = CountVectorizer(max_df=0.8, min_df=2, stop_words='english')
 
-# Fit and transform the processed titles
 print("INFO: Fitting count vectorizer", end="... ")
 count_data = count_vectorizer.fit_transform(citations)
 print("Done ✓")
@@ -37,8 +35,8 @@ print("Done ✓")
 
 # Create and fit the LDA model
 print("INFO: Computing LDA", end="... ")
-lda = LDA(n_components=number_topics, n_jobs=-1)
-lda.fit(count_data)  # Print the topics found by the LDA model
+lda = LDA(n_components=number_topics, n_jobs=1)
+lda.fit(count_data)
 print("Done ✓")
 
 print("INFO: Saving models", end="... ")
@@ -50,14 +48,6 @@ lda_output = lda.transform(count_data)
 
 # column names
 topicnames = ["Topic" + str(i) for i in range(lda.n_components)]
-
-# index names
-docnames = [paper_info[i]["id"] for i in range(len(paper_info))]
-
-# Make the pandas dataframe
-df_document_topic = pd.DataFrame(np.round(lda_output, 3), columns=topicnames, index=docnames)
-
-df_document_topic.to_csv("../../output/doctopic/abstract.csv")
 
 # Topic-Keyword Matrix
 df_topic_keywords = pd.DataFrame(lda.components_)

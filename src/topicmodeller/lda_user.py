@@ -13,8 +13,8 @@ print("INFO: Preprocessing asbtract", end="... ")
 abstracts_extracted = tm_utils.preprocess_abstract(abstracts_extracted)
 print("Done ✓", end="\n\n")
 
-lda = load("../../output/officialmodels/lda.jlb")
-countvect = load("../../output/officialmodels/countvect.jlb")
+lda = load("../../output/official/lda.jlb")
+countvect = load("../../output/official/countvect.jlb")
 
 tm_utils.print_topics(lda, countvect, number_words)
 

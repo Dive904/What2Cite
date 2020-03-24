@@ -36,8 +36,8 @@ lda_model.fit(data_vectorized)
 print("Done ✓")
 
 print("INFO: Dumping LDA and CountVectorizer", end="... ")
-dump(lda_model, "../../output/officialmodels/lda_abstract.jlb")
-dump(vectorizer, "../../output/officialmodels/countvect_abstract.jlb")
+dump(lda_model, "../../output/official/lda_abstract.jlb")
+dump(vectorizer, "../../output/official/countvect_abstract.jlb")
 print("Done ✓")
 
 print("INFO: Transforming LDA", end="... ")
@@ -48,7 +48,7 @@ print("INFO: Making dataframe", end="... ")
 topicnames = ["Topic" + str(i) for i in range(lda_model.n_components)]
 docnames = [paper_info[i]["id"] for i in range(len(paper_info))]
 df_document_topic = pd.DataFrame(np.round(lda_output, 3), columns=topicnames, index=docnames)
-df_document_topic.to_csv("../../output/doctopic/abstract.csv")
+df_document_topic.to_csv("../../output/doctopic/abstract_document_topic.csv")
 print("Done ✓")
 
 print("INFO: Getting documents dominant topic", end="... ")
