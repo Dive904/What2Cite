@@ -4,6 +4,8 @@ from tensorflow_core.python.keras.models import load_model
 
 from src.lstm import lstm_utils
 
+lstm_model = "../../output/official/lstm.h5"
+tokenizer_model = "../../output/official/tokenizer.pickle"
 text = ["With the spread of semantic technologies more and more companies manage their own knowledge graphs (KG), "
         "applying them, among other tasks, to text analysis. However, the proprietary KGs are by design "
         "domain specific and do not include all the different possible meanings of the words used in a corpus. "
@@ -16,14 +18,14 @@ text = ["With the spread of semantic technologies more and more companies manage
 
 text[0] = lstm_utils.preprocess_text(text[0])
 
-with open('../../output/official/tokenizer_73acc_glove840.pickle', 'rb') as handle:
+with open(tokenizer_model, 'rb') as handle:
     tokenizer = pickle.load(handle)
 
 seq = tokenizer.texts_to_sequences(text)
 seq = pad_sequences(seq, padding='post', maxlen=200)
 
 # load model from single file
-model = load_model("../../output/official/lstm_73acc_glove840.h5")
+model = load_model(lstm_model)
 # make predictions
-yhat = model.predict_classes(seq)
-print(yhat)
+yhat = model.predict(seq)
+print(list(yhat[0]))

@@ -90,11 +90,13 @@ def print_topics_in_file(model, count_vectorizer, n_top_words, filename, mode="a
 def find_n_maximum(items, n):
     indexed = list(enumerate(items))
     sorted_list = sorted(indexed, key=operator.itemgetter(1), reverse=True)
-    top_3 = []
+    top_n_index = []
+    top_n_elem = []
     for i in range(n):
-        top_3.append(sorted_list[i][0])
+        top_n_index.append(sorted_list[i][0])
+        top_n_elem.append(sorted_list[i][1])
 
-    return top_3
+    return top_n_index, top_n_elem
 
 
 def get_topic_keywords(vectorizer, lda, n_words):
