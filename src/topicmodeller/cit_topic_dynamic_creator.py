@@ -1,11 +1,11 @@
 import pandas as pd
 
 from src.topicmodeller import tm_utils
+from src.citations import cit_utils
 
-input_file = "../../output/doctopic/cit_topic_keywords.csv"
+input_file = "../../output/official/cit_topic_keywords.csv"
 out_filename = "../../output/citations/topics_cits.txt"
 number_words = 20
-t = 10
 
 df = pd.read_csv(input_file)
 df_list = tm_utils.convert_df_to_list(df, number_words)
@@ -15,6 +15,8 @@ for f in df_list:
     count_t = 0
     tmp_list = []
     prec = 0
+    total_energy = cit_utils.get_total_energy(f)
+    t = total_energy / 2
     for x in f:
         first = x[0]
         second = x[1]
