@@ -2,6 +2,8 @@ import pickle
 import numpy as np
 
 cit_labelled_path = "../../output/official/topics_cits_labelled_pickle.pickle"
+cit_labelled_analyzed_path = "../../output/official/cit_labelled_with_final_topic.txt"
+
 w = [1, 0.75, 0.50]
 
 with open(cit_labelled_path, 'rb') as handle:
@@ -35,5 +37,6 @@ for l in first_step_result:
 
     second_step_result.append((list(l), pos))
 
-for l in second_step_result:
-    print(l)
+with open(cit_labelled_analyzed_path, "w") as out_file:
+    for i in range(len(second_step_result)):
+        out_file.write(str(i) + " -> " + str(second_step_result[i][0]) + " -> " + str(second_step_result[i][1]) + "\n")
