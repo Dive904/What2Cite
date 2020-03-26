@@ -1,37 +1,39 @@
-cit_labelled_path = "../../output/citations/topics_cits_labelled.txt"
+import pickle
+import numpy as np
 
-cit_topic_list = []
-with open(cit_labelled_path, "r", encoding="utf-8") as input_file:
-    lines = input_file.readlines()
-    for line in lines:
-        cit_topic_list.append(line.split(" -> ")[1][1:-2].split(", "))
+cit_labelled_path = "../../output/official/topics_cits_labelled_pickle.pickle"
+w = [1, 0.75, 0.50]
 
-new_cit_topic_list = []
-for cit in cit_topic_list:
-    tmp_list = []
-    for c in cit:
-        if c != "None":
-            tmp_list.append(int(c[1:-1]))
+with open(cit_labelled_path, 'rb') as handle:
+    cit_topic_labelled = pickle.load(handle)
+
+first_step_result = []
+
+print("INFO: Analyzing", end="... ")
+for c in cit_topic_labelled:
+    topics = [1 for i in range(40)]
+    for record in c:
+        if record[1] is None:
+            topics = list(map(lambda x: x + 0.15, topics))
         else:
-            tmp_list.append(None)
-    new_cit_topic_list.append(tmp_list)
+            topic_list = record[1]
+            for i in range(len(topic_list)):
+                topic = topic_list[i][0]
+                topics[topic] += w[i]
+    first_step_result.append(topics)
+print("Done ✓")
 
-cit_topic_list = new_cit_topic_list
+first_step_result = list(map(lambda x: np.round(x, 2), first_step_result))
+second_step_result = []
 
-ditributions = []
-for cit in cit_topic_list:
-    tmp = [1 for i in range(40)]
-    for c in cit:
-        if c is None:
-            for i in range(len(tmp)):
-                tmp[i] +=1
-        else:
-            tmp[c] += 1
-    ditributions.append(tmp)
+for l in first_step_result:
+    maximum = max(l)
+    pos = []
+    for i in range(len(l)):
+        if l[i] == maximum:
+            pos.append(i)
 
-normalized = []
-for d in ditributions:
-    normalized.append([float(i) / sum(d) for i in d])
+    second_step_result.append((list(l), pos))
 
-for n in normalized:
-    print(n)
+for l in second_step_result:
+    print(l)

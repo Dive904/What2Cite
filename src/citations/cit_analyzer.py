@@ -98,7 +98,7 @@ for cit_list in first_step_result:
                 yhat = model.predict(seq)
                 yhat = list(yhat[0])
                 topK_index, topK_elem = tm_utils.find_n_maximum(yhat, k)
-                topK_elem = map(lambda y: np.round(y, 3), topK_elem)
+                topK_elem = list(map(lambda y: np.round(y, 3), topK_elem))
                 topic = list(zip(topK_index, topK_elem))
                 third = 2
         tmp_list.append((paper_id, topic, third))
