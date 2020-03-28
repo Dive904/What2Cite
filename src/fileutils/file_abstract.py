@@ -85,6 +85,11 @@ def txt_only_citations_reader(filepath):
 
 
 def txt_lstm_dataset_reader(filepath):
+    """
+    This script is used to read the dataset for the LSTM
+    :param filepath: path of the dataset
+    :return: a list where every element is a dictionary with all data information
+    """
     result = []
     d = {}
     with io.open(filepath, "r", encoding="utf-8") as f:

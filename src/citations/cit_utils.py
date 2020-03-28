@@ -1,7 +1,9 @@
-from src.lstmdatasetcreator import utils
-
-
 def read_topics_cit_file(filepath):
+    """
+    This function is used to read CitTopic file
+    :param filepath: path of the file
+    :return: a list of all the CitTopics
+    """
     res = []
     with open(filepath, "r", encoding="utf-8") as input_file:
         lines = input_file.readlines()
@@ -11,23 +13,12 @@ def read_topics_cit_file(filepath):
     return res
 
 
-def get_cit_topic(id_in, dataset):
-    for data in dataset:
-        if data["id"] == id_in:
-            return utils.extract_topic_from_dataset(data["topic"])
-
-    return None
-
-
-def get_total_energy(input_list):
-    ris = 0
-    for x in input_list:
-        ris += x[1]
-
-    return ris
-
-
 def count_none(input_list):
+    """
+    This script is used to count nones in a CitTopic labelled (after the classification of the papers in the CitTopic)
+    :param input_list: CitTopic list
+    :return: number of None in the input_list
+    """
     ris = 0
     for l in input_list:
         for x in l:
@@ -38,6 +29,11 @@ def count_none(input_list):
 
 
 def get_abstract_document_topic_matrix(filename):
+    """
+    This script is used to read the Abstract-Document-Topic Matrix
+    :param filename: path of the matrix file
+    :return: a dictionary where every key is a paper id and every associated element is a list with values
+    """
     ris = {}
     with open(filename, "r", encoding="utf-8") as input_file:
         lines = input_file.readlines()[1:]

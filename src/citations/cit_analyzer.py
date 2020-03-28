@@ -1,3 +1,5 @@
+# This script is used to analyze the CitTopic, classifying all the papers in the CitTopic and getting the TopK
+
 import pickle
 import gc
 import numpy as np

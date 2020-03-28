@@ -123,3 +123,11 @@ def convert_df_to_list(df, number_words):
         final_list.append(tmp_list)
 
     return final_list
+
+
+def get_total_energy(input_list):
+    ris = 0
+    for x in input_list:
+        ris += x[1]
+
+    return ris

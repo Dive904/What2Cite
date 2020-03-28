@@ -1,4 +1,4 @@
-# This script is used to extract all paper for a specific Field Of Study
+# This script is used to extract all paper from initial dataset for a specific Field Of Study
 
 import os
 import gzip
@@ -28,7 +28,7 @@ for inputfile in files:
     result_dic = []
     for line in open(filecontent_name, 'r', encoding="utf-8"):
         d = json.loads(line)
-        if utils.apply_filter(d):
+        if utils.apply_filter(d, fos):
             d["paperAbstract"] = d["paperAbstract"].replace("\n", "")
             d["paperAbstract"] = d["paperAbstract"].replace("    ", "")
             d["paperAbstract"] = d["paperAbstract"].replace("   ", "")
