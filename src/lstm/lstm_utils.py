@@ -9,6 +9,11 @@ lemmatizer = WordNetLemmatizer()
 
 
 def preprocess_text(s):
+    """
+    This is a function that is used to preprocess a text for an LSTM classification
+    :param s: the text
+    :return: the preprocessed text
+    """
     s = s.lower()
 
     # Remove punctuations and numbers
