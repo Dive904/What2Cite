@@ -11,13 +11,16 @@ from src.lstm import lstm_utils
 from src.citations import cit_utils
 from src.topicmodeller import tm_utils
 
+# input
 batch_number = 90
 k = 3
 topic_citations_filename = "../../output/official/topics_cits.txt"
-topic_filename = "../../output/lstmdataset/topics.txt"
+topic_filename = "../../output/official/topics.txt"
 abstract_document_topic_filename = "../../output/official/abstract_document_topic.csv"
 lstm_model = "../../output/official/lstm.h5"
 tokenizer_model = "../../output/official/tokenizer.pickle"
+
+# output
 topics_cits_labelled_filename = "../../output/official/topics_cits_labelled.txt"
 topics_cits_labelled_pickle_filename = "../../output/official/topics_cits_labelled_pickle.pickle"
 

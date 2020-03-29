@@ -3,16 +3,15 @@ def get_abstracts_to_analyze():
     This is only a simple function that helps to keep the abstract to analyze
     :return: list of couple where the first element is the paper abstract and the second element is the paper id
     """
-    text = [("Hypergraphs are used in several syntax-inspired methods of machine translation to compactly encode "
-             "exponentially many translation hypotheses. The hypotheses closest to given reference translations "
-             "therefore cannot be found via brute force, particularly for popular measures of closeness such as BLEU. "
-             "We develop a dynamic program for extracting the so called oracle-best hypothesis from a hypergraph by "
-             "viewing it as the problem of finding the most likely hypothesis under an n-gram language model trained "
-             "from only the reference translations. We further identify and remove massive redundancies in the "
-             "dynamic program state due to the sparsity of n-grams present in the reference translations, resulting "
-             "in a very efficient program. We present runtime statistics for this program, and demonstrate "
-             "successful application of the hypotheses thus found as the targets for discriminative training of "
-             "translation system components.", "7f679f4ff6e4b705d4045ad2cbebf2990c535ada")  # T9
+    text = [("We present Cohesion, a novel approach to Desktop Grid Computing. A major design goal of Cohesion is "
+             "to enable advanced parallel programming models and application specific frameworks. We focus on "
+             "methods for irregularly structured task-parallel problems, which require fully dynamic problem "
+             "decomposition. Cohesion overcomes limitations of classical Desktop Grid platforms by employing "
+             "peer-to-peer principles and a flexible system architecture based on a microkernel approach. "
+             "Arbitrary modules can be dynamically loaded to replace default functionality, resulting in a platform "
+             "that can easily adapt to application specific requirements. We discuss two representative example "
+             "applications and report on the results of performance experiments that especially consider the high "
+             "volatility of resources prevailing in a Desktop Grid.", "36af398b1a6f1f4bf68b04d41b59b490f3b2824e")  # T9
             ]
 
     return text

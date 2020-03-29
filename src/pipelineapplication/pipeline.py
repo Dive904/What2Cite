@@ -12,7 +12,7 @@ from src.pipelineapplication import utils
 from src.lstm import lstm_utils
 from src.topicmodeller import tm_utils
 
-missig_citation_path = "../../output/official/missing_citations.txt"
+# input
 cit_labelled_analyzed_pickle_path = "../../output/official/cit_labelled_with_final_topic_pickle.pickle"
 lstm_model = "../../output/official/lstm.h5"
 tokenizer_model = "../../output/official/tokenizer.pickle"
@@ -20,6 +20,9 @@ cit_labelled_path = "../../output/official/topics_cits_labelled_pickle.pickle"
 semanticdatasetextracted_path = "C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\"
 batch_number = 90
 P = 1
+
+# output
+missig_citation_path = "../../output/official/missing_citations.txt"
 
 with open(cit_labelled_path, 'rb') as handle:  # take the list of CitTopic score
     # in this part, we read the cit topics labelled with other information.

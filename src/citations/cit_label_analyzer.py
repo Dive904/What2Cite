@@ -3,11 +3,13 @@
 import pickle
 import numpy as np
 
+# input
 cit_labelled_path = "../../output/official/topics_cits_labelled_pickle.pickle"
+w = [1, 0.75, 0.50]  # score of every position
+
+# output
 cit_labelled_analyzed_path = "../../output/official/cit_labelled_with_final_topic.txt"
 cit_labelled_analyzed_pickle_path = "../../output/official/cit_labelled_with_final_topic_pickle.pickle"
-
-w = [1, 0.75, 0.50]  # score of every position
 
 with open(cit_labelled_path, 'rb') as handle:  # take the list of CitTopic score
     cit_topic_labelled = pickle.load(handle)
