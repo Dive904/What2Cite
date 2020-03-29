@@ -8,8 +8,8 @@ import pandas as pd
 from src.topicmodeller import tm_utils
 
 end_batch_number = 55
-number_topics = 40
-number_words = 20
+number_topics = 100
+number_words = 30
 
 print("INFO: Extracting " + str(end_batch_number) + " batch citations and removing empty citations", end="... ")
 paper_info = tm_utils.extract_paper_info("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\",
