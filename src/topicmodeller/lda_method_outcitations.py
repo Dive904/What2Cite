@@ -72,5 +72,3 @@ df_topic_keywords.columns = ['(Word;Perc)_' + str(i) for i in range(df_topic_key
 df_topic_keywords.index = ['Topic ' + str(i) for i in range(df_topic_keywords.shape[0])]
 
 df_topic_keywords.to_csv("../../output/doctopic/cit_topic_keywords.csv")
-
-
