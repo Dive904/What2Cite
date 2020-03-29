@@ -152,10 +152,10 @@ with open(missig_citation_path, "w") as out_file:
         out_file.write("Paper Title: " + str(elem["paper_title"]) + "\n")
         out_file.write("Paper Topic (Classified): " + str(elem["classified_topic"]) + "\n")
         out_file.write("REFERENCE CitTopic Index: " + str(elem["reference_cit_topic_index"]) + "\n")
-        out_file.write("MISSING CITATIONS: " + "\n")
-        for x in elem["reference_cit_topic_list"]:
-            out_file.write(str(x) + "\n")
-        out_file.write("MISSING CITATIONS WITH TITLES: " + "\n")
+        cit_topic_length = len(cit_topics[elem["reference_cit_topic_index"]])
+        missing_len = len(elem["missing_title"])
+        out_file.write("MISSING CITATIONS WITH TITLES (" + str(missing_len) + " out of " + str(cit_topic_length) +
+                       "): " + "\n")
         for x in elem["missing_title"]:
             out_file.write(str(x) + "\n")
         out_file.write("---" + "\n")
