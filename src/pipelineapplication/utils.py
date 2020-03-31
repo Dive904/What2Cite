@@ -11,7 +11,7 @@ def get_abstracts_to_analyze():
              "Arbitrary modules can be dynamically loaded to replace default functionality, resulting in a platform "
              "that can easily adapt to application specific requirements. We discuss two representative example "
              "applications and report on the results of performance experiments that especially consider the high "
-             "volatility of resources prevailing in a Desktop Grid.", "36af398b1a6f1f4bf68b04d41b59b490f3b2824e")  # T9
+             "volatility of resources prevailing in a Desktop Grid.", "36af398b1a6f1f4bf68b04d41b59b490f3b2824e")
             ]
 
     return text

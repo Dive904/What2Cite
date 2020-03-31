@@ -69,10 +69,10 @@ for i in range(len(predicted_topic)):
     classification_score = predicted_topic[i][1]
     score_on_predicted_topic = []
     tmp = []
-    for i in range(len(cit_topic_labelled)):
-        topic_score = cit_topic_labelled[i][topic]  # get the score for that specific topic
+    for j in range(len(cit_topic_labelled)):
+        topic_score = cit_topic_labelled[j][topic]  # get the score for that specific topic
         if topic_score > Pt:  # if score is higher than a given input
-            tmp.append(i)
+            tmp.append(j)
     # append a couple with first the abstract id and second the reference CitTopic index
     reference_cit_topics.append((topic, tmp))
 
@@ -159,7 +159,7 @@ paper_info = None
 gc.collect()
 
 print("INFO: Writing output file", end="... ")
-with open(missig_citation_path, "w") as out_file:
+with open(missig_citation_path, "w", encoding="utf-8") as out_file:
     for elem in to_write:
         out_file.write("Paper ID: " + str(elem["paper_id"]) + "\n")
         out_file.write("Paper Title: " + str(elem["paper_title"]) + "\n")
@@ -174,5 +174,5 @@ with open(missig_citation_path, "w") as out_file:
             for x in elem["missing_title"][i]:
                 out_file.write(str(x) + "\n")
             out_file.write("---" + "\n")
-    out_file.write("***" + "\n")
+        out_file.write("***" + "\n\n")
 print("Done ✓")
