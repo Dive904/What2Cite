@@ -51,6 +51,25 @@ def get_abstracts_to_analyze():
                         "7d615699aa272629411330e931fc65d1acf58b66, c66db9b93d75c0ff52e7f84605b8389345307006, "
                         "f9fd91e7aaa744d6fbe00b435ebccc3f25a31a4b, 2db0c7e469dcbf18b950f2bdd554a85c6d32ba77, "
                         "3df694c49d651730ab6584a6fe9c3eb6519c6509"
+    }, {
+        "id": "a38483b3ad9a2590ea38562604b4360431f73e91",
+        "title": "Association Analysis of Semi-structured Data for Discrimination Discovery in Business",
+        "abstract": "Data mining techniques have taken a critical role in life in numerous domains such "
+                    "as consumer analytics, finance, banking, medicine, biology, and astronomy... Recently, "
+                    "data mining techniques have found their application also in discovering illegal "
+                    "discriminatory treatment on the bases of sensitive attributes such as race, color, "
+                    "religion, nationality, gender, age... In this paper, we propose a framework to solve "
+                    "the discrimination matter in the context of semi-structured business data, and in particular "
+                    "in the calculation of taxes for imported goods. This framework is able to discover possibly "
+                    "discriminatory relations among data by finding discriminatory association rules with the "
+                    "support of a common sense knowledge base and text mining techniques. The framework has applied "
+                    "to the problem of HTS (US Harmonized Tariff Schedule) showing some satisfactory results.",
+        "outCitations": "84b76c8fdde4919954fe36fdc0520e9d7dd17c86, 3e21a9b804553b6e2ab5beedf286c43b1975ecce, "
+                        "c1fd505412ca40ffc74149f0a37043e77bd4b734, dbee4be7d2af340a0957da70627b561e29762181, "
+                        "e671ec0b4d58329add3951c425f4ac2fc1ab371e, d2cad3a4139990496cd93fd6a5f93e68623456bb, "
+                        "6ef12f4e6f120ba7fc8a83a610e3f362e0a133a7, c501acb1dbbab80212dc3ab005abf19560fe18f2, "
+                        "94faf760b3b5070a56722436f49976e7ba0387ee, bb24f265ad1166f9b992561d165495c5c8b1d2ea, "
+                        "1cd2e26d4abb3a303b22a96f35c874c0034878b3, a41109ab1338f918b5ba24a379686d5a30333449"
     }
     ]
 

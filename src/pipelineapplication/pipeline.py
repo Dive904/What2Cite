@@ -19,7 +19,7 @@ cit_labelled_path = "../../output/official/topics_cits_labelled_pickle.pickle"
 lstm_dataset_path = "../../output/official/final.txt"
 batch_number = 90
 P = 1
-Pt = 3
+Pt = 2
 t_for_true_prediction = 0.4  # probability threshold to consider a prediction as valid
 
 # output
@@ -147,12 +147,13 @@ with open(missig_citation_path, "w", encoding="utf-8") as out_file:
             topic = m[0]
             reference_cit_topic_index = m[1]
             missing_couple = m[2]
-            out_file.write("Paper Topic (Classified): " + str(topic) + "\n")
-            out_file.write("Reference CitTopic index: " + str(reference_cit_topic_index) + "\n")
             cit_topic_len = len(cit_topics[reference_cit_topic_index])
             missing_couple_len = len(missing_couple)
-            out_file.write(str(missing_couple_len) + " out of " + str(cit_topic_len) + "\n")
-            for couple in missing_couple:
-                out_file.write(str(couple[0]) + " - " + str(couple[1]) + "\n")
+            if cit_topic_len != missing_couple_len:
+                out_file.write("Paper Topic (Classified): " + str(topic) + "\n")
+                out_file.write("Reference CitTopic index: " + str(reference_cit_topic_index) + "\n")
+                out_file.write(str(missing_couple_len) + " out of " + str(cit_topic_len) + "\n")
+                for couple in missing_couple:
+                    out_file.write(str(couple[0]) + " - " + str(couple[1]) + "\n")
         out_file.write("*****" + "\n\n")
 print("Done ✓")
