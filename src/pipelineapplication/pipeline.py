@@ -1,7 +1,6 @@
 # This script is used to implement the pipeline for only specific abstracts given in input in a list
 
 import pickle
-import numpy as np
 import gc
 
 from keras_preprocessing.sequence import pad_sequences
@@ -17,10 +16,11 @@ cit_labelled_analyzed_pickle_path = "../../output/official/cit_labelled_with_fin
 lstm_model = "../../output/official/lstm.h5"
 tokenizer_model = "../../output/official/tokenizer.pickle"
 cit_labelled_path = "../../output/official/topics_cits_labelled_pickle.pickle"
-semanticdatasetextracted_path = "C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\"
+lstm_dataset_path = "../../output/official/final.txt"
 batch_number = 90
 P = 1
 Pt = 3
+t_for_true_prediction = 0.4  # probability threshold to consider a prediction as valid
 
 # output
 missig_citation_path = "../../output/official/missing_citations.txt"
@@ -31,19 +31,25 @@ with open(cit_labelled_path, 'rb') as handle:  # take the list of CitTopic score
     cit_topics = pickle.load(handle)
     cit_topics = list(map(lambda x: list(map(lambda y: y[0], x)), cit_topics))
 
-print("INFO: Extracting dataset", end="... ")
-dataset = file_abstract.txt_lstm_dataset_reader("../../output/official/final.txt")
-print("Done ✓")
-
 with open(cit_labelled_analyzed_pickle_path, 'rb') as handle:  # take the list of CitTopic score
     cit_topic_labelled = pickle.load(handle)
 
-abstracts = utils.get_abstracts_to_analyze()  # get the abstract to analyze
-
-abstracts_prep = list(map(lambda x: lstm_utils.preprocess_text(x[0]), abstracts))  # prepare text for classification
-
 with open(tokenizer_model, 'rb') as handle:  # get the tokenizer
     tokenizer = pickle.load(handle)
+
+model = load_model(lstm_model)  # load model from single file
+
+abstracts = utils.get_abstracts_to_analyze()  # get the abstract to analyze
+
+# abstract = [{id = "...", title = "...", outCitations = ["..."]}]
+
+# prepare texts for classification
+abstracts_prep = list(map(lambda x: lstm_utils.preprocess_text(x["abstract"]), abstracts))
+
+for abstract in abstracts:
+    abstract["missing"] = []
+
+# abstract = [{id = "...", title = "...", outCitations = ["..."], missing = []}]
 
 print("INFO: Tokenizing sequences", end="... ")
 seq = tokenizer.texts_to_sequences(abstracts_prep)
@@ -51,128 +57,101 @@ seq = pad_sequences(seq, padding='post', maxlen=200)
 print("Done ✓")
 
 print("INFO: Getting predictions", end="... ")
-model = load_model(lstm_model)  # load model from single file
 yhat = model.predict(seq)  # make predictions
-predicted_topic = []
-for y in yhat:
-    # at the end of the loop, predicted_topic will contain a list of couples where the first element is the predicted
-    # topic and the second element is the probability of the predicted topic
-    p = np.argmax(y)
-    predicted_topic.append((p, np.round(y[p], 3)))
+for i in range(len(yhat)):
+    # at the end of the loop, every dictionary for the abstracts, will contain an additional element with all the
+    # valid predictions. Please note: the list of abstracts and the list of yhat (i.e predictions for every element)
+    # have the same length
+    valid_predictions = utils.get_valid_predictions(yhat[i], t_for_true_prediction)
+    abstracts[i]["validPredictions"] = valid_predictions
 print("Done ✓")
 
-reference_cit_topics = []
-for i in range(len(predicted_topic)):
-    # at the end of the loop, reference_cit_topics will contain a list of couple, where the first element is the
-    # classified topic for the paper, and the second element is reference CitTopic of that classified paper
-    topic = predicted_topic[i][0]  # get the topic
-    classification_score = predicted_topic[i][1]
-    score_on_predicted_topic = []
-    tmp = []
-    for j in range(len(cit_topic_labelled)):
-        topic_score = cit_topic_labelled[j][topic]  # get the score for that specific topic
-        if topic_score > Pt:  # if score is higher than a given input
-            tmp.append(j)
-    # append a couple with first the abstract id and second the reference CitTopic index
-    reference_cit_topics.append((topic, tmp))
+# abstract = [{id = "...", title = "...", outCitations = ["..."], validPredictions = [("topic", prob)], missing = []}]
 
-data_out_citations = []
-for data in dataset:  # looking for all the out citations of the abstract
-    # at the end of this loop, the data_out_citations will contain a list of records where the first element
-    # is the paper id of the classified abstract, the second element is the paper title and the third element
-    # is the list of out citations of that paper
-    for a in abstracts:
-        if data["id"] == a[1]:
-            data_out_citations.append((a[1], data["title"], data["outCitations"]))
-
-# now, data_out_citations and reference_cit_topics have the same len, this because an element on the i-th position of
-# data_out_citations are the data of an input analyzed paper and in reference_cit_topics on position i, there is
-# the reference CitTopic of that analyzed input paper
-
-to_write = []
-for i in range(len(data_out_citations)):
-    reference_cit_topic_index = reference_cit_topics[i][1]
-    reference_cit_topic_list = []
-    for ii in reference_cit_topic_index:
-        reference_cit_topic_list.append(cit_topics[ii])
-    paper_out_citations = data_out_citations[i][2]
-
-    info_to_write = {
-        "paper_id": data_out_citations[i][0],
-        "paper_title": data_out_citations[i][1],
-        "paper_out_citations": data_out_citations[i][2],
-        "classified_topic": reference_cit_topics[i][0],
-        "reference_cit_topic_index": reference_cit_topic_index,
-        "reference_cit_topic_list": reference_cit_topic_list
-    }
-
-    missings = []
-    for cittopic in reference_cit_topic_list:
-        missing = utils.compute_missing_citations(cittopic, paper_out_citations)
-        missings.append(missing)
-
-    missing_title_dict = []
-    for missing in missings:
-        # with this section, we're looking for paper titles in missing citations, only in the first part of the dataset
-        # because, for memory reasons, the two parts of dataset cannot be hold at the same, so we must split
-        # the computing
-        missing_title = [(paper_id, None) for paper_id in missing]
-        for data in dataset:
-            # we do in this way, for optimal reason: the dataset is very large, in this way, we read the
-            # dataset only once
-            try:
-                h = missing.index(data["id"])
-                missing_title[h] = (data["id"], data["title"])
-            except ValueError:
-                h = None
-        missing_title_dict.append(missing_title)
-
-    info_to_write["missing_title"] = missing_title_dict
-    to_write.append(info_to_write)
-
-print("INFO: Cleaning up and reading", end="... ")
-# now, we clean up memory from first part of dataset, and read the second part of it
-dataset = None
-gc.collect()
-paper_info = tm_utils.extract_paper_info("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\", start=batch_number)
-print("Done ✓")
-
-# continue with looking up missing title with the rest of dataset
 print("INFO: Analyzing", end="... ")
-for elem in to_write:
-    missing_titles = elem["missing_title"]  # get list of missing title
-    for missing_title in missing_titles:
-        missing = list(map(lambda m: m[0], missing_title))  # remove second element
-        missing_title_none = list(filter(lambda m: m[1] is None, missing_title))  # getting couples with None
-        missing_title_none = list(map(lambda m: m[0], missing_title_none))  # getting only the paper id
-        for p in paper_info:  # scannig the second part of the dataset
-            if p["id"] in missing_title_none:  # if an id is in the missed title with none
-                try:
-                    h = missing.index(p["id"])  # get the index of that id in the missing list
-                    missing_title[h] = (p["id"], p["title"])  # update the missing list with new information
-                except ValueError:  # index() method can raise this exception, when the element is not found
-                    h = None
-    elem["missing_title"] = missing_titles
+for i in range(len(abstracts)):
+    # at the end of this loop, every valid prediction will be extended with the index of reference CitTopics
+    valid_predictions = abstracts[i]["validPredictions"]
+    for k in range(len(valid_predictions)):
+        topic = valid_predictions[k][0]
+        prob = valid_predictions[k][1]
+        tmp = []
+        for j in range(len(cit_topic_labelled)):
+            if cit_topic_labelled[j][topic] > Pt:
+                tmp.append(j)
+        valid_predictions[k] = (topic, prob, tmp)
+
+# abstract = [{id = "...", title = "...", outCitations = ["..."],
+#                                                   validPredictions = [("topic", prob, [index])], missing = []}]
+
+for i in range(len(abstracts)):
+    valid_predictions = abstracts[i]["validPredictions"]
+    out_citations = abstracts[i]["outCitations"]
+    for valid in valid_predictions:
+        topic = valid[0]
+        reference_cit_topic_index = valid[2]
+        missing = []
+        for index in reference_cit_topic_index:
+            reference_cit_topic = cit_topics[index]
+            t = utils.compute_missing_citations(reference_cit_topic, out_citations)
+            n = [None for g in range(len(t))]
+            t = list(zip(t, n))
+            abstracts[i]["missing"].append((topic, index, t))
 print("Done ✓")
 
-paper_info = None
+# abstract = [{id = "...", title = "...", outCitations = ["..."],
+#                                                   validPredictions = [("topic", prob, [index])],
+#                                                   missing = [(topic, ref_index, [id_missing, None]]}]
+
+print("INFO: Looking for titles", end="... ")
+first_dataset = file_abstract.txt_lstm_dataset_reader(lstm_dataset_path)
+
+for data in first_dataset:
+    for i in range(len(abstracts)):
+        abstract = abstracts[i]
+        missing = abstract["missing"]
+        for j in range(len(missing)):
+            m = missing[j]
+            for k in range(len(m[2])):
+                if data["id"] == m[2][k][0]:
+                    m[2][k] = (data["id"], data["title"])
+
+first_dataset = None
 gc.collect()
+second_dataset = tm_utils.extract_paper_info("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\",
+                                             start=batch_number)
+
+for data in second_dataset:
+    for i in range(len(abstracts)):
+        abstract = abstracts[i]
+        missing = abstract["missing"]
+        for j in range(len(missing)):
+            m = missing[j]
+            for k in range(len(m[2])):
+                if data["id"] == m[2][k][0]:
+                    m[2][k] = (data["id"], data["title"])
+
+# abstract = [{id = "...", title = "...", outCitations = ["..."],
+#                                                   validPredictions = [("topic", prob, [index])],
+#                                                   missing = [(topic, ref_index, [(id_missing, title)]]}]
+print("Done ✓")
 
 print("INFO: Writing output file", end="... ")
 with open(missig_citation_path, "w", encoding="utf-8") as out_file:
-    for elem in to_write:
-        out_file.write("Paper ID: " + str(elem["paper_id"]) + "\n")
-        out_file.write("Paper Title: " + str(elem["paper_title"]) + "\n")
-        out_file.write("Paper Topic (Classified): " + str(elem["classified_topic"]) + "\n")
-        out_file.write("Found " + str(len(elem["reference_cit_topic_index"])) + " reference CitTopics")
-        for i in range(len(elem["reference_cit_topic_index"])):
-            out_file.write("REFERENCE CitTopic Index: " + str(elem["reference_cit_topic_index"][i]) + "\n")
-            cit_topic_length = len(cit_topics[elem["reference_cit_topic_index"][i]])
-            missing_len = len(elem["missing_title"][i])
-            out_file.write("MISSING CITATIONS WITH TITLES (" + str(missing_len) + " out of "
-                           + str(cit_topic_length) + "): " + "\n")
-            for x in elem["missing_title"][i]:
-                out_file.write(str(x) + "\n")
-            out_file.write("---" + "\n")
-        out_file.write("***" + "\n\n")
+    for elem in abstracts:
+        out_file.write("Paper ID: " + str(elem["id"]) + "\n")
+        out_file.write("Paper Title: " + str(elem["title"]) + "\n")
+        missing = elem["missing"]
+        for m in missing:
+            topic = m[0]
+            reference_cit_topic_index = m[1]
+            missing_couple = m[2]
+            out_file.write("Paper Topic (Classified): " + str(topic) + "\n")
+            out_file.write("Reference CitTopic index: " + str(reference_cit_topic_index) + "\n")
+            cit_topic_len = len(cit_topics[reference_cit_topic_index])
+            missing_couple_len = len(missing_couple)
+            out_file.write(str(missing_couple_len) + " out of " + str(cit_topic_len) + "\n")
+            for couple in missing_couple:
+                out_file.write(str(couple[0]) + " - " + str(couple[1]) + "\n")
+        out_file.write("*****" + "\n\n")
 print("Done ✓")
