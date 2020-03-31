@@ -103,6 +103,7 @@ print("Done ✓")
 #                                                   validPredictions = [("topic", prob, [index])],
 #                                                   missing = [(topic, ref_index, [id_missing, None]]}]
 
+"""
 print("INFO: Looking for titles", end="... ")
 first_dataset = file_abstract.txt_lstm_dataset_reader(lstm_dataset_path)
 
@@ -135,7 +136,7 @@ for data in second_dataset:
 #                                                   validPredictions = [("topic", prob, [index])],
 #                                                   missing = [(topic, ref_index, [(id_missing, title)]]}]
 print("Done ✓")
-
+"""
 print("INFO: Writing output file", end="... ")
 with open(missig_citation_path, "w", encoding="utf-8") as out_file:
     for elem in abstracts:
