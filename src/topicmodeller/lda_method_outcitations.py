@@ -7,9 +7,13 @@ import pandas as pd
 
 from src.topicmodeller import tm_utils
 
-end_batch_number = 55
-number_topics = 100
-number_words = 30
+# input
+end_batch_number = 26
+number_topics = 700
+number_words = 50
+
+# output
+cit_topic_keywords_filename = "../../output/doctopic/cit_topic_keywords.csv"
 
 print("INFO: Extracting " + str(end_batch_number) + " batch citations and removing empty citations", end="... ")
 paper_info = tm_utils.extract_paper_info("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\",
@@ -21,15 +25,15 @@ for data in paper_info:
         citations.append(" ".join(out_cit))
 print("Done ✓")
 
-count_vectorizer = CountVectorizer(max_df=0.8, min_df=2, stop_words='english')
+count_vectorizer = CountVectorizer(max_df=0.15, min_df=15)
 
 print("INFO: Fitting count vectorizer", end="... ")
 count_data = count_vectorizer.fit_transform(citations)
 print("Done ✓")
 
 print("INFO: Cleaning memory", end="... ")
-citations_extracted = None
-new_citations = None
+citations = None
+paper_info = None
 gc.collect()
 print("Done ✓")
 
@@ -71,4 +75,4 @@ df_topic_keywords = pd.DataFrame(topic_keywords_perc)
 df_topic_keywords.columns = ['(Word;Perc)_' + str(i) for i in range(df_topic_keywords.shape[1])]
 df_topic_keywords.index = ['Topic ' + str(i) for i in range(df_topic_keywords.shape[0])]
 
-df_topic_keywords.to_csv("../../output/doctopic/cit_topic_keywords.csv")
+df_topic_keywords.to_csv(cit_topic_keywords_filename)

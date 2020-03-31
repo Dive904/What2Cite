@@ -2,9 +2,12 @@ import pandas as pd
 
 from src.topicmodeller import tm_utils
 
+# input
 input_file = "../../output/official/cit_topic_keywords.csv"
-out_filename = "../../output/citations/topics_cits.txt"
 number_words = 20
+
+# output
+out_filename = "../../output/citations/topics_cits.txt"
 
 df = pd.read_csv(input_file)
 df_list = tm_utils.convert_df_to_list(df, number_words)

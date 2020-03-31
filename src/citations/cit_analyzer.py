@@ -39,6 +39,8 @@ for c in cit_topic:
 cit_topic = t
 print("Done ✓")
 
+# in this part of code, we scan the CitTopics looking for classified Topic in the LDA (from the abstract document
+# topic matrix
 first_step_result = []
 for c in cit_topic:
     tmp = []
@@ -71,6 +73,9 @@ t = None
 gc.collect()
 print("Done ✓")
 
+# from the first scan, it's probably that we have some elements without classified topic. To reduce the None number,
+# we scan the rest of dataset (the one don't taken for computing LDA) and classifying that papers using the trained
+# LSTM
 print("INFO: Reading rest of dataset", end="... ")
 paper_info = tm_utils.extract_paper_info("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\",
                                          start=batch_number)
@@ -84,19 +89,15 @@ model = load_model(lstm_model)
 print("Done ✓")
 
 print("INFO: Classifing None papers", end="... ")
-second_step_result = []
-for cit_list in first_step_result:
-    tmp_list = []
-    for record in cit_list:
-        paper_id = record[0]
-        topic = record[1]
-        third = record[2]
-        if topic is None:
-            text = None
-            for p in paper_info:
-                if p["id"] == paper_id:
-                    text = p["paperAbstract"]
-            if text is not None:
+# with this type of loop, for optimal reasons, we scan the dataset only once
+for p in paper_info:
+    for i in range(len(first_step_result)):
+        for j in range(len(first_step_result[i])):
+            paper_id = first_step_result[i][j][0]
+            topic = first_step_result[i][j][1]
+            third = first_step_result[i][j][2]
+            if (topic is None) and (p["id"] == paper_id):
+                text = p["paperAbstract"]
                 text = lstm_utils.preprocess_text(text)
                 seq = tokenizer.texts_to_sequences([text])
                 seq = pad_sequences(seq, padding='post', maxlen=200)
@@ -106,9 +107,9 @@ for cit_list in first_step_result:
                 topK_elem = list(map(lambda y: np.round(y, 3), topK_elem))
                 topic = list(zip(topK_index, topK_elem))
                 third = 2
-        tmp_list.append((paper_id, topic, third))
-    second_step_result.append(tmp_list)
+                first_step_result[i][j] = (paper_id, topic, third)
 print("Done ✓")
+second_step_result = first_step_result
 
 print()
 for t in second_step_result:
