@@ -48,8 +48,9 @@ abstracts_prep = list(map(lambda x: lstm_utils.preprocess_text(x["abstract"]), a
 
 for abstract in abstracts:
     abstract["missing"] = []
+    abstract["hit"] = []
 
-# abstract = [{id = "...", title = "...", outCitations = ["..."], missing = []}]
+# abstract = [{id = "...", title = "...", outCitations = ["..."], missing = [], hit = [}]
 
 print("INFO: Tokenizing sequences", end="... ")
 seq = tokenizer.texts_to_sequences(abstracts_prep)
@@ -76,7 +77,7 @@ for i in range(len(abstracts)):
         topic = valid_predictions[k][0]
         prob = valid_predictions[k][1]
         tmp = []
-        for j in range(len(cit_topic_labelled)):
+        for j in range(len(cit_topic_labelled)):  # we must work in this area to find a good method to get the CitTopic
             if cit_topic_labelled[j][topic] > Pt:
                 tmp.append(j)
         valid_predictions[k] = (topic, prob, tmp)
@@ -96,12 +97,13 @@ for i in range(len(abstracts)):
             t = utils.compute_missing_citations(reference_cit_topic, out_citations)
             n = [None for g in range(len(t))]
             t = list(zip(t, n))
-            abstracts[i]["missing"].append((topic, index, t))
+            tt = list(zip(utils.compute_hit_citations(reference_cit_topic, out_citations), n))
+            abstracts[i]["missing"].append((topic, index, t, tt))
 print("Done ✓")
 
 # abstract = [{id = "...", title = "...", outCitations = ["..."],
 #                                                   validPredictions = [("topic", prob, [index])],
-#                                                   missing = [(topic, ref_index, [id_missing, None]]}]
+#                                                   missing = [(topic, ref_index, [id_missing, None], [id_hit, None]]}]
 
 """
 print("INFO: Looking for titles", end="... ")
@@ -143,17 +145,23 @@ with open(missig_citation_path, "w", encoding="utf-8") as out_file:
         out_file.write("Paper ID: " + str(elem["id"]) + "\n")
         out_file.write("Paper Title: " + str(elem["title"]) + "\n")
         missing = elem["missing"]
+        out_file.write("Possible Citation Topics found: " + str(len(missing)) + "\n")
         for m in missing:
             topic = m[0]
             reference_cit_topic_index = m[1]
             missing_couple = m[2]
+            hit_couple = m[3]
             cit_topic_len = len(cit_topics[reference_cit_topic_index])
             missing_couple_len = len(missing_couple)
             if cit_topic_len != missing_couple_len:
                 out_file.write("Paper Topic (Classified): " + str(topic) + "\n")
                 out_file.write("Reference CitTopic index: " + str(reference_cit_topic_index) + "\n")
-                out_file.write(str(missing_couple_len) + " out of " + str(cit_topic_len) + "\n")
+                out_file.write("Missing citations: " + str(missing_couple_len) + " out of " + str(cit_topic_len) + "\n")
                 for couple in missing_couple:
                     out_file.write(str(couple[0]) + " - " + str(couple[1]) + "\n")
+                out_file.write("Hit citations: " + str(len(hit_couple)) + " out of " + str(cit_topic_len) + "\n")
+                for couple in hit_couple:
+                    out_file.write(str(couple[0]) + " - " + str(couple[1]) + "\n")
+
         out_file.write("*****" + "\n\n")
 print("Done ✓")

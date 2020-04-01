@@ -18,7 +18,7 @@ for f in df_list:
     tmp_list = []
     prec = 0
     total_energy = tm_utils.get_total_energy(f)
-    t = total_energy / 2
+    t = (total_energy / 3) * 2
     for x in f:
         first = x[0]
         second = x[1]

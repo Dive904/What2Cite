@@ -8,8 +8,8 @@ import pandas as pd
 from src.topicmodeller import tm_utils
 
 # input
-end_batch_number = 26
-number_topics = 700
+end_batch_number = 22  # almost 500k papers
+number_topics = 750
 number_words = 50
 
 # output
@@ -25,7 +25,7 @@ for data in paper_info:
         citations.append(" ".join(out_cit))
 print("Done ✓")
 
-count_vectorizer = CountVectorizer(max_df=0.15, min_df=15)
+count_vectorizer = CountVectorizer(max_df=0.8, min_df=10)
 
 print("INFO: Fitting count vectorizer", end="... ")
 count_data = count_vectorizer.fit_transform(citations)

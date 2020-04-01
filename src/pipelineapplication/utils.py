@@ -70,6 +70,35 @@ def get_abstracts_to_analyze():
                         "6ef12f4e6f120ba7fc8a83a610e3f362e0a133a7, c501acb1dbbab80212dc3ab005abf19560fe18f2, "
                         "94faf760b3b5070a56722436f49976e7ba0387ee, bb24f265ad1166f9b992561d165495c5c8b1d2ea, "
                         "1cd2e26d4abb3a303b22a96f35c874c0034878b3, a41109ab1338f918b5ba24a379686d5a30333449"
+    }, {
+        "id": "d644d4eb388885fe651257ad234b1cb9bb1dc0d4",
+        "title": "Tensor Restricted Isometry Property Analysis For a Large Class of Random Measurement Ensembles",
+        "abstract": "In previous work, theoretical analysis based on the tensor Restricted Isometry Property "
+                    "(t-RIP) established the robust recovery guarantees of a low-tubal-rank tensor. The obtained "
+                    "sufficient conditions depend strongly on the assumption that the linear measurement maps "
+                    "satisfy the t-RIP. In this paper, by exploiting the probabilistic arguments, we prove that "
+                    "such linear measurement maps exist under suitable conditions on the number of measurements in "
+                    "terms of the tubal rank r and the size of third-order tensor n1, n2, n3. And the obtained "
+                    "minimal possible number of linear measurements is nearly optimal compared with the degrees of "
+                    "freedom of a tensor with tubal rank r. Specially, we consider a random sub-Gaussian distribution "
+                    "that includes Gaussian, Bernoulli and all bounded distributions and construct a large class "
+                    "of linear maps that satisfy a t-RIP with high probability. Moreover, the validity of the required "
+                    "number of measurements is verified by numerical experiments.",
+        "outCitations": "b5e853572b2f3134acafa76d5ae80b9f28c7dca8, 0c9bb579d8ad6ac987f7a16b66ddace671fc57c5, "
+                        "6407ac1f051d30ca621ce16cf4ca67beb05930c6, 4f143cbc63e4c202db77566dac0f1f08c0774a45, "
+                        "9fb8c76e6b17f3fdbd0c8f293ce8da4b79f4ffeb, ca96af5be9e713206b92e64f7824da1c2e38e4d4, "
+                        "4f9f19e11baa16cb7ae27752864cb4231109b14c, 25ffa8c55f509241a577a6e6ec85792c66d1f41a, "
+                        "ea1cf46db3f99aa538d8397e2d3cc9947213f0ad, 9336bfdcb40532ffd0d890854fee6fd3d98254ac, "
+                        "7463c834bc397b6c4c2b1fd5e121b0f5007227cf, 6661789de63b3cebe2eafdd7e9e7a316ad1f0b8f, "
+                        "81e8556180e4410b77c4cac9844f3547df97a345, 105858b27b052bd7f1e433f176fe8b4eb3f1ca84, "
+                        "b1827bb4ee21b5e6b196b3f6995a9fa6928f716c, a07a7ea0cad9eb6e02fe8731c9f16c5115a16203, "
+                        "e24c0387fa0ec3c32ebc97c050c94b8b01eeadd2, a57b6a19b1eef9228a034f61ba47022844cca042, "
+                        "2ddc0494377c7cb162286cf6c5664ae901cda588, 5c2e30085a1cd03a36ca84c102eff54f9d923ad1, "
+                        "fd37f013f36d9a0869a125499d7e9be1fcc3c1b3, 78e36cfa36220038ea3d79d3b0cc689238074e51, "
+                        "2c2acfdbd61336f0b4d9974a7ff6ce963f6a73e5, 6179b2232c635008fed0f5ea0c8c5c82ccd1bdda, "
+                        "f42f8d0b8e331255bcfe891e4ecebb5260b761c2, ae1483451dd70769ccbbf199d99cc553daa19852, "
+                        "66f3f64b0a18b54642390dddbc2264093c63e3e3, 658339c73021674da17354eaaffc3cd326332117, "
+                        "f6047e62635ebf241e3c9e6697d4fb39a098379f"
     }
     ]
 
@@ -104,6 +133,21 @@ def compute_missing_citations(cittopics, outcitations):
             missing.append(c)
 
     return missing
+
+
+def compute_hit_citations(cittopics, outcitations):
+    """
+    This function is used to compute the missing citations for a paper
+    :param cittopics: the CitTopic
+    :param outcitations: the list of records including outcitations
+    :return: a list of missing citations
+    """
+    hit = []
+    for c in cittopics:
+        if c in outcitations:
+            hit.append(c)
+
+    return hit
 
 
 def get_valid_predictions(predictions, t):
