@@ -19,7 +19,8 @@ cit_labelled_path = "../../output/official/topics_cits_labelled_pickle.pickle"
 lstm_dataset_path = "../../output/official/final.txt"
 batch_number = 90
 P = 1
-Pt = 2
+Pt = 0.05
+J = 3
 t_for_true_prediction = 0.4  # probability threshold to consider a prediction as valid
 
 # output
@@ -48,7 +49,6 @@ abstracts_prep = list(map(lambda x: lstm_utils.preprocess_text(x["abstract"]), a
 
 for abstract in abstracts:
     abstract["missing"] = []
-    abstract["hit"] = []
 
 # abstract = [{id = "...", title = "...", outCitations = ["..."], missing = [], hit = [}]
 
@@ -78,7 +78,9 @@ for i in range(len(abstracts)):
         prob = valid_predictions[k][1]
         tmp = []
         for j in range(len(cit_topic_labelled)):  # we must work in this area to find a good method to get the CitTopic
-            if cit_topic_labelled[j][topic] > Pt:
+            cit_topic_labelled_normalized = utils.normalize_scores_on_cittopics(cit_topic_labelled[j], P)
+            max_indexes, max_elem = tm_utils.find_n_maximum(cit_topic_labelled_normalized, J)
+            if topic in max_indexes:
                 tmp.append(j)
         valid_predictions[k] = (topic, prob, tmp)
 

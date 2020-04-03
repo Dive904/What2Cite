@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def get_abstracts_to_analyze():
     """
     This is only a simple function that helps to keep the abstract to analyze
@@ -117,7 +120,7 @@ def normalize_scores_on_cittopics(cittopic, p):
     """
     max_value = p * len(cittopic) + 1
 
-    return list(map(lambda x: x / max_value, cittopic))
+    return list(map(lambda x: np.round(x / max_value, 3), cittopic))
 
 
 def compute_missing_citations(cittopics, outcitations):
