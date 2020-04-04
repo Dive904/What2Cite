@@ -16,6 +16,7 @@ def txt_abstract_creator(filename, list_dic):
         for d in list_dic:
             f.write("*** ID: " + d["id"] + "\n")
             f.write("*** TITLE: " + d["title"] + "\n")
+            f.write("*** YEAR: " + str(d["year"]) + "\n")
             f.write("*** ABSTRACT: " + d["paperAbstract"] + "\n")
             f.write("*** OUTCITATIONS: ")
             for i in range(len(d["outCitations"])):
@@ -41,6 +42,8 @@ def txt_dataset_reader(filepath):
                 d["id"] = line.split("*** ID: ")[1][:-1]
             elif line.startswith("*** TITLE: "):
                 d["title"] = line.split("*** TITLE: ")[1][:-1]
+            elif line.startswith("*** YEAR: "):
+                d["year"] = line.split("*** YEAR: ")[1][:-1]
             elif line.startswith("*** ABSTRACT: "):
                 d["paperAbstract"] = line.split("*** ABSTRACT: ")[1][:-1]
             elif line.startswith("*** OUTCITATIONS: "):
@@ -99,12 +102,14 @@ def txt_lstm_dataset_reader(filepath):
                 d["id"] = line.split("*** ID: ")[1][:-1]
             elif line.startswith("*** TITLE: "):
                 d["title"] = line.split("*** TITLE: ")[1][:-1]
+            elif line.startswith("*** YEAR: "):
+                d["title"] = line.split("*** YEAR: ")[1][:-1]
             elif line.startswith("*** ABSTRACT: "):
                 d["paperAbstract"] = line.split("*** ABSTRACT: ")[1][:-1]
             elif line.startswith("*** OUTCITATIONS: "):
                 d["outCitations"] = line.split("*** OUTCITATIONS: ")[1][:-1].split(", ")
             elif line.startswith("*** TOPIC: "):
-                d["topic"] = line.split("*** TOPIC: ")[1][:-1]
+                d["topic"] = line.split("*** TOPIC: ")[1][1:-2]
             elif line.startswith("---"):
                 result.append(d)
                 d = {}

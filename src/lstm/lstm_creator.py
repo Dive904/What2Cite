@@ -100,7 +100,7 @@ for word, index in tokenizer.word_index.items():
         embedding_matrix[index] = embedding_vector
 print(" Done ✓")
 
-# 73% acc
+# 71% acc
 model = Sequential()
 model.add(kl.Embedding(vocab_size, embedding_col_number, weights=[embedding_matrix], trainable=False))
 model.add(kl.Dropout(0.5))

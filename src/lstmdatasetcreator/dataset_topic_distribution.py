@@ -1,11 +1,10 @@
 from src.fileutils import file_abstract
-from src.lstmdatasetcreator import utils
 
 import numpy as np
 import matplotlib.pyplot as plt
 
 print("INFO: Extracting dataset", end="... ")
-dataset = file_abstract.txt_lstm_dataset_reader("../../output/lstmdataset/final.txt")
+dataset = file_abstract.txt_lstm_dataset_reader("../../output/official/lstmdataset.txt")
 print("Done ✓")
 
 number_topic = 40
@@ -19,7 +18,7 @@ for l in labels:
 
 print("INFO: Analyzing dataset", end="... ")
 for data in dataset:
-    dic[utils.extract_topic_from_dataset(data["topic"])] += 1
+    dic[data["topic"]] += 1
 
 labels = []
 values = []

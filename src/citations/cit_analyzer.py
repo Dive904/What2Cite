@@ -77,8 +77,7 @@ print("Done ✓")
 # we scan the rest of dataset (the one don't taken for computing LDA) and classifying that papers using the trained
 # LSTM
 print("INFO: Reading rest of dataset", end="... ")
-paper_info = tm_utils.extract_paper_info("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\",
-                                         start=batch_number)
+paper_info = tm_utils.extract_paper_info("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted_all\\")
 print("Done ✓")
 
 print("INFO: Reading Tokenizer and Neural Network", end="... ")

@@ -10,6 +10,7 @@ from src.fileutils import file_abstract
 
 fos = "Computer Science"
 dir_path = "D:\\Università\\Corsi\\Tesi\\SemanticScolarDataset"
+year = 2010
 
 files = os.listdir(dir_path)[2:-1]
 for inputfile in files:
@@ -28,7 +29,7 @@ for inputfile in files:
     result_dic = []
     for line in open(filecontent_name, 'r', encoding="utf-8"):
         d = json.loads(line)
-        if utils.apply_filter(d, fos):
+        if utils.apply_filter(d, fos, year):
             d["paperAbstract"] = d["paperAbstract"].replace("\n", "")
             d["paperAbstract"] = d["paperAbstract"].replace("    ", "")
             d["paperAbstract"] = d["paperAbstract"].replace("   ", "")

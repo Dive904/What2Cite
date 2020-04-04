@@ -14,7 +14,7 @@ number_topic = 40
 result_dataset = {}
 
 print("INFO: Extracting dataset", end="... ")
-dataset = file_abstract.txt_lstm_dataset_reader("../../output/lstmdataset/final.txt")
+dataset = file_abstract.txt_lstm_dataset_reader("../../output/official/lstmdataset.txt")
 print("Done ✓")
 
 labels = [str(i) for i in range(number_topic)]

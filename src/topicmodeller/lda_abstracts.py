@@ -1,3 +1,6 @@
+# This script is used to run LDA on paper abstracts and creating a first step - lstm dataset
+
+
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation as LDA
 from joblib import dump
@@ -9,12 +12,21 @@ import gc
 
 from src.topicmodeller import tm_utils
 
-batch_number = 90  # change this for test
-number_topic = 40  # change this for test
+# input
+batch_number = 90
+number_topic = 40
 number_words = 7
+semanticdataset_filname = "C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\"
+
+# output
+ldamodel_filname = "../../output/official/lda_abstract.jlb"
+vectorizer_filname = "../../output/official/countvect_abstract.jlb"
+abstract_document_topic_filename = "../../output/doctopic/abstract_document_topic.csv"
+topics_filename = "../../output/lstmdataset/topics.txt"
+lstmdataset_filename = "../../output/lstmdataset/lstmdataset.txt"
 
 print("INFO: Extracting " + str(batch_number) + " batch abstract and preprocessing", end="... ")
-paper_info = tm_utils.extract_paper_info("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\", end=batch_number)
+paper_info = tm_utils.extract_paper_info(semanticdataset_filname, end=batch_number)
 abstracts_extracted = []
 for data in paper_info:
     abstracts_extracted.append(tm_utils.preprocess_abstract(data["paperAbstract"]))
@@ -36,8 +48,8 @@ lda_model.fit(data_vectorized)
 print("Done ✓")
 
 print("INFO: Dumping LDA and CountVectorizer", end="... ")
-dump(lda_model, "../../output/official/lda_abstract.jlb")
-dump(vectorizer, "../../output/official/countvect_abstract.jlb")
+dump(lda_model, ldamodel_filname)
+dump(vectorizer, vectorizer_filname)
 print("Done ✓")
 
 print("INFO: Transforming LDA", end="... ")
@@ -48,12 +60,11 @@ print("INFO: Making dataframe", end="... ")
 topicnames = ["Topic" + str(i) for i in range(lda_model.n_components)]
 docnames = [paper_info[i]["id"] for i in range(len(paper_info))]
 df_document_topic = pd.DataFrame(np.round(lda_output, 3), columns=topicnames, index=docnames)
-df_document_topic.to_csv("../../output/doctopic/abstract_document_topic.csv")
+df_document_topic.to_csv(abstract_document_topic_filename)
 print("Done ✓")
 
 print("INFO: Getting documents dominant topic", end="... ")
-filename = "../../output/lstmdataset/topics.txt"
-tm_utils.print_topics_in_file(lda_model, vectorizer, number_words, filename, "w")
+tm_utils.print_topics_in_file(lda_model, vectorizer, number_words, topics_filename, "w")
 for n in range(lda_output.shape[0]):
     items = lda_output[n]
     max_indexes = tm_utils.find_n_maximum(items, 1)
@@ -63,10 +74,11 @@ for n in range(lda_output.shape[0]):
 print("Done ✓")
 
 print("INFO: Writing output file", end="... ")
-with io.open("../../output/lstmdataset/final.txt", "w", encoding="utf-8") as f:
+with io.open(lstmdataset_filename, "w", encoding="utf-8") as f:
     for elem in paper_info:
         f.write("*** ID: " + elem["id"] + "\n")
         f.write("*** TITLE: " + elem["title"] + "\n")
+        f.write("*** YEAR: " + elem["year"] + "\n")
         f.write("*** ABSTRACT: " + elem["paperAbstract"] + "\n")
         f.write("*** OUTCITATIONS: ")
         for i in range(len(elem["outCitations"])):

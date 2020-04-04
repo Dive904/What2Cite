@@ -8,12 +8,14 @@ import pandas as pd
 from src.topicmodeller import tm_utils
 
 # input
-end_batch_number = 22  # almost 500k papers
+end_batch_number = 44
 number_topics = 750
 number_words = 50
 
 # output
 cit_topic_keywords_filename = "../../output/doctopic/cit_topic_keywords.csv"
+lda_cit_topic_filename = "../../output/models/lda_cit_topic.jlb"
+countvect_cit_topic_filename = "../../output/models/countvect_cit_topic.jlb"
 
 print("INFO: Extracting " + str(end_batch_number) + " batch citations and removing empty citations", end="... ")
 paper_info = tm_utils.extract_paper_info("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\",
@@ -44,8 +46,8 @@ lda.fit(count_data)
 print("Done ✓")
 
 print("INFO: Saving models", end="... ")
-dump(lda, "../../output/models/lda_cit_topic.jlb")
-dump(count_vectorizer, "../../output/models/countvect_cit_topic.jlb")
+dump(lda, lda_cit_topic_filename)
+dump(count_vectorizer, countvect_cit_topic_filename)
 print("Done ✓")
 
 lda_output = lda.transform(count_data)

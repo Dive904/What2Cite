@@ -1,15 +1,20 @@
 from langdetect import detect
 
 
-def apply_filter(d, fos):
+def apply_filter(d, fos, y):
     """
     This function is used to apply all the useful filers
+    :param y: year
     :param d: jason as a dictionary
     :param fos: field of study
     :return: the result of the filer
     """
-    if "paperAbstract" in d.keys() and "title" in d.keys() and "fieldsOfStudy" in d.keys() and "sources" in d.keys():
-        return len(d["paperAbstract"]) > 0 and "DBLP" in d["sources"] and fos in d["fieldsOfStudy"]
+    if "paperAbstract" in d.keys() and \
+            "title" in d.keys() and \
+            "fieldsOfStudy" in d.keys() and \
+            "sources" in d.keys() and \
+            "year" in d.keys():
+        return len(d["paperAbstract"]) > 0 and "DBLP" in d["sources"] and fos in d["fieldsOfStudy"] and d["year"] > y
 
     return False
 

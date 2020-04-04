@@ -2,7 +2,7 @@ from datetime import datetime
 import io
 
 from src.topicmodeller import tm_utils
-from src.topicmodeller import lda_method_abstract
+from src.topicmodeller import tester_compute
 
 # Number of Batch, Number of Topic
 # test_index = [(25, 25), (25, 50), (50, 25), (50, 50), (65, 25), (65, 50)]
@@ -36,7 +36,7 @@ for index in test_index:
 
     abstracts = abstracts + abstracts_extracted
     start_compute = datetime.now()
-    filename = lda_method_abstract.compute(batch_number, number_topic, abstracts)
+    filename = tester_compute.compute(batch_number, number_topic, abstracts)
     end_compute = datetime.now()
     d_compute = end_compute - start_compute
 
