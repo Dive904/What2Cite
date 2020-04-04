@@ -40,7 +40,7 @@ cit_topic = t
 print("Done ✓")
 
 # in this part of code, we scan the CitTopics looking for classified Topic in the LDA (from the abstract document
-# topic matrix
+# topic matrix)
 first_step_result = []
 for c in cit_topic:
     tmp = []
