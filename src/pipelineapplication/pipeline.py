@@ -1,12 +1,10 @@
 # This script is used to implement the pipeline for only specific abstracts given in input in a list
 
 import pickle
-import gc
 
 from keras_preprocessing.sequence import pad_sequences
 from tensorflow_core.python.keras.models import load_model
 
-from src.fileutils import file_abstract
 from src.pipelineapplication import utils
 from src.lstm import lstm_utils
 from src.topicmodeller import tm_utils
@@ -17,6 +15,7 @@ lstm_model = "../../output/official/lstm.h5"
 tokenizer_model = "../../output/official/tokenizer.pickle"
 cit_labelled_path = "../../output/official/topics_cits_labelled_pickle.pickle"
 lstm_dataset_path = "../../output/official/final.txt"
+cit_topic_info_pickle_path = "../../output/official/cit_topic_info_pickle.pickle"
 batch_number = 90
 P = 1
 Pt = 0.05
@@ -25,6 +24,9 @@ t_for_true_prediction = 0.4  # probability threshold to consider a prediction as
 
 # output
 missig_citation_path = "../../output/official/missing_citations.txt"
+
+with open(cit_topic_info_pickle_path, 'rb') as handle:  # take the list of CitTopic score
+    cit_topic_info = pickle.load(handle)
 
 with open(cit_labelled_path, 'rb') as handle:  # take the list of CitTopic score
     # in this part, we read the cit topics labelled with other information.
@@ -42,7 +44,7 @@ model = load_model(lstm_model)  # load model from single file
 
 abstracts = utils.get_abstracts_to_analyze()  # get the abstract to analyze
 
-# abstract = [{id = "...", title = "...", outCitations = ["..."]}]
+# abstract = [{id = "...", title = "...", "year": "..." outCitations = ["..."]}]
 
 # prepare texts for classification
 abstracts_prep = list(map(lambda x: lstm_utils.preprocess_text(x["abstract"]), abstracts))
@@ -107,45 +109,31 @@ print("Done ✓")
 #                                                   validPredictions = [("topic", prob, [index])],
 #                                                   missing = [(topic, ref_index, [id_missing, None], [id_hit, None]]}]
 
-"""
-print("INFO: Looking for titles", end="... ")
-first_dataset = file_abstract.txt_lstm_dataset_reader(lstm_dataset_path)
+for i in range(len(abstracts)):
+    all_l = []
+    for j in range(len(abstracts[i]["missing"])):
+        t = []
+        f = abstracts[i]["missing"][j][0]
+        s = abstracts[i]["missing"][j][1]
+        for k in range(len(abstracts[i]["missing"][j][2])):
+            first = abstracts[i]["missing"][j][2][k][0]
+            second = abstracts[i]["missing"][j][2][k][1]
+            t.append((first, cit_topic_info.get(first)[0]))
+        th = []
+        for k in range(len(abstracts[i]["missing"][j][3])):
+            first = abstracts[i]["missing"][j][3][k][0]
+            second = abstracts[i]["missing"][j][3][k][1]
+            th.append((first, cit_topic_info.get(first)[0]))
+        all_l.append((f, s, t, th))
+    abstracts[i]["missing"] = all_l
 
-for data in first_dataset:
-    for i in range(len(abstracts)):
-        abstract = abstracts[i]
-        missing = abstract["missing"]
-        for j in range(len(missing)):
-            m = missing[j]
-            for k in range(len(m[2])):
-                if data["id"] == m[2][k][0]:
-                    m[2][k] = (data["id"], data["title"])
 
-first_dataset = None
-gc.collect()
-second_dataset = tm_utils.extract_paper_info("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\",
-                                             start=batch_number)
-
-for data in second_dataset:
-    for i in range(len(abstracts)):
-        abstract = abstracts[i]
-        missing = abstract["missing"]
-        for j in range(len(missing)):
-            m = missing[j]
-            for k in range(len(m[2])):
-                if data["id"] == m[2][k][0]:
-                    m[2][k] = (data["id"], data["title"])
-
-# abstract = [{id = "...", title = "...", outCitations = ["..."],
-#                                                   validPredictions = [("topic", prob, [index])],
-#                                                   missing = [(topic, ref_index, [(id_missing, title)]]}]
-print("Done ✓")
-"""
 print("INFO: Writing output file", end="... ")
 with open(missig_citation_path, "w", encoding="utf-8") as out_file:
     for elem in abstracts:
         out_file.write("Paper ID: " + str(elem["id"]) + "\n")
         out_file.write("Paper Title: " + str(elem["title"]) + "\n")
+        out_file.write("Paper year: " + str(elem["year"]) + "\n")
         missing = elem["missing"]
         out_file.write("Possible Citation Topics found: " + str(len(missing)) + "\n")
         for m in missing:

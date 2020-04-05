@@ -19,6 +19,7 @@ topic_filename = "../../output/official/topics.txt"
 abstract_document_topic_filename = "../../output/official/abstract_document_topic.csv"
 lstm_model = "../../output/official/lstm.h5"
 tokenizer_model = "../../output/official/tokenizer.pickle"
+cit_topic_info_pickle_path = "../../output/official/cit_topic_info_pickle.pickle"
 
 # output
 topics_cits_labelled_filename = "../../output/official/topics_cits_labelled.txt"
@@ -73,12 +74,10 @@ t = None
 gc.collect()
 print("Done ✓")
 
-# from the first scan, it's probably that we have some elements without classified topic. To reduce the None number,
-# we scan the rest of dataset (the one don't taken for computing LDA) and classifying that papers using the trained
-# LSTM
-print("INFO: Reading rest of dataset", end="... ")
-paper_info = tm_utils.extract_paper_info("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted_all\\")
-print("Done ✓")
+# from the first scan, it's probably that we have some elements without classified topic. Now we look for other
+# information using the rest of dataset
+with open(cit_topic_info_pickle_path, 'rb') as handle:  # take the list of CitTopic score
+    cit_topic_info = pickle.load(handle)
 
 print("INFO: Reading Tokenizer and Neural Network", end="... ")
 with open(tokenizer_model, 'rb') as handle:
@@ -89,14 +88,15 @@ print("Done ✓")
 
 print("INFO: Classifing None papers", end="... ")
 # with this type of loop, for optimal reasons, we scan the dataset only once
-for p in paper_info:
-    for i in range(len(first_step_result)):
-        for j in range(len(first_step_result[i])):
-            paper_id = first_step_result[i][j][0]
-            topic = first_step_result[i][j][1]
-            third = first_step_result[i][j][2]
-            if (topic is None) and (p["id"] == paper_id):
-                text = p["paperAbstract"]
+for i in range(len(first_step_result)):
+    for j in range(len(first_step_result[i])):
+        paper_id = first_step_result[i][j][0]
+        topic = first_step_result[i][j][1]
+        third = first_step_result[i][j][2]
+        if topic is None:
+            couple = cit_topic_info.get(paper_id)
+            if (couple is not None) and (couple[1] is not None):
+                text = couple[1]
                 text = lstm_utils.preprocess_text(text)
                 seq = tokenizer.texts_to_sequences([text])
                 seq = pad_sequences(seq, padding='post', maxlen=200)

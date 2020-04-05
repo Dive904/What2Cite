@@ -10,6 +10,7 @@ def get_abstracts_to_analyze():
         "id": "5910db3edb2481b0340cb4c4e310ae9e3cf704a9",
         "title": "Neuron-Miner: An Advanced Tool for Morphological Search and Retrieval in Neuroscientific "
                  "Image Databases",
+        "year": "2016",
         "abstract": "The steadily growing amounts of digital neuroscientific data demands for a reliable, systematic, "
                     "and computationally effective retrieval algorithm. In this paper, we present Neuron-Miner, "
                     "which is a tool for fast and accurate reference-based retrieval within neuron image databases. "
@@ -37,56 +38,51 @@ def get_abstracts_to_analyze():
                         "58d07607dd35c39fefffd373d80f2a77ab18f5c7, c4ad1a762520cb799699e3bb209748a5881a554f, "
                         "9131b527b0e8269b3b1554aecd356bab060c9b86, 60352c78989537bb5e013f5b641e4605067857fa"
     }, {
-        "id": "42d712639151b6d9948c78a211b6423473f94f25",
-        "title": "Classical Capacities of Compound and Averaged Quantum Channels",
-        "abstract": "We determine the capacity of compound classical-quantum channels. As a consequence, we obtain "
-                    "the capacity formula for the averaged classical-quantum channels. The capacity result for "
-                    "compound channels demonstrates, as in the classical setting, the existence of reliable universal "
-                    "classical-quantum codes in scenarios where the only a priori information about the channel "
-                    "used for the transmission of information is that it belongs to a given set of memoryless "
-                    "classical-quantum channels. Our approach is based on a universal classical approximation of "
-                    "the quantum relative entropy which in turn relies on a universal hypothesis testing result.",
-        "outCitations": "482138b9af782e635f1e84c2fac4a3bce249e1ea, de7fd0c0234ca53afa0ab247e08ac0a87298b4ab, "
-                        "e678a7146ce58db6246354ba2c92c048193e8c74, b36604c85940b0d4460edb98b497433e5c8119ac, "
-                        "7b024b01dc792e6056ab4edcd3184a9d93ed627e, 7ffe3488e395d6ec98b1832e1ad0bbbc91a98a42, "
-                        "42a0d8b7a95f5ecd67629f2317c56f177777882f, c8e624fbd17eea6c4ef88860ed9bb5c13d6243bb, "
-                        "d676a895bafa8e04f4dd5e0529d7da9bba631429, 7a9af359627919c86ad4601e5eb6c5809d7725ad, "
-                        "7d615699aa272629411330e931fc65d1acf58b66, c66db9b93d75c0ff52e7f84605b8389345307006, "
-                        "f9fd91e7aaa744d6fbe00b435ebccc3f25a31a4b, 2db0c7e469dcbf18b950f2bdd554a85c6d32ba77, "
-                        "3df694c49d651730ab6584a6fe9c3eb6519c6509"
-    }, {
-        "id": "a38483b3ad9a2590ea38562604b4360431f73e91",
-        "title": "Association Analysis of Semi-structured Data for Discrimination Discovery in Business",
-        "abstract": "Data mining techniques have taken a critical role in life in numerous domains such "
-                    "as consumer analytics, finance, banking, medicine, biology, and astronomy... Recently, "
-                    "data mining techniques have found their application also in discovering illegal "
-                    "discriminatory treatment on the bases of sensitive attributes such as race, color, "
-                    "religion, nationality, gender, age... In this paper, we propose a framework to solve "
-                    "the discrimination matter in the context of semi-structured business data, and in particular "
-                    "in the calculation of taxes for imported goods. This framework is able to discover possibly "
-                    "discriminatory relations among data by finding discriminatory association rules with the "
-                    "support of a common sense knowledge base and text mining techniques. The framework has applied "
-                    "to the problem of HTS (US Harmonized Tariff Schedule) showing some satisfactory results.",
-        "outCitations": "84b76c8fdde4919954fe36fdc0520e9d7dd17c86, 3e21a9b804553b6e2ab5beedf286c43b1975ecce, "
-                        "c1fd505412ca40ffc74149f0a37043e77bd4b734, dbee4be7d2af340a0957da70627b561e29762181, "
-                        "e671ec0b4d58329add3951c425f4ac2fc1ab371e, d2cad3a4139990496cd93fd6a5f93e68623456bb, "
-                        "6ef12f4e6f120ba7fc8a83a610e3f362e0a133a7, c501acb1dbbab80212dc3ab005abf19560fe18f2, "
-                        "94faf760b3b5070a56722436f49976e7ba0387ee, bb24f265ad1166f9b992561d165495c5c8b1d2ea, "
-                        "1cd2e26d4abb3a303b22a96f35c874c0034878b3, a41109ab1338f918b5ba24a379686d5a30333449"
+        "id": "501f45ddd59b4a2cb461219565e51dd7cd71be18",
+        "title": "Strategies for Big Data Clustering",
+        "year": "2014",
+        "abstract": "In the paper, an overview of methods and technologies used for big data clustering is presented. "
+                    "The clustering is one of the important data mining issue especially for big data analysis, "
+                    "where large volume data should be grouped. Here some clustering methods are described, great "
+                    "attention is paid to the k-means method and its modifications, because it still remains one "
+                    "of the popular methods and is implemented in innovative technologies for big data analysis. "
+                    "Neural network-based self-organizing maps and their extensions for big data clustering are "
+                    "reviewed, too. Some strategies for big data clustering are also presented and discussed. It is "
+                    "shown the data of which volume can be clustered in the well known data mining systems WEKA "
+                    "and KNIME and when new sophisticated technologies are needed.",
+        "outCitations": "f6aa3d256c994a5950fe3262f7f18083d9b40ddd, 24a85e28954871d30ebefac06b459f8c2701e7a0, "
+                        "49c5f901f22bcc90bfe186bc2cfe98541fd55699, 83b88c4166a246186fd4dbbb362fc80d1939a671, "
+                        "0752ae56f80af6f69ddab7db2b46161f44e03ebf, 4cd2f28abc2291d99e158cc5f9292ced1d5f1d08, "
+                        "67ed7e224ae07edb85f153ecc6b2a68acd88dbfd, 7d50991b693fc23edda316fb1487f114f6cc6706, "
+                        "369c4d1f50991e676dea30933a81d6d34d46430f, 17169023358dfd8c7c4e46c81450e74beb248eb8, "
+                        "a62f5a1953764af0021b992b82e7fbdee9def34d, 5b04b085ca1ffb64a57dcb6711386078a7a0d531, "
+                        "8b7f216d4ecd022b547837eaaccebf90224f569b, 69660235186b725c452ea5a7d8621089a713fabc, "
+                        "62dc65305df004dc27814faa38d795cffd12e2ff, eaac84f995937c39918ca5cf7b4a3c050fd7bc39, "
+                        "80fd362544b593bd2250e8f5f3799882fa133ca1, 514c1690f3482ac87804d4982176a81089b85a45, "
+                        "9ef4d5d6503c706ba5f09ed18fe5bef2c4ef62f8, 80c983b2f36e3db461e35a5e8836d4b20b485d4f, "
+                        "d94869549face41294aca52a9dd05c5f2a8e8c94, 155d81d9f764de34c7234f0e3dc37a5bd297edee, "
+                        "5c8fe9a0412a078e30eb7e5eeb0068655b673e86, 5e0f9c313b093967e38b951f92535d5927c9e326, "
+                        "8faad7901db9a73cacaf92ecdedbaece87d95f92, 73b25e63f21614b839e0eb766f49c6e1b4f42ca9, "
+                        "f42f6efc15cb02e2895088bd4bbb8205c6d5bd06, 600ab83b9ec48148a3a0428a02c78e47dd742d61, "
+                        "8856b09c032ed4f10ef8367a8f7088fbb891ec2b, 1479d27df9ae0673165e850b3ab2e987a9e2f62b, "
+                        "ac8ab51a86f1a9ae74dd0e4576d1a019f5e654ed, 8123d0b1cdb8255ec27c246d64a615025f7d908a, "
+                        "d7d385f45c096082812deb1623e5af2c2915b4a9, c8881f04601bba8b5f1ac6e2a2319aef54af2418, "
+                        "cfcd83473e84bc74e923aef83d09d0d3f84ae2b4, 35ffee94de452a381ecade613d8fa25c33118af9"
     }, {
         "id": "d644d4eb388885fe651257ad234b1cb9bb1dc0d4",
         "title": "Tensor Restricted Isometry Property Analysis For a Large Class of Random Measurement Ensembles",
+        "year": "2019",
         "abstract": "In previous work, theoretical analysis based on the tensor Restricted Isometry Property "
                     "(t-RIP) established the robust recovery guarantees of a low-tubal-rank tensor. The obtained "
-                    "sufficient conditions depend strongly on the assumption that the linear measurement maps "
-                    "satisfy the t-RIP. In this paper, by exploiting the probabilistic arguments, we prove that "
-                    "such linear measurement maps exist under suitable conditions on the number of measurements in "
-                    "terms of the tubal rank r and the size of third-order tensor n1, n2, n3. And the obtained "
-                    "minimal possible number of linear measurements is nearly optimal compared with the degrees of "
-                    "freedom of a tensor with tubal rank r. Specially, we consider a random sub-Gaussian distribution "
-                    "that includes Gaussian, Bernoulli and all bounded distributions and construct a large class "
-                    "of linear maps that satisfy a t-RIP with high probability. Moreover, the validity of the required "
-                    "number of measurements is verified by numerical experiments.",
+                    "sufficient conditions depend strongly on the assumption that the linear measurement maps satisfy "
+                    "the t-RIP. In this paper, by exploiting the probabilistic arguments, we prove that such linear "
+                    "measurement maps exist under suitable conditions on the number of measurements in terms of the "
+                    "tubal rank r and the size of third-order tensor n1, n2, n3. And the obtained minimal possible "
+                    "number of linear measurements is nearly optimal compared with the degrees of freedom of a tensor "
+                    "with tubal rank r. Specially, we consider a random sub-Gaussian distribution that includes "
+                    "Gaussian, Bernoulli and all bounded distributions and construct a large class of linear maps "
+                    "that satisfy a t-RIP with high probability. Moreover, the validity of the required number of "
+                    "measurements is verified by numerical experiments.",
         "outCitations": "b5e853572b2f3134acafa76d5ae80b9f28c7dca8, 0c9bb579d8ad6ac987f7a16b66ddace671fc57c5, "
                         "6407ac1f051d30ca621ce16cf4ca67beb05930c6, 4f143cbc63e4c202db77566dac0f1f08c0774a45, "
                         "9fb8c76e6b17f3fdbd0c8f293ce8da4b79f4ffeb, ca96af5be9e713206b92e64f7824da1c2e38e4d4, "
