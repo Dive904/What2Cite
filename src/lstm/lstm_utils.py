@@ -1,4 +1,5 @@
 import re
+from numpy import asarray
 
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
@@ -37,3 +38,21 @@ def preprocess_text(s):
     filtered_sentence = ' '.join(filtered_sentence)
 
     return filtered_sentence
+
+
+def get_embedding_dict(glove_path):
+    embeddings_dictionary = dict()
+
+    embedding_file = open(glove_path, encoding="utf8")
+    for line in embedding_file:
+        records = line.split()
+        word = records[0]
+        try:
+            vector_dimensions = asarray(records[1:], dtype='float32')
+            embeddings_dictionary[word] = vector_dimensions
+        except ValueError:
+            print(" - Value Error", end="")
+    embedding_file.close()
+
+    return embeddings_dictionary
+

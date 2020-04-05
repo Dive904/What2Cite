@@ -16,6 +16,8 @@ import pickle
 
 from src.lstm import lstm_utils
 
+glove_path = '../../input/glove.840B.300d.txt'
+embedding_col_number = 300
 n_epoch = 20
 bacth_size = 128
 n_words_tokenizer = 35000
@@ -77,21 +79,8 @@ X_test = pad_sequences(X_test, padding='post', maxlen=maxlen)
 X_val = pad_sequences(X_val, padding='post', maxlen=maxlen)
 print("Done ✓")
 
-embeddings_dictionary = dict()
-
-embedding_col_number = 300
-embedding_file = open('../../input/glove.840B.300d.txt', encoding="utf8")
-
 print("INFO: Embedding words", end="...")
-for line in embedding_file:
-    records = line.split()
-    word = records[0]
-    try:
-        vector_dimensions = asarray(records[1:], dtype='float32')
-        embeddings_dictionary[word] = vector_dimensions
-    except ValueError:
-        print(" - Value Error", end="")
-embedding_file.close()
+embeddings_dictionary = lstm_utils.get_embedding_dict(glove_path)
 
 embedding_matrix = zeros((vocab_size, embedding_col_number))
 for word, index in tokenizer.word_index.items():
