@@ -1,12 +1,14 @@
 # This script is used to implement the pipeline for only specific abstracts given in input in a list
 
 import pickle
+import numpy as np
 
 from keras_preprocessing.sequence import pad_sequences
 from tensorflow_core.python.keras.models import load_model
 
 from src.pipelineapplication import utils
 from src.lstm import lstm_utils
+from src.textsimilarity import ts_utils
 from src.topicmodeller import tm_utils
 
 # input
@@ -16,6 +18,8 @@ tokenizer_model = "../../output/official/tokenizer.pickle"
 cit_labelled_path = "../../output/official/topics_cits_labelled_pickle.pickle"
 lstm_dataset_path = "../../output/official/final.txt"
 cit_topic_info_pickle_path = "../../output/official/cit_topic_info_pickle.pickle"
+glove_path = '../../input/glove.6B.300d.txt'
+emb_dim = 300
 batch_number = 90
 P = 1
 Pt = 0.05
@@ -72,9 +76,13 @@ print("Done ✓")
 # abstract = [{id = "...", title = "...", outCitations = ["..."], validPredictions = [("topic", prob)], missing = []}]
 
 print("INFO: Analyzing", end="... ")
+# TODO: we should work in this loop to find a good method for CitTopic selection
+embeddings_dictionary = lstm_utils.get_embedding_dict(glove_path)
 for i in range(len(abstracts)):
     # at the end of this loop, every valid prediction will be extended with the index of reference CitTopics
     valid_predictions = abstracts[i]["validPredictions"]
+    paper_abstract = abstracts[i]["abstract"]
+    paper_abstract_emb = ts_utils.compute_embedding_vector(paper_abstract, embeddings_dictionary)
     for k in range(len(valid_predictions)):
         topic = valid_predictions[k][0]
         prob = valid_predictions[k][1]
@@ -84,10 +92,33 @@ for i in range(len(abstracts)):
             max_indexes, max_elem = tm_utils.find_n_maximum(cit_topic_labelled_normalized, J)
             if topic in max_indexes:
                 tmp.append(j)
+
+        # if you don't want to allow the document similarity, disable this fraction of code
+        tmp1 = []
+        for index in tmp:
+            cit_topic = cit_topics[index]
+            total = 0
+            for c in cit_topic:
+                abstract = cit_topic_info.get(c)[1]
+                if abstract is not None:
+                    abstract = lstm_utils.preprocess_text(abstract)
+                    abstract = ts_utils.compute_embedding_vector(abstract, embeddings_dictionary)
+                    cos = ts_utils.compute_cosine_similarity(paper_abstract_emb, abstract, emb_dim)
+                    total += cos
+            tmp1.append(total)
+
+        avg = np.mean(tmp1)
+        tmp2 = []
+        for w in range(len(tmp1)):
+            if tmp1[w] > avg:
+                tmp2.append(tmp[w])
+        tmp = tmp2
+        # end of fraction code of document similarity
+
         valid_predictions[k] = (topic, prob, tmp)
 
 # abstract = [{id = "...", title = "...", outCitations = ["..."],
-#                                                   validPredictions = [("topic", prob, [index])], missing = []}]
+#                                                   validPredictions = [(topic, prob, [index])], missing = []}]
 
 for i in range(len(abstracts)):
     valid_predictions = abstracts[i]["validPredictions"]
@@ -105,8 +136,8 @@ for i in range(len(abstracts)):
             abstracts[i]["missing"].append((topic, index, t, tt))
 print("Done ✓")
 
-# abstract = [{id = "...", title = "...", outCitations = ["..."],
-#                                                   validPredictions = [("topic", prob, [index])],
+# abstract = [{id = "...", title = "...", abstract = "...", outCitations = ["..."],
+#                                                   validPredictions = [(topic, prob, [index])],
 #                                                   missing = [(topic, ref_index, [id_missing, None], [id_hit, None]]}]
 
 for i in range(len(abstracts)):
@@ -126,7 +157,6 @@ for i in range(len(abstracts)):
             th.append((first, cit_topic_info.get(first)[0]))
         all_l.append((f, s, t, th))
     abstracts[i]["missing"] = all_l
-
 
 print("INFO: Writing output file", end="... ")
 with open(missig_citation_path, "w", encoding="utf-8") as out_file:
