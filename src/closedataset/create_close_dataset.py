@@ -4,6 +4,7 @@ import io
 from src.topicmodeller import tm_utils
 
 batch_numbers = [(None, 30), (30, 60), (60, 90), (90, 120), (120, 160), (160, None)]
+# batch_numbers = [(None, 30)]
 
 close_dataset = "../../output/closedataset/closedataset.txt"
 
@@ -44,10 +45,17 @@ for i in range(len(paper_info_2010)):
         value = paper_dic.get(c)
         if value:
             count += 1
-        else:
-            break
-    if count < 2:
+    if len(citations) == 2:
+        if count == 0:
+            to_skip.append(paper_info_2010[i]["id"])
+    elif len(citations) == 1:
+        if count == 0:
+            to_skip.append(paper_info_2010[i]["id"])
+    elif len(citations) == 0:
         to_skip.append(paper_info_2010[i]["id"])
+    else:
+        if count < 2:
+            to_skip.append(paper_info_2010[i]["id"])
 print("Done ✓", end="\n\n")
 paper_info_2010 = None
 gc.collect()
