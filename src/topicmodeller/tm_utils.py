@@ -38,7 +38,7 @@ def extract_only_citations(dir_path, start=None, end=None):
     return ris
 
 
-def extract_paper_info(dir_path, start=None, end=None):
+def extract_paper_info(dir_path, start=None, end=None, exception=None):
     files = os.listdir(dir_path)
     ris = []
 
@@ -48,7 +48,13 @@ def extract_paper_info(dir_path, start=None, end=None):
         end = len(files) - 1
 
     for file in files[start:end]:
-        ris += file_abstract.txt_dataset_reader(dir_path + file)
+        abstracts = file_abstract.txt_dataset_reader(dir_path + file)
+        if exception is None:
+            ris += abstracts
+        else:
+            for a in abstracts:
+                if a["id"] not in exception:
+                    ris.append(a)
 
     return ris
 
