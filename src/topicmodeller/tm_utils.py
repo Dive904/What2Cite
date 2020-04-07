@@ -45,7 +45,7 @@ def extract_paper_info(dir_path, start=None, end=None, exception=None):
     if start is None:
         start = 0
     if end is None:
-        end = len(files) - 1
+        end = len(files)
 
     for file in files[start:end]:
         abstracts = file_abstract.txt_dataset_reader(dir_path + file)
@@ -93,14 +93,31 @@ def print_topics_in_file(model, count_vectorizer, n_top_words, filename, mode="a
             f.write(" ".join([words[i] for i in topic.argsort()[:-n_top_words - 1:-1]]))
 
 
-def find_n_maximum(items, n):
-    indexed = list(enumerate(items))
-    sorted_list = sorted(indexed, key=operator.itemgetter(1), reverse=True)
-    top_n_index = []
-    top_n_elem = []
-    for i in range(n):
-        top_n_index.append(sorted_list[i][0])
-        top_n_elem.append(sorted_list[i][1])
+def find_n_maximum(items, n, skip=False):
+    """
+    This function is used to find the n max elem in a list
+    :param items: list of items
+    :param n: maximum number
+    :param skip: if True, return every elem in the n maximum, not only the first n elem of a list
+    :return: two list, the first containing the index of the elem and the second the list of the elem
+    """
+    if not skip:
+        indexed = list(enumerate(items))
+        sorted_list = sorted(indexed, key=operator.itemgetter(1), reverse=True)
+        top_n_index = []
+        top_n_elem = []
+        for i in range(n):
+            top_n_index.append(sorted_list[i][0])
+            top_n_elem.append(sorted_list[i][1])
+    else:
+        without_duplicates = list(dict.fromkeys(items))
+        top_index, top_elem = find_n_maximum(without_duplicates, n)
+        top_n_index = []
+        top_n_elem = []
+        for i in range(len(items)):
+            if items[i] in top_elem:
+                top_n_elem.append(items[i])
+                top_n_index.append(i)
 
     return top_n_index, top_n_elem
 

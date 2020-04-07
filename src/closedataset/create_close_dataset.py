@@ -15,8 +15,9 @@ print("Done ✓")
 paper_info_2010_len = len(paper_info_2010)
 print("INFO: Initializing dictionary from " + str(paper_info_2010_len) + " papers", end="... ")
 paper_dic = {}
-for paper in paper_info_2010:
-    citations = paper["outCitations"]
+for i in range(len(paper_info_2010)):
+    paper_info_2010[i]["keep"] = True
+    citations = paper_info_2010[i]["outCitations"]
     for c in citations:
         paper_dic[c] = False
 print("Done ✓", end="\n\n")
@@ -29,15 +30,14 @@ for batch in batch_numbers:
 
     print("INFO: Analyzing", end="... ")
     for paper_info in paper_info_all:
-        key = paper_dic.get(paper_info["id"])
-        if key is not None:
-            paper_dic[key] = True
+        if paper_dic.get(paper_info["id"]) is not None:
+            paper_dic[paper_info["id"]] = True
     paper_info_all = None
     gc.collect()
     print("Done ✓", end="\n\n")
 
 print("INFO: Looking for close dataset", end="... ")
-to_skip = []
+to_skip = 0
 for i in range(len(paper_info_2010)):
     citations = paper_info_2010[i]["outCitations"]
     count = 0
@@ -45,41 +45,29 @@ for i in range(len(paper_info_2010)):
         value = paper_dic.get(c)
         if value:
             count += 1
-    if len(citations) == 2:
-        if count == 0:
-            to_skip.append(paper_info_2010[i]["id"])
-    elif len(citations) == 1:
-        if count == 0:
-            to_skip.append(paper_info_2010[i]["id"])
-    elif len(citations) == 0:
-        to_skip.append(paper_info_2010[i]["id"])
-    else:
-        if count < 2:
-            to_skip.append(paper_info_2010[i]["id"])
+    citations_len = len(citations)
+    if count < ((citations_len / 3) * 2):
+        to_skip += 1
+        paper_info_2010[i]["keep"] = False
+
 print("Done ✓", end="\n\n")
-paper_info_2010 = None
-gc.collect()
 
-print("INFO: Number of paper to skip: " + str(len(to_skip)))
-print("INFO: Number of remaining papers: " + str(paper_info_2010_len - len(to_skip)), end="\n\n")
-
-print("INFO: Extracting 2010 dataset with exception", end="... ")
-paper_info_2010 = tm_utils.extract_paper_info("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\",
-                                              exception=to_skip)
-print("Done ✓")
+print("INFO: Number of paper to skip: " + str(to_skip))
+print("INFO: Number of remaining papers: " + str(paper_info_2010_len - to_skip), end="\n\n")
 
 print("INFO: Writing output file", end="... ")
 with io.open(close_dataset, "w", encoding="utf-8") as f:
     for elem in paper_info_2010:
-        f.write("*** ID: " + elem["id"] + "\n")
-        f.write("*** TITLE: " + elem["title"] + "\n")
-        f.write("*** YEAR: " + elem["year"] + "\n")
-        f.write("*** ABSTRACT: " + elem["paperAbstract"] + "\n")
-        f.write("*** OUTCITATIONS: ")
-        for i in range(len(elem["outCitations"])):
-            f.write(elem["outCitations"][i])
-            if i != len(elem["outCitations"]) - 1:
-                f.write(", ")
-        f.write("\n")
-        f.write("---" + "\n")
+        if elem["keep"]:
+            f.write("*** ID: " + elem["id"] + "\n")
+            f.write("*** TITLE: " + elem["title"] + "\n")
+            f.write("*** YEAR: " + elem["year"] + "\n")
+            f.write("*** ABSTRACT: " + elem["paperAbstract"] + "\n")
+            f.write("*** OUTCITATIONS: ")
+            for i in range(len(elem["outCitations"])):
+                f.write(elem["outCitations"][i])
+                if i != len(elem["outCitations"]) - 1:
+                    f.write(", ")
+            f.write("\n")
+            f.write("---" + "\n")
 print("Done ✓")

@@ -5,21 +5,28 @@ from joblib import dump
 import gc
 import pandas as pd
 
+from src.fileutils import file_abstract
 from src.topicmodeller import tm_utils
 
 # input
 end_batch_number = 44
 number_topics = 750
 number_words = 50
+close_dataset = "../../output/closedataset/closedataset.txt"
+close_dataset_pickle = "../../output/closedataset/closedataset_pickle.pickle"
 
 # output
 cit_topic_keywords_filename = "../../output/doctopic/cit_topic_keywords.csv"
 lda_cit_topic_filename = "../../output/models/lda_cit_topic.jlb"
 countvect_cit_topic_filename = "../../output/models/countvect_cit_topic.jlb"
 
-print("INFO: Extracting " + str(end_batch_number) + " batch citations and removing empty citations", end="... ")
-paper_info = tm_utils.extract_paper_info("C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\",
-                                         end=end_batch_number)
+print("INFO: Reading close dataset", end="... ")
+paper_info = file_abstract.txt_dataset_reader(close_dataset)
+print("Done ✓")
+
+print("INFO: Removing empty citations", end="... ")
+paper_info = paper_info[:500000]
+gc.collect()
 citations = []
 for data in paper_info:
     out_cit = data["outCitations"]

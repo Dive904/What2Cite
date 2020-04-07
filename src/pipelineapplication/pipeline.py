@@ -89,7 +89,7 @@ for i in range(len(abstracts)):
         tmp = []
         for j in range(len(cit_topic_labelled)):  # we must work in this area to find a good method to get the CitTopic
             cit_topic_labelled_normalized = utils.normalize_scores_on_cittopics(cit_topic_labelled[j], P)
-            max_indexes, max_elem = tm_utils.find_n_maximum(cit_topic_labelled_normalized, J)
+            max_indexes, max_elem = tm_utils.find_n_maximum(cit_topic_labelled_normalized, J, skip=True)
             if topic in max_indexes:
                 tmp.append(j)
 
