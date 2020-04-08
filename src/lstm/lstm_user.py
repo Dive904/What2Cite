@@ -11,9 +11,7 @@ lstm_model = "../../output/official/lstm.h5"
 tokenizer_model = "../../output/official/tokenizer.pickle"
 
 text = utils.get_abstracts_to_analyze()
-text = list(map(lambda x: x[0], text))
-
-text[0] = lstm_utils.preprocess_text(text[0])
+text = list(map(lambda x: lstm_utils.preprocess_text(x["abstract"]), text))
 
 with open(tokenizer_model, 'rb') as handle:
     tokenizer = pickle.load(handle)

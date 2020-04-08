@@ -150,35 +150,84 @@ def get_abstracts_to_analyze():
                         "85a52e5e349c5874297b82a42d6d888ac03610cd, c0a98da299e5b273053527f9ef8d1974b9d64fac, "
                         "45f2bd821d663e07d11bf8d4371a7fb4f0fa5e2c, 7dfce7cd85255d25b7dbf9e41d3321a3b5f817e0"
     }, {
-        "id": "3980e764f677dd67181f68e47710e53370584800",
-        "title": "On topological structure of web services networks for composition",
-        "year": "2013",
-        "abstract": 'In order to deal efficiently with the exponential growth of the web services landscape '
-                    'in composition life cycle activities, it is necessary to have a clear view of its main '
-                    'features. As for many situations where there is a lot of interacting entities, the complex '
-                    'networks paradigm is an appropriate approach to analyse the interactions between the multitudes '
-                    'of web services. In this paper, we present and investigate the main interactions between Semantic '
-                    'Web services models from the complex network perspective. Results show that both parameter '
-                    'and operation networks exhibit the main characteristics of typical real-world complex networks '
-                    'such as the "small-world" property and an inhomogeneous degree distribution. These results yield '
-                    'valuable insight in order to develop composition search algorithms, to deal with security threat '
-                    'in the composition process and on the phenomena which characterise its evolution.',
-        "outCitations": "bf4ae2c4e258bdd9d21562b5c05420033a02cc1d, da4a0c1eebdec2893e1adc41925a09a249cf7bc4, "
-                        "9da2906c0aaec6c50fbe272a97a4888bdffe85b4, 449030fac9f669e668bbed43376e7cb642fc3634, "
-                        "65b5b6de48a768526f16ea98fddfa6e4e70af8c1, 4c6b395361f12af51ccd188f4f8d6b55f811ecf0, "
-                        "08ef5800c4cf9f8fc74c8332bbd83036a7b1643e, c27f231edae7f502999e3844dc383acd5a91fa26, "
-                        "8c893e64e33eaad6e8013fdae1bcbe6ee757e020, c75da49837a66d90b014cfc8b923946e409d01b6, "
-                        "a38b09f352aab3cb58dc212a2c77508a91ac4558, cb15c215c2dfb94931a605ea69ca7d01cbb4f180, "
-                        "9be428c9383d47b86570b1b9fc20faf006346c5d, e876229734551231d98059a174a3381b0013d833, "
-                        "a98736e2e9dd0c4870bc40aa083d0baa534a5cc5, 3b9b9c57ad7431af5524dfb1d0b044c19cfcd2e8, "
-                        "f83dcce3b749272062362af70dac675632b56ffb, c67dcd5066c7f72c71a0d14ffef7206d14ddd270, "
-                        "afdcba53013b26012afd1166fd7419aa232d13b6, 265be00bf112c6cb2fa3e8176bff8394a114dbde, "
-                        "8c38fe60b3761e25ed2d2486c3a944674a3e9534, 7d32e764672117c2d5bce2c69dee737c6e88b719, "
-                        "db04bb965705706a844c7ac496f79a25842408e8, cdec9816d3aa68b9aa3b23858e265ced85fa040b, "
-                        "6b89e8eb15a572b80cefc2fc21c67d71dd979ee4, bc2f9329c3260e82b0a39f7a725c03e7512b40f7, "
-                        "8e0870ef4b6e000df65dec26b9d5873cfd444041, 195deb7f86b027db97fd47f4fee13f8e11262a6c, "
-                        "45d9a0db23906842f4c3385e4f231ede34d32db0, f2dde5e984592007f6e532561ef091e6dd8fba2c, "
-                        "4cb0526227866e895dcce2e1acd1fa5701b797cb, 45bbc03cd39ea1cb6287e7d8f5f12fa363817f5c"
+        "id": "a82bfd6530fda11d11d90aee16baac506bc2001d",
+        "title": "Content Driven Enrichment of Formal Text using Concept Definitions and Applications",
+        "year": "2018",
+        "abstract": 'Formal text is objective, unambiguous and tends to have complex sentence construction intended '
+                    'to be understood by the target demographic. However, in the absence of domain knowledge it is '
+                    'imperative to define key concepts and their relationship in the text for correct interpretation '
+                    'for general readers. To address this, we propose a text enrichment framework that identifies '
+                    'the key concepts from input text, highlights definitions and fetches the definition from external '
+                    'data sources in case the concept is undefined. Beyond concept definitions, the system enriches '
+                    'the input text with concept applications and a pre-requisite concept graph that showcases the '
+                    'inter-dependency within the extracted concepts. While the problem of learning definition '
+                    'statements is attempted in literature, the task of learning application statements is novel. '
+                    'We manually annotated a dataset for training a deep learning network for identifying application '
+                    'statements in text. We quantitatively compared the results of both application and definition '
+                    'identification models with standard baselines. To validate the utility of the proposed framework '
+                    'for general readers, we report enrichment accuracy and show promising results.',
+        "outCitations": "fbb5d9a795935a5efe2ebfa2a013d0160cf5bdf0, f37e1b62a767a307c046404ca96bc140b3e68cb5, "
+                        "4ed75f35ae7343cd906f311390f572a58e36805c, 6e854c27ebb9625bc409469541f21526b0df7bd5, "
+                        "cb6be7b2eb8382a85fdc48f1ca123d59d7b003ce, 1355fda225ce00c93123a6e41f6777e2270038b5, "
+                        "d333fdfcc56483336f0428e48bc11cd26cac28d8, e626e53adaf80109486563a98b87dc21f0652318, "
+                        "3e48cb9b4838f8947388c3926df70211ca49b51a, a14045a751f5d8ed387c8630a86a3a2861b90643, "
+                        "c8961c424778ef9b15008d45b314c2d319a7cc56, 79f21f3dc4e01c1830b3d7f5cf10e170dbc948c1, "
+                        "1ddfef3dd1e7e061e011b86a0f62b259903bc55b, eb42a490cf4f186d3383c92963817d100afd81e2, "
+                        "4bb202bb748c0447121a4726ee2e521196930bb2"
+    }, {
+        "id": "d9801dbd066d104d244df6aace24fd56e7e92f3d",
+        "title": "Linear demixed domain multichannel nonnegative matrix factorization for speech enhancement",
+        "year": "2017",
+        "abstract": 'In this paper, we investigate blind source separation for audio signals based on multichannel '
+                    'nonnegative matrix factorization (MNMF) of magnitude spectrograms in a linear demixed domain. '
+                    'The original magnitude MNMF by itself is less effective in general acoustic situations because '
+                    'it discards mutual information between input channels, which is represented by non-diagonal '
+                    'complex elements of the spatial covariance matrices of them. To deal with this problem, several '
+                    'linear transformations of the multichannel input have been proposed in order to diagonalize '
+                    'the covariance matrices without loss of the mutual information. However, when the number of '
+                    'microphones is small, it is difficult for static transformations to work well for various '
+                    'combinations of source positions. For this problem, we first prove that general linear '
+                    'transformations (linear demixing) can be applied as preprocessing of the magnitude MNMF, and '
+                    'then confirm that a transformation adaptive to source positions, such as using frequency domain '
+                    'independent component analysis, is better than the conventional static transformation by '
+                    'experimental comparison of 2- and 4-channel noisy speech enhancement tasks.',
+        "outCitations": "01a7cfc4721b85ab15304644db5235f334a6aa1e, 2bfaa14d9774ff2fbb03327d291b2c64dc13a6b1, "
+                        "72d175c4a0b2cab7b6b0912c8b98bfac002072de, 8d39d0853d88f92714684931a5cc1f2fa9eee11c, "
+                        "29bae9472203546847ec1352a604566d0f602728, a4e79f0316ffafc2610f085e09cd3fea9cd41bfd, "
+                        "d3c2095c74ece80a85a6210ad1e6263e47afaacb, 89e07527f8b1be40be563001e2ab614721a2c7fd, "
+                        "7e745ef5cb1e19c129ccb7994f51f10dd2e3645d, 783f44598d5d9df7d534d00943959d9b34dbc302, "
+                        "d4660c13cfeb749896b01e14cae819458793fccb, 77eac533c56437e88e09a45a3b254d5907c6f1ed, "
+                        "8338daf3b445fb1b65a203bc60213c09cb537585, be7feda578a13b2c4f44a896798b24de581c137a, "
+                        "29de8281b8cbc764d605a20d00b818eba6d47da1, e99db5a3dcc3da3cdffc01c8bbd656aca1112f69, "
+                        "531a4f5446a13a5dbdfe3e22340d4c3fd6f6a671"
+    }, {
+        "id": "eb8aa8b78bb51773c4fad9304ca50b3452e43f19",
+        "title": "Opinion Mining and Visualization of Online Users Reviews: A Case Study in Booking.com",
+        "year": "2018",
+        "abstract": 'The growth of web applications and portals on hotel booking have led to an enormous amount of '
+                    'consumer generated comments and reviews on various hotels and travel services. In this paper, '
+                    'we present a work on the automatic analysis of user reviews on online hotel reviews with the '
+                    'aim to understand public opinions towards facilities and services they receive. We follow an '
+                    'aspect based approach where initially Latent Dirichlet Allocation is utilized to model topic '
+                    'opinions. The aspects specified indicate the important characteristics of the services and the '
+                    'facilities that users address in their reviews. After that, natural language processing '
+                    'approaches are used to analyze textual reviews, specify the dependencies on a sentence level '
+                    'and assist in understanding users opinions. At the final stage of understanding users opinions, '
+                    'several classifiers are trained under different feature sets extracted from the textual reviews '
+                    'and combined in ensemble schemas and their performance is examined on recognizing the polarity '
+                    'of the users opinions. The results are quite satisfactory and indicate that features such as '
+                    'sentence dependencies assisted the classifiers in achieving accurate performance and that '
+                    'ensemble schemas perform robustly better than individual classifiers.',
+        "outCitations": "a0456c27cdd58f197032c1c8b4f304f09d4c9bc5, 7a92314ff9ef62aab0f30510225736aa30aa7b84, "
+                        "3b67c9b6c3328ead7dc123c92ee0e5f2c31317cb, 805021df356a8e4fbabd9779e88e1b09576c7399, "
+                        "08281550b59e942475baee8c8c7a27e4246a8f7e, f39e6d1cfd83ab9529367c1bb694abfc9d331b3d, "
+                        "c1dfcc98622dfd22480e4028bdc0244713e449d7, be10b7485d76ea04d1982082ec3f253f3e322e34, "
+                        "7373725d5a84669a93784b0608a363162e449642, 58f7accbe36aadd0ef83fd2746c879079eb816bc, "
+                        "9e7f8d1777f2e5dfc216eb0ee6ca30ae58f686fd, 3cc228402f31ca749112197720b9ef6af0c16790, "
+                        "984585dedd6c3907063d04f94ac9c385be633641, 9afe81e3a498bc31cb749e7d7972ff319a730961, "
+                        "fca5d9167b5cc43f225a3295cba3379b97e1b5dc, 2f5102ec3f70d0dea98c957cc2cab4d15d83a2da, "
+                        "961f247287f844ea9710bca5acd92bd3a8559ab5, 5c695f1810951ad1bbdf7da5f736790dca240e5b, "
+                        "2671e9ff0eb68739d6610cf67937e6b34a2fcf10, 88e055b05be080154c901f755bf4381f75250948"
     }
     ]
 
