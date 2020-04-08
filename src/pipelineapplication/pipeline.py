@@ -18,7 +18,7 @@ tokenizer_model = "../../output/official/tokenizer.pickle"
 cit_labelled_path = "../../output/official/topics_cits_labelled_pickle.pickle"
 lstm_dataset_path = "../../output/official/final.txt"
 cit_topic_info_pickle_path = "../../output/official/cit_topic_info_pickle.pickle"
-glove_path = '../../input/glove.6B.300d.txt'
+glove_path = '../../input/glove.840B.300d.txt'
 emb_dim = 300
 batch_number = 90
 P = 1
@@ -75,14 +75,16 @@ print("Done ✓")
 
 # abstract = [{id = "...", title = "...", outCitations = ["..."], validPredictions = [("topic", prob)], missing = []}]
 
-print("INFO: Analyzing", end="... ")
 # TODO: we should work in this loop to find a good method for CitTopic selection
-embeddings_dictionary = lstm_utils.get_embedding_dict(glove_path)
+print("INFO: Analyzing", end="... ")
+# TODO: disable this line if you don't want to allow the document similarity
+# embeddings_dictionary = lstm_utils.get_embedding_dict(glove_path)
 for i in range(len(abstracts)):
     # at the end of this loop, every valid prediction will be extended with the index of reference CitTopics
     valid_predictions = abstracts[i]["validPredictions"]
     paper_abstract = abstracts[i]["abstract"]
-    paper_abstract_emb = ts_utils.compute_embedding_vector(paper_abstract, embeddings_dictionary)
+    # TODO: disable this line if you don't want to allow the document similarity
+    # paper_abstract_emb = ts_utils.compute_embedding_vector(paper_abstract, embeddings_dictionary)
     for k in range(len(valid_predictions)):
         topic = valid_predictions[k][0]
         prob = valid_predictions[k][1]
@@ -93,7 +95,8 @@ for i in range(len(abstracts)):
             if topic in max_indexes:
                 tmp.append(j)
 
-        # if you don't want to allow the document similarity, disable this fraction of code
+        # TODO: if you don't want to allow the document similarity, disable this fraction of code
+        '''
         tmp1 = []
         for index in tmp:
             cit_topic = cit_topics[index]
@@ -114,7 +117,7 @@ for i in range(len(abstracts)):
                 tmp2.append(tmp[w])
         tmp = tmp2
         # end of fraction code of document similarity
-
+        '''
         valid_predictions[k] = (topic, prob, tmp)
 
 # abstract = [{id = "...", title = "...", outCitations = ["..."],

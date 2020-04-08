@@ -111,7 +111,7 @@ def find_n_maximum(items, n, skip=False):
             top_n_elem.append(sorted_list[i][1])
     else:
         without_duplicates = list(dict.fromkeys(items))
-        top_index, top_elem = find_n_maximum(without_duplicates, n)
+        top_index, top_elem = find_n_maximum(without_duplicates, min(n, len(without_duplicates)))
         top_n_index = []
         top_n_elem = []
         for i in range(len(items)):

@@ -149,6 +149,36 @@ def get_abstracts_to_analyze():
                         "88a0dccc6b90dbbc9daf984da4e70ceecb3ef891, ee3d02a5a5d39d36d66fd416e6af204b44d7ba1a, "
                         "85a52e5e349c5874297b82a42d6d888ac03610cd, c0a98da299e5b273053527f9ef8d1974b9d64fac, "
                         "45f2bd821d663e07d11bf8d4371a7fb4f0fa5e2c, 7dfce7cd85255d25b7dbf9e41d3321a3b5f817e0"
+    }, {
+        "id": "3980e764f677dd67181f68e47710e53370584800",
+        "title": "On topological structure of web services networks for composition",
+        "year": "2013",
+        "abstract": 'In order to deal efficiently with the exponential growth of the web services landscape '
+                    'in composition life cycle activities, it is necessary to have a clear view of its main '
+                    'features. As for many situations where there is a lot of interacting entities, the complex '
+                    'networks paradigm is an appropriate approach to analyse the interactions between the multitudes '
+                    'of web services. In this paper, we present and investigate the main interactions between Semantic '
+                    'Web services models from the complex network perspective. Results show that both parameter '
+                    'and operation networks exhibit the main characteristics of typical real-world complex networks '
+                    'such as the "small-world" property and an inhomogeneous degree distribution. These results yield '
+                    'valuable insight in order to develop composition search algorithms, to deal with security threat '
+                    'in the composition process and on the phenomena which characterise its evolution.',
+        "outCitations": "bf4ae2c4e258bdd9d21562b5c05420033a02cc1d, da4a0c1eebdec2893e1adc41925a09a249cf7bc4, "
+                        "9da2906c0aaec6c50fbe272a97a4888bdffe85b4, 449030fac9f669e668bbed43376e7cb642fc3634, "
+                        "65b5b6de48a768526f16ea98fddfa6e4e70af8c1, 4c6b395361f12af51ccd188f4f8d6b55f811ecf0, "
+                        "08ef5800c4cf9f8fc74c8332bbd83036a7b1643e, c27f231edae7f502999e3844dc383acd5a91fa26, "
+                        "8c893e64e33eaad6e8013fdae1bcbe6ee757e020, c75da49837a66d90b014cfc8b923946e409d01b6, "
+                        "a38b09f352aab3cb58dc212a2c77508a91ac4558, cb15c215c2dfb94931a605ea69ca7d01cbb4f180, "
+                        "9be428c9383d47b86570b1b9fc20faf006346c5d, e876229734551231d98059a174a3381b0013d833, "
+                        "a98736e2e9dd0c4870bc40aa083d0baa534a5cc5, 3b9b9c57ad7431af5524dfb1d0b044c19cfcd2e8, "
+                        "f83dcce3b749272062362af70dac675632b56ffb, c67dcd5066c7f72c71a0d14ffef7206d14ddd270, "
+                        "afdcba53013b26012afd1166fd7419aa232d13b6, 265be00bf112c6cb2fa3e8176bff8394a114dbde, "
+                        "8c38fe60b3761e25ed2d2486c3a944674a3e9534, 7d32e764672117c2d5bce2c69dee737c6e88b719, "
+                        "db04bb965705706a844c7ac496f79a25842408e8, cdec9816d3aa68b9aa3b23858e265ced85fa040b, "
+                        "6b89e8eb15a572b80cefc2fc21c67d71dd979ee4, bc2f9329c3260e82b0a39f7a725c03e7512b40f7, "
+                        "8e0870ef4b6e000df65dec26b9d5873cfd444041, 195deb7f86b027db97fd47f4fee13f8e11262a6c, "
+                        "45d9a0db23906842f4c3385e4f231ede34d32db0, f2dde5e984592007f6e532561ef091e6dd8fba2c, "
+                        "4cb0526227866e895dcce2e1acd1fa5701b797cb, 45bbc03cd39ea1cb6287e7d8f5f12fa363817f5c"
     }
     ]
 
