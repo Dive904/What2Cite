@@ -1,6 +1,7 @@
 # This script is used to analyze the CitTopic, classifying all the papers in the CitTopic and getting the TopK
 import pickle
-import gc
+
+from time import process_time
 
 from keras.engine.saving import load_model
 from keras_preprocessing.sequence import pad_sequences
@@ -31,6 +32,7 @@ print("Done ✓")
 
 print("INFO: Reading close dataset", end="... ")
 paper_info = file_abstract.txt_dataset_reader(close_dataset)
+paper_info = paper_info[:500000]
 print("Done ✓")
 
 print("INFO: Reading Tokenizer and Neural Network", end="... ")
@@ -41,27 +43,31 @@ model = load_model(lstm_model)
 print("Done ✓")
 
 print("INFO: Analyzing", end="... ")
+count = 1
+t_start = process_time()
 for paper in paper_info:
-    out_citations = paper["outCitations"]
-    topic = None
-    for out_cit in out_citations:
-        score_topic = cit_structure.get(out_cit)
-        if score_topic is not None:
-            if topic is None:
-                text = paper["paperAbstract"]
-                text = lstm_utils.preprocess_text(text)
-                seq = tokenizer.texts_to_sequences([text])
-                seq = pad_sequences(seq, padding='post', maxlen=200)
-                topic = model.predict(seq)
-                valid_topic = utils.get_valid_predictions(topic[0], t_for_true_prediction)
-                topic = list(map(lambda x: x[0], valid_topic))
-            for t in topic:
-                score_topic[t] += 1
-            cit_structure[out_cit] = score_topic
-    gc.collect()
+    if count % 500 == 0:
+        t_stop = process_time()
+        print("Processed: " + str(count) + " papers in " + str(t_stop - t_start) + " seconds.")
+        t_start = process_time()
+    out_citations = list(filter(lambda x: cit_structure.get(x) is not None, paper["outCitations"]))
+    if len(out_citations) > 0:
+        text = paper["paperAbstract"]
+        text = lstm_utils.preprocess_text(text)
+        seq = tokenizer.texts_to_sequences([text])
+        seq = pad_sequences(seq, padding='post', maxlen=200)
+        topic = model.predict(seq)
+        valid_topic = utils.get_valid_predictions(topic[0], t_for_true_prediction)
+        topic = list(map(lambda x: x[0], valid_topic))
+        for t in topic:
+            for out in out_citations:
+                score_list = cit_structure.get(out)
+                score_list[t] += 1
+                cit_structure[out] = score_list
+    count += 1
 print("Done ✓")
 
 print("INFO: Writing on file", end="... ")
-with open(cit_structure_pickle_path, "wb") as handle_file:  # saving list to use in pipeline application
+with open(cit_structure_pickle_path, "wb") as handle_file:
     pickle.dump(cit_structure, handle_file, protocol=pickle.HIGHEST_PROTOCOL)
 print("Done ✓")

@@ -286,9 +286,7 @@ def get_valid_predictions(predictions, t):
     :param predictions: list prediction probability
     :return:
     """
-    res = []
-    for i in range(len(predictions)):
-        if predictions[i] > t:
-            res.append((i, predictions[i]))
+    predictions = list(enumerate(predictions))
+    res = list(filter(lambda x: x[1] > t, predictions))
 
     return res

@@ -26,15 +26,19 @@ def preprocess_text(s):
     # Removing multiple spaces
     sentence = re.sub(r'\s+', ' ', sentence)
 
+    s_lemmatized = list(map(lambda x: lemmatizer.lemmatize(x), sentence.split()))
+    '''
     s_lemmatized = []
     for w in sentence.split():
         s_lemmatized.append(lemmatizer.lemmatize(w))
+    '''
 
     s = ' '.join(s_lemmatized)
 
     word_tokens = word_tokenize(s)
 
-    filtered_sentence = [w for w in word_tokens if w not in stop_words]
+    # filtered_sentence = [w for w in word_tokens if w not in stop_words]
+    filtered_sentence = list(filter(lambda x: x not in stop_words, word_tokens))
     filtered_sentence = ' '.join(filtered_sentence)
 
     return filtered_sentence
