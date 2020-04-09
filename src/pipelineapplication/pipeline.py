@@ -19,6 +19,7 @@ cit_labelled_path = "../../output/official/topics_cits_labelled_pickle.pickle"
 lstm_dataset_path = "../../output/official/final.txt"
 cit_topic_info_pickle_path = "../../output/official/cit_topic_info_pickle.pickle"
 glove_path = '../../input/glove.840B.300d.txt'
+cit_structure_pickle_path = "../../output/closedataset/cit_structure_pickle.pickle"
 emb_dim = 300
 batch_number = 90
 P = 1
@@ -31,6 +32,10 @@ missig_citation_path = "../../output/official/missing_citations.txt"
 
 with open(cit_topic_info_pickle_path, 'rb') as handle:  # take the list of CitTopic score
     cit_topic_info = pickle.load(handle)
+
+with open(cit_structure_pickle_path, 'rb') as handle:  # take the list of CitTopic score
+    cit_structure = pickle.load(handle)
+print("Done ✓")
 
 with open(cit_labelled_path, 'rb') as handle:  # take the list of CitTopic score
     # in this part, we read the cit topics labelled with other information.
@@ -88,12 +93,18 @@ for i in range(len(abstracts)):
     for k in range(len(valid_predictions)):
         topic = valid_predictions[k][0]
         prob = valid_predictions[k][1]
-        tmp = []
-        for j in range(len(cit_topic_labelled)):  # we must work in this area to find a good method to get the CitTopic
-            cit_topic_labelled_normalized = utils.normalize_scores_on_cittopics(cit_topic_labelled[j], P)
-            max_indexes, max_elem = tm_utils.find_n_maximum(cit_topic_labelled_normalized, J, skip=True)
-            if topic in max_indexes:
-                tmp.append(j)
+        score_count_list = []
+        for cit_topic in cit_topics:
+            score_count = 0
+            for cit in cit_topic:
+                score_list = cit_structure.get(cit)
+                score_count += score_list[topic]
+            score_count_list.append(score_count)
+
+        score_mean = np.mean(score_count_list)
+        score_count_list = list(enumerate(score_count_list))
+        score_count_list = list(filter(lambda x: x[1] > score_mean, score_count_list))
+        tmp = list(map(lambda x: x[0], score_count_list))
 
         # TODO: if you don't want to allow the document similarity, disable this fraction of code
         '''
