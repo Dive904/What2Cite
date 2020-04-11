@@ -311,3 +311,15 @@ def make_bar_plot(height, bars, title, path):
     plt.title(title)
     plt.savefig(path)
     plt.close()
+
+
+def split_list(l, p):
+    n = (100 / p)
+    k = len(l) / n
+
+    if k % 1 > 0:
+        k = int(k) + 1
+    else:
+        k = int(k)
+
+    return [l[i:i + k] for i in range(0, len(l), k)]

@@ -20,6 +20,8 @@ cit_topic_info_pickle_path = "../../output/official/cit_topic_info_pickle.pickle
 glove_path = '../../input/glove.840B.300d.txt'
 cit_structure_pickle_path = "../../output/official/cit_structure_pickle.pickle"
 hittingplot_base_path = "../../output/hittingplots/"
+Percentile = 2
+hittingplot_total_path = "../../output/hittingplots/total_hitting_plot" + str(Percentile) + ".png"
 emb_dim = 300
 P = 1
 Pt = 0.05
@@ -84,6 +86,7 @@ print("Done ✓")
 print("INFO: Analyzing", end="... ")
 # TODO: disable this line if you don't want to allow the document similarity
 # embeddings_dictionary = lstm_utils.get_embedding_dict(glove_path)
+heights_split = []
 for i in range(len(abstracts)):
     # at the end of this loop, every valid prediction will be extended with the index of reference CitTopics
     valid_predictions = abstracts[i]["validPredictions"]
@@ -123,6 +126,7 @@ for i in range(len(abstracts)):
         path = hittingplot_base_path + abstracts[i]["id"] + "#" + str(topic) + ".png"
         utils.make_bar_plot(height, bars, title, path)
 
+        heights_split.append(utils.split_list(height, Percentile))
         # TODO: if you don't want to allow the document similarity, disable this fraction of code
         '''
         tmp1 = []
@@ -147,6 +151,19 @@ for i in range(len(abstracts)):
         # end of fraction code of document similarity
         '''
         valid_predictions[k] = (topic, prob, tmp)
+
+# create aggregate plot
+max_index = int(100 / Percentile)
+total = list(np.zeros(max_index))
+for heights in heights_split:
+    hh = 0
+    while hh < len(heights):
+        total[hh] += sum(heights[hh])
+        hh += 1
+
+total = list(map(lambda x: int(x), total))
+bars = [str(i + 1) for i in range(max_index)]
+utils.make_bar_plot(total, bars, "Total Hitting Plot - " + str(Percentile) + "%", hittingplot_total_path)
 
 # abstract = [{id = "...", title = "...", outCitations = ["..."],
 #                                                   validPredictions = [(topic, prob, [index])], missing = []}]
