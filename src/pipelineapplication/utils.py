@@ -7,28 +7,6 @@ def get_abstracts_to_analyze():
     :return: list of dictionaries
     """
     abstracts = [{
-        "id": "20c507d11b20b2abe4c15a786653ba4fa1a6479a",
-        "title": "A weighted multi-granulation decision-theoretic approach to multi-source decision systems",
-        "year": "2017",
-        "abstract": "Decision theoretic rough set is a typical generalization model of rough set, which has fault "
-                    "tolerance based on Bayes minimum decision risk. How to mine knowledge from the information "
-                    "collected from different sources is one of the focuses of current artificial intelligence. "
-                    "From a cognitive point of view, especially from the point of granulation, this paper studies "
-                    "decision theory of multi-source decision systems based on generalized multi-granulation and "
-                    "decision theoretic rough sets. It is because each granular structure is not equally important "
-                    "in practical issues. First of all, the method of granulation weight is proposed based on the "
-                    "internal uncertainty of systems and the external correlation between systems, namely the double "
-                    "weighted granulation (DGW) method. And then a weighted generalized multi-granulation "
-                    "decision-theoretic rough set (WGM-DTRS) model in multi-source decision systems is proposed. "
-                    "Finally, in order to verify the effectiveness of the (DGW) method, the approximation accuracy "
-                    "of decision classes under different weighted granulation methods is compared. The numerical "
-                    "results show that the proposed method is effective from the point of classification. Therefore, "
-                    "the WGM-DTRS model based on the DGW method is meaningful.",
-        "outCitations": "32b3c9f0ef19cc33a38e893ff16dff1d85b7df72, 7f1dec3dcf4abacb9a593d24c85abef5ecfd0e30, "
-                        "33711930066501cd6efb95ef5125c3f9bb42d885, cdef00d237dc8f9bcbd16d02be429ddf6f10121b, "
-                        "eae32037595b6878c13a0466b026bd9ac9a645f5, 6cef63321eda6256de72f23e64ade797c11c8121, "
-                        "26029ee7e87a48d57081b087cd18680be942b9f8"
-    }, {
         "id": "45229eae3050b2f0379efbd6e6caff2991445c5a",
         "title": "Accelerating Numerical Dense Linear Algebra Calculations with GPUs",
         "year": "2014",
@@ -228,6 +206,39 @@ def get_abstracts_to_analyze():
                         "fca5d9167b5cc43f225a3295cba3379b97e1b5dc, 2f5102ec3f70d0dea98c957cc2cab4d15d83a2da, "
                         "961f247287f844ea9710bca5acd92bd3a8559ab5, 5c695f1810951ad1bbdf7da5f736790dca240e5b, "
                         "2671e9ff0eb68739d6610cf67937e6b34a2fcf10, 88e055b05be080154c901f755bf4381f75250948"
+    }, {
+        "id": "89518a0e00c5c81ff8be8ab82d4da2b7049a4306",
+        "title": "FMLLR Speaker Normalization With i-Vector: In Pseudo-FMLLR and Distillation Framework",
+        "year": "2018",
+        "abstract": 'When an automatic speech recognition (ASR) system is deployed for real-world applications, '
+                    'it often receives only one utterance at a time for decoding. This single utterance could be '
+                    'of short duration depending on the ASR task. In these cases, robust estimation of speaker '
+                    'normalizing methods like feature-space maximum likelihood linear regression (FMLLR) and i-vectors '
+                    'may not be feasible. In this paper, we propose two unsupervised speaker normalization '
+                    'techniques—one at feature level and other at model level of acoustic modeling—to overcome '
+                    'the drawbacks of FMLLR and i-vectors in real-time scenarios. At feature level, we propose the '
+                    'use of deep neural networks (DNN) to generate pseudo-FMLLR features from time-synchronous pair '
+                    'of filterbank and FMLLR features. These pseudo-FMLLR features can then be used for DNN acoustic '
+                    'model training and decoding. At model level, we propose a generalized distillation framework, '
+                    'where a teacher DNN trained on FMLLR features guides the training and optimization of a student '
+                    'DNN trained on filterbank features. In both the proposed methods, the ambiguity in choosing the '
+                    'speaker-specific FMLLR transform can be reduced by augmenting i-vectors to the input filterbank '
+                    'features. Experiments conducted on 33-h and 110-h subsets of Switchboard corpus show that the '
+                    'proposed methods provide significant gains over DNNs trained on FMLLR, i-vector appended FMLLR, '
+                    'filterbank and i -vector appended filterbank features, in real-time scenario.',
+        "outCitations": "177496ecd8b485679d00839a1e19dadcab1f802e, 4d6e574c76e4a5ebbdb5f6e382d06c058090e4b7, "
+                        "d233a365e9ae0ba7d86d1b0b0a2b9e66983bf551, cb4d59854786c57e3da4ca2a433b826e2f7a2ef4, "
+                        "f317b89d3224b6bc5269790e81604904cff7052c, c256a54a5f3f07a6dcf2dea3a220d0024cf3bfe5, "
+                        "2978880d0c3a469a1420411d4b0b30a7b3fe56e9, 7b4ee51aa8581889d131f35167e8640568fdde98, "
+                        "8660642c37be1eaeca0d22598558249ac47d767d, 5b73ba929d4d8e7eb7c6a96703679464b3208538, "
+                        "806da4fd62dadf78c8f26a4ec57529ffacf15316, d237de6e4974e6a34d2b35d7a3a223f6fb611219, "
+                        "d8b89cf577350095c8b52555e5482e96e6e207fc, 2904a5c43940a2d1da84d4c4a387cb17de987ffb, "
+                        "7599dfed1de67c726f9e4fd372cc9ef03d2cf3e9, 58059409e131f2a854367052636138e835f14f60, "
+                        "bbf8e55f0837c08688106a30fd2560f39327f54b, 94de64f3a47e5b06cb0960ddf68a7fbc1ac70232, "
+                        "0670e66badee8a9772bb326721e5fe5045817303, 7600cf5da33b19d37266da4d2edcbd32bc0ecb5e, "
+                        "f341fa61da527e64a349334836d52626fe9d6c79, d3bdc4a679cafff12901039245b99411d5b729f7, "
+                        "0c908739fbff75f03469d13d4a1a07de3414ee19, 8e46a2e57ce37b846bef48d776aeafa16c411681, "
+                        "3a1a2cff2b70fb84a7ca7d97f8adcc5855851795"
     }
     ]
 

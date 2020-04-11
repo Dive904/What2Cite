@@ -16,12 +16,11 @@ cit_labelled_analyzed_pickle_path = "../../output/official/cit_labelled_with_fin
 lstm_model = "../../output/official/lstm.h5"
 tokenizer_model = "../../output/official/tokenizer.pickle"
 cit_labelled_path = "../../output/official/topics_cits_labelled_pickle.pickle"
-lstm_dataset_path = "../../output/official/final.txt"
 cit_topic_info_pickle_path = "../../output/official/cit_topic_info_pickle.pickle"
 glove_path = '../../input/glove.840B.300d.txt'
-cit_structure_pickle_path = "../../output/closedataset/cit_structure_pickle.pickle"
+cit_structure_pickle_path = "../../output/official/cit_structure_pickle.pickle"
+abstracts_pickle_path = "../../output/official/abstracts_pickle.pickle"
 emb_dim = 300
-batch_number = 90
 P = 1
 Pt = 0.05
 J = 3
@@ -101,6 +100,7 @@ for i in range(len(abstracts)):
                 score_count += score_list[topic]
             score_count_list.append(score_count)
 
+        # choice of CitTopic
         score_mean = np.mean(score_count_list)
         score_count_list = list(enumerate(score_count_list))
         score_count_list = list(filter(lambda x: x[1] > score_mean, score_count_list))
@@ -173,6 +173,9 @@ for i in range(len(abstracts)):
     abstracts[i]["missing"] = all_l
 
 print("INFO: Writing output file", end="... ")
+with open(abstracts_pickle_path, "wb") as handle_file:
+    pickle.dump(abstracts, handle_file, protocol=pickle.HIGHEST_PROTOCOL)
+
 with open(missig_citation_path, "w", encoding="utf-8") as out_file:
     for elem in abstracts:
         out_file.write("Paper ID: " + str(elem["id"]) + "\n")
