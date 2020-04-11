@@ -19,7 +19,6 @@ cit_labelled_path = "../../output/official/topics_cits_labelled_pickle.pickle"
 cit_topic_info_pickle_path = "../../output/official/cit_topic_info_pickle.pickle"
 glove_path = '../../input/glove.840B.300d.txt'
 cit_structure_pickle_path = "../../output/official/cit_structure_pickle.pickle"
-abstracts_pickle_path = "../../output/official/abstracts_pickle.pickle"
 emb_dim = 300
 P = 1
 Pt = 0.05
@@ -28,6 +27,7 @@ t_for_true_prediction = 0.4  # probability threshold to consider a prediction as
 
 # output
 missig_citation_path = "../../output/official/missing_citations.txt"
+abstracts_pickle_path = "../../output/official/abstracts_pickle.pickle"
 
 with open(cit_topic_info_pickle_path, 'rb') as handle:  # take the list of CitTopic score
     cit_topic_info = pickle.load(handle)
