@@ -19,6 +19,7 @@ cit_labelled_path = "../../output/official/topics_cits_labelled_pickle.pickle"
 cit_topic_info_pickle_path = "../../output/official/cit_topic_info_pickle.pickle"
 glove_path = '../../input/glove.840B.300d.txt'
 cit_structure_pickle_path = "../../output/official/cit_structure_pickle.pickle"
+hittingplot_base_path = "../../output/hittingplots/"
 emb_dim = 300
 P = 1
 Pt = 0.05
@@ -87,8 +88,10 @@ for i in range(len(abstracts)):
     # at the end of this loop, every valid prediction will be extended with the index of reference CitTopics
     valid_predictions = abstracts[i]["validPredictions"]
     paper_abstract = abstracts[i]["abstract"]
+    out_citations = abstracts[i]["outCitations"]
     # TODO: disable this line if you don't want to allow the document similarity
     # paper_abstract_emb = ts_utils.compute_embedding_vector(paper_abstract, embeddings_dictionary)
+
     for k in range(len(valid_predictions)):
         topic = valid_predictions[k][0]
         prob = valid_predictions[k][1]
@@ -100,11 +103,25 @@ for i in range(len(abstracts)):
                 score_count += score_list[topic]
             score_count_list.append(score_count)
 
+        score_count_list = list(enumerate(score_count_list))
+
         # choice of CitTopic
         score_mean = np.mean(score_count_list)
-        score_count_list = list(enumerate(score_count_list))
         score_count_list = list(filter(lambda x: x[1] > score_mean, score_count_list))
         tmp = list(map(lambda x: x[0], score_count_list))
+
+        # Create hitting plots
+        title = abstracts[i]["id"] + " - " + str(topic)
+        score_count_list.sort(key=lambda x: x[1])
+        index_score_count_list = list(map(lambda x: x[0], score_count_list))
+        height = []
+        for index in index_score_count_list:
+            reference_cit_topic = cit_topics[index]
+            t = utils.compute_hit_citations(reference_cit_topic, out_citations)
+            height.append(len(t))
+        bars = list(map(lambda x: str(x), index_score_count_list))
+        path = hittingplot_base_path + abstracts[i]["id"] + "#" + str(topic) + ".png"
+        utils.make_bar_plot(height, bars, title, path)
 
         # TODO: if you don't want to allow the document similarity, disable this fraction of code
         '''
@@ -171,6 +188,10 @@ for i in range(len(abstracts)):
             th.append((first, cit_topic_info.get(first)[0]))
         all_l.append((f, s, t, th))
     abstracts[i]["missing"] = all_l
+
+# abstract = [{id = "...", title = "...", abstract = "...", outCitations = ["..."],
+#                                                   validPredictions = [(topic, prob, [index])],
+#                                                  missing = [(topic, ref_index, [id_missing, title], [id_hit, title]]}]
 
 print("INFO: Writing output file", end="... ")
 with open(abstracts_pickle_path, "wb") as handle_file:

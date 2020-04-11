@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def get_abstracts_to_analyze():
@@ -301,3 +302,12 @@ def get_valid_predictions(predictions, t):
     res = list(filter(lambda x: x[1] > t, predictions))
 
     return res
+
+
+def make_bar_plot(height, bars, title, path):
+    y_pos = np.arange(len(bars))
+    plt.bar(y_pos, height)
+    plt.xticks(y_pos, bars)
+    plt.title(title)
+    plt.savefig(path)
+    plt.close()
