@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import random
 
 
 def get_abstracts_to_analyze():
@@ -323,3 +324,14 @@ def split_list(l, p):
         k = int(k)
 
     return [l[i:i + k] for i in range(0, len(l), k)]
+
+
+def pick_random_abstracts(abstracts, n):
+    res = []
+    for i in range(n):
+        abstracts_len = len(abstracts)
+        n_rand = random.randint(0, abstracts_len)
+        res.append(abstracts[n_rand])
+        del abstracts[n_rand]
+
+    return res

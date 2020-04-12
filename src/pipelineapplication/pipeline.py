@@ -6,6 +6,7 @@ import numpy as np
 from keras_preprocessing.sequence import pad_sequences
 from tensorflow_core.python.keras.models import load_model
 
+from src.fileutils import file_abstract
 from src.pipelineapplication import utils
 from src.lstm import lstm_utils
 from src.textsimilarity import ts_utils
@@ -20,12 +21,14 @@ cit_topic_info_pickle_path = "../../output/official/cit_topic_info_pickle.pickle
 glove_path = '../../input/glove.840B.300d.txt'
 cit_structure_pickle_path = "../../output/official/cit_structure_pickle.pickle"
 hittingplot_base_path = "../../output/hittingplots/"
-Percentile = 2
+closedataset_path = "../../output/official/closedataset.txt"
+Percentile = 10
 hittingplot_total_path = "../../output/hittingplots/total_hitting_plot" + str(Percentile) + ".png"
 emb_dim = 300
 P = 1
 Pt = 0.05
 J = 3
+N_papers = 1000
 t_for_true_prediction = 0.4  # probability threshold to consider a prediction as valid
 
 # output
@@ -53,12 +56,16 @@ with open(tokenizer_model, 'rb') as handle:  # get the tokenizer
 
 model = load_model(lstm_model)  # load model from single file
 
-abstracts = utils.get_abstracts_to_analyze()  # get the abstract to analyze
+# abstracts = utils.get_abstracts_to_analyze()  # get the abstract to analyze
+print("INFO: Reading close dataset and picking random abstracts", end="... ")
+abstracts = file_abstract.txt_dataset_reader(closedataset_path)
+abstracts = utils.pick_random_abstracts(abstracts, N_papers)
+print("Done ✓")
 
 # abstract = [{id = "...", title = "...", "year": "..." outCitations = ["..."]}]
 
 # prepare texts for classification
-abstracts_prep = list(map(lambda x: lstm_utils.preprocess_text(x["abstract"]), abstracts))
+abstracts_prep = list(map(lambda x: lstm_utils.preprocess_text(x["paperAbstract"]), abstracts))
 
 for abstract in abstracts:
     abstract["missing"] = []
@@ -90,7 +97,7 @@ heights_split = []
 for i in range(len(abstracts)):
     # at the end of this loop, every valid prediction will be extended with the index of reference CitTopics
     valid_predictions = abstracts[i]["validPredictions"]
-    paper_abstract = abstracts[i]["abstract"]
+    paper_abstract = abstracts[i]["paperAbstract"]
     out_citations = abstracts[i]["outCitations"]
     # TODO: disable this line if you don't want to allow the document similarity
     # paper_abstract_emb = ts_utils.compute_embedding_vector(paper_abstract, embeddings_dictionary)
@@ -109,8 +116,10 @@ for i in range(len(abstracts)):
         score_count_list = list(enumerate(score_count_list))
 
         # choice of CitTopic
+        '''
         score_mean = np.mean(score_count_list)
         score_count_list = list(filter(lambda x: x[1] > score_mean, score_count_list))
+        '''
         tmp = list(map(lambda x: x[0], score_count_list))
 
         # Create hitting plots
@@ -124,7 +133,7 @@ for i in range(len(abstracts)):
             height.append(len(t))
         bars = list(map(lambda x: str(x), index_score_count_list))
         path = hittingplot_base_path + abstracts[i]["id"] + "#" + str(topic) + ".png"
-        utils.make_bar_plot(height, bars, title, path)
+        # utils.make_bar_plot(height, bars, title, path)
 
         heights_split.append(utils.split_list(height, Percentile))
         # TODO: if you don't want to allow the document similarity, disable this fraction of code
@@ -163,7 +172,8 @@ for heights in heights_split:
 
 total = list(map(lambda x: int(x), total))
 bars = [str(i + 1) for i in range(max_index)]
-utils.make_bar_plot(total, bars, "Total Hitting Plot - " + str(Percentile) + "%", hittingplot_total_path)
+utils.make_bar_plot(total, bars, "Total Hitting Plot - " + str(Percentile) + "% - " + str(N_papers) + " abstracts",
+                    hittingplot_total_path)
 
 # abstract = [{id = "...", title = "...", outCitations = ["..."],
 #                                                   validPredictions = [(topic, prob, [index])], missing = []}]
