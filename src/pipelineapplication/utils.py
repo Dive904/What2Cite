@@ -335,3 +335,8 @@ def pick_random_abstracts(abstracts, n):
         del abstracts[n_rand]
 
     return res
+
+
+def normalize_cit_count(total, total_c):
+
+    return list(map(lambda x: (x * 100) / total_c, total))

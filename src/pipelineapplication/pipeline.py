@@ -28,7 +28,7 @@ emb_dim = 300
 P = 1
 Pt = 0.05
 J = 3
-N_papers = 1000
+N_papers = 1500
 t_for_true_prediction = 0.4  # probability threshold to consider a prediction as valid
 
 # output
@@ -59,6 +59,7 @@ model = load_model(lstm_model)  # load model from single file
 # abstracts = utils.get_abstracts_to_analyze()  # get the abstract to analyze
 print("INFO: Reading close dataset and picking random abstracts", end="... ")
 abstracts = file_abstract.txt_dataset_reader(closedataset_path)
+abstracts = abstracts[500000:]
 abstracts = utils.pick_random_abstracts(abstracts, N_papers)
 print("Done ✓")
 
@@ -99,6 +100,16 @@ for i in range(len(abstracts)):
     valid_predictions = abstracts[i]["validPredictions"]
     paper_abstract = abstracts[i]["paperAbstract"]
     out_citations = abstracts[i]["outCitations"]
+
+    # count total possible CitTopics
+    total_possible_cit_topics = 0
+    for cit in cit_topics:
+        for c in cit:
+            if c in out_citations:
+                total_possible_cit_topics += 1
+
+    total_possible_cit_topics = total_possible_cit_topics * len(valid_predictions)
+
     # TODO: disable this line if you don't want to allow the document similarity
     # paper_abstract_emb = ts_utils.compute_embedding_vector(paper_abstract, embeddings_dictionary)
 
@@ -135,7 +146,7 @@ for i in range(len(abstracts)):
         path = hittingplot_base_path + abstracts[i]["id"] + "#" + str(topic) + ".png"
         # utils.make_bar_plot(height, bars, title, path)
 
-        heights_split.append(utils.split_list(height, Percentile))
+        heights_split.append((utils.split_list(height, Percentile), total_possible_cit_topics))
         # TODO: if you don't want to allow the document similarity, disable this fraction of code
         '''
         tmp1 = []
@@ -164,15 +175,18 @@ for i in range(len(abstracts)):
 # create aggregate plot
 max_index = int(100 / Percentile)
 total = list(np.zeros(max_index))
+total_c = 0
 for heights in heights_split:
     hh = 0
-    while hh < len(heights):
-        total[hh] += sum(heights[hh])
+    while hh < len(heights[0]):
+        total[hh] += sum(heights[0][hh])
         hh += 1
+    total_c += heights[1]
 
+total = utils.normalize_cit_count(total, total_c)
 total = list(map(lambda x: int(x), total))
 bars = [str(i + 1) for i in range(max_index)]
-utils.make_bar_plot(total, bars, "Total Hitting Plot - " + str(Percentile) + "% - " + str(N_papers) + " abstracts",
+utils.make_bar_plot(total, bars, "Total Hitting Plot - " + str(Percentile) + "% - " + str(N_papers) + " abstracts - #4",
                     hittingplot_total_path)
 
 # abstract = [{id = "...", title = "...", outCitations = ["..."],
