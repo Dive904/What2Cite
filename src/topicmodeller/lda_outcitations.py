@@ -13,7 +13,6 @@ end_batch_number = 44
 number_topics = 750
 number_words = 50
 close_dataset = "../../output/closedataset/closedataset.txt"
-close_dataset_pickle = "../../output/closedataset/closedataset_pickle.pickle"
 
 # output
 cit_topic_keywords_filename = "../../output/doctopic/cit_topic_keywords.csv"

@@ -6,6 +6,7 @@ import numpy as np
 from keras_preprocessing.sequence import pad_sequences
 from tensorflow_core.python.keras.models import load_model
 
+from src.fileutils import file_abstract
 from src.pipelineapplication import utils
 from src.lstm import lstm_utils
 from src.textsimilarity import ts_utils
@@ -16,21 +17,30 @@ cit_labelled_analyzed_pickle_path = "../../output/official/cit_labelled_with_fin
 lstm_model = "../../output/official/lstm.h5"
 tokenizer_model = "../../output/official/tokenizer.pickle"
 cit_labelled_path = "../../output/official/topics_cits_labelled_pickle.pickle"
-lstm_dataset_path = "../../output/official/final.txt"
 cit_topic_info_pickle_path = "../../output/official/cit_topic_info_pickle.pickle"
 glove_path = '../../input/glove.840B.300d.txt'
+cit_structure_pickle_path = "../../output/official/cit_structure_pickle.pickle"
+hittingplot_base_path = "../../output/hittingplots/"
+closedataset_path = "../../output/official/closedataset.txt"
+Percentile = 10
+hittingplot_total_path = "../../output/hittingplots/total_hitting_plot" + str(Percentile) + ".png"
 emb_dim = 300
-batch_number = 90
 P = 1
 Pt = 0.05
 J = 3
+N_papers = 1500
 t_for_true_prediction = 0.4  # probability threshold to consider a prediction as valid
 
 # output
 missig_citation_path = "../../output/official/missing_citations.txt"
+abstracts_pickle_path = "../../output/official/abstracts_pickle.pickle"
 
 with open(cit_topic_info_pickle_path, 'rb') as handle:  # take the list of CitTopic score
     cit_topic_info = pickle.load(handle)
+
+with open(cit_structure_pickle_path, 'rb') as handle:  # take the list of CitTopic score
+    cit_structure = pickle.load(handle)
+print("Done ✓")
 
 with open(cit_labelled_path, 'rb') as handle:  # take the list of CitTopic score
     # in this part, we read the cit topics labelled with other information.
@@ -46,12 +56,17 @@ with open(tokenizer_model, 'rb') as handle:  # get the tokenizer
 
 model = load_model(lstm_model)  # load model from single file
 
-abstracts = utils.get_abstracts_to_analyze()  # get the abstract to analyze
+# abstracts = utils.get_abstracts_to_analyze()  # get the abstract to analyze
+print("INFO: Reading close dataset and picking random abstracts", end="... ")
+abstracts = file_abstract.txt_dataset_reader(closedataset_path)
+abstracts = abstracts[500000:]
+abstracts = utils.pick_random_abstracts(abstracts, N_papers)
+print("Done ✓")
 
 # abstract = [{id = "...", title = "...", "year": "..." outCitations = ["..."]}]
 
 # prepare texts for classification
-abstracts_prep = list(map(lambda x: lstm_utils.preprocess_text(x["abstract"]), abstracts))
+abstracts_prep = list(map(lambda x: lstm_utils.preprocess_text(x["paperAbstract"]), abstracts))
 
 for abstract in abstracts:
     abstract["missing"] = []
@@ -79,22 +94,59 @@ print("Done ✓")
 print("INFO: Analyzing", end="... ")
 # TODO: disable this line if you don't want to allow the document similarity
 # embeddings_dictionary = lstm_utils.get_embedding_dict(glove_path)
+heights_split = []
 for i in range(len(abstracts)):
     # at the end of this loop, every valid prediction will be extended with the index of reference CitTopics
     valid_predictions = abstracts[i]["validPredictions"]
-    paper_abstract = abstracts[i]["abstract"]
+    paper_abstract = abstracts[i]["paperAbstract"]
+    out_citations = abstracts[i]["outCitations"]
+
+    # count total possible CitTopics
+    total_possible_cit_topics = 0
+    for cit in cit_topics:
+        for c in cit:
+            if c in out_citations:
+                total_possible_cit_topics += 1
+
+    total_possible_cit_topics = total_possible_cit_topics * len(valid_predictions)
+
     # TODO: disable this line if you don't want to allow the document similarity
     # paper_abstract_emb = ts_utils.compute_embedding_vector(paper_abstract, embeddings_dictionary)
+
     for k in range(len(valid_predictions)):
         topic = valid_predictions[k][0]
         prob = valid_predictions[k][1]
-        tmp = []
-        for j in range(len(cit_topic_labelled)):  # we must work in this area to find a good method to get the CitTopic
-            cit_topic_labelled_normalized = utils.normalize_scores_on_cittopics(cit_topic_labelled[j], P)
-            max_indexes, max_elem = tm_utils.find_n_maximum(cit_topic_labelled_normalized, J, skip=True)
-            if topic in max_indexes:
-                tmp.append(j)
+        score_count_list = []
+        for cit_topic in cit_topics:
+            score_count = 0
+            for cit in cit_topic:
+                score_list = cit_structure.get(cit)
+                score_count += score_list[topic]
+            score_count_list.append(score_count)
 
+        score_count_list = list(enumerate(score_count_list))
+
+        # choice of CitTopic
+        '''
+        score_mean = np.mean(score_count_list)
+        score_count_list = list(filter(lambda x: x[1] > score_mean, score_count_list))
+        '''
+        tmp = list(map(lambda x: x[0], score_count_list))
+
+        # Create hitting plots
+        title = abstracts[i]["id"] + " - " + str(topic)
+        score_count_list.sort(key=lambda x: x[1])
+        index_score_count_list = list(map(lambda x: x[0], score_count_list))
+        height = []
+        for index in index_score_count_list:
+            reference_cit_topic = cit_topics[index]
+            t = utils.compute_hit_citations(reference_cit_topic, out_citations)
+            height.append(len(t))
+        bars = list(map(lambda x: str(x), index_score_count_list))
+        path = hittingplot_base_path + abstracts[i]["id"] + "#" + str(topic) + ".png"
+        # utils.make_bar_plot(height, bars, title, path)
+
+        heights_split.append((utils.split_list(height, Percentile), total_possible_cit_topics))
         # TODO: if you don't want to allow the document similarity, disable this fraction of code
         '''
         tmp1 = []
@@ -119,6 +171,23 @@ for i in range(len(abstracts)):
         # end of fraction code of document similarity
         '''
         valid_predictions[k] = (topic, prob, tmp)
+
+# create aggregate plot
+max_index = int(100 / Percentile)
+total = list(np.zeros(max_index))
+total_c = 0
+for heights in heights_split:
+    hh = 0
+    while hh < len(heights[0]):
+        total[hh] += sum(heights[0][hh])
+        hh += 1
+    total_c += heights[1]
+
+total = utils.normalize_cit_count(total, total_c)
+total = list(map(lambda x: int(x), total))
+bars = [str(i + 1) for i in range(max_index)]
+utils.make_bar_plot(total, bars, "Total Hitting Plot - " + str(Percentile) + "% - " + str(N_papers) + " abstracts - #4",
+                    hittingplot_total_path)
 
 # abstract = [{id = "...", title = "...", outCitations = ["..."],
 #                                                   validPredictions = [(topic, prob, [index])], missing = []}]
@@ -161,7 +230,14 @@ for i in range(len(abstracts)):
         all_l.append((f, s, t, th))
     abstracts[i]["missing"] = all_l
 
+# abstract = [{id = "...", title = "...", abstract = "...", outCitations = ["..."],
+#                                                   validPredictions = [(topic, prob, [index])],
+#                                                  missing = [(topic, ref_index, [id_missing, title], [id_hit, title]]}]
+
 print("INFO: Writing output file", end="... ")
+with open(abstracts_pickle_path, "wb") as handle_file:
+    pickle.dump(abstracts, handle_file, protocol=pickle.HIGHEST_PROTOCOL)
+
 with open(missig_citation_path, "w", encoding="utf-8") as out_file:
     for elem in abstracts:
         out_file.write("Paper ID: " + str(elem["id"]) + "\n")
