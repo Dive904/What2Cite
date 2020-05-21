@@ -23,7 +23,6 @@ cit_structure_pickle_path = "../../output/official/cit_structure_pickle.pickle"
 hittingplot_base_path = "../../output/hittingplots/"
 closedataset_path = "../../output/official/closedataset.txt"
 Percentile = 10
-hittingplot_total_path = "../../output/hittingplots/total_hitting_plot" + str(Percentile) + ".png"
 emb_dim = 300
 P = 1
 Pt = 0.05
@@ -34,6 +33,7 @@ t_for_true_prediction = 0.4  # probability threshold to consider a prediction as
 # output
 missig_citation_path = "../../output/official/missing_citations.txt"
 abstracts_pickle_path = "../../output/official/abstracts_pickle.pickle"
+hittingplot_total_path = "../../output/hittingplots/total_hitting_plot" + str(Percentile) + ".png"
 
 with open(cit_topic_info_pickle_path, 'rb') as handle:  # take the list of CitTopic score
     cit_topic_info = pickle.load(handle)
@@ -116,6 +116,8 @@ for i in range(len(abstracts)):
     for k in range(len(valid_predictions)):
         topic = valid_predictions[k][0]
         prob = valid_predictions[k][1]
+        score_count_list = utils.all_score_function(topic, cit_topics, cit_structure)
+        """
         score_count_list = []
         for cit_topic in cit_topics:
             score_count = 0
@@ -123,8 +125,9 @@ for i in range(len(abstracts)):
                 score_list = cit_structure.get(cit)
                 score_count += score_list[topic]
             score_count_list.append(score_count)
-
+        """
         score_count_list = list(enumerate(score_count_list))
+
 
         # choice of CitTopic
         '''

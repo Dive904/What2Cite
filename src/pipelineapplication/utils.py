@@ -340,3 +340,15 @@ def pick_random_abstracts(abstracts, n):
 def normalize_cit_count(total, total_c):
 
     return list(map(lambda x: (x * 100) / total_c, total))
+
+
+def all_score_function(topic, citopics, cit_structure):
+    score_count_list = []
+    for cit_topic in citopics:
+        score_count = 0
+        for cit in cit_topic:
+            score_list = cit_structure.get(cit)
+            score_count += score_list[topic]
+        score_count_list.append(score_count)
+
+    return score_count_list
