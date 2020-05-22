@@ -17,7 +17,7 @@ tokenizer_model = "../../output/official/tokenizer.pickle"
 cit_structure_pickle_path = "../../output/official/cit_structure_pickle.pickle"
 cit_labelled_path = "../../output/official/topics_cits_labelled_pickle.pickle"
 cit_topic_info_pickle_path = "../../output/official/cit_topic_info_pickle.pickle"
-N = 3
+N = 10
 
 text = lstm_utils.preprocess_text(text)
 
