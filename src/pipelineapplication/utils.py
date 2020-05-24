@@ -301,6 +301,9 @@ def get_valid_predictions(predictions, t):
     """
     predictions = list(enumerate(predictions))
     res = list(filter(lambda x: x[1] > t, predictions))
+    if len(res) == 0:
+        predictions.sort(key=lambda x: x[1], reverse=True)
+        res.append(predictions[0])
 
     return res
 

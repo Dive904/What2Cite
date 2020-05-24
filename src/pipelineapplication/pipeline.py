@@ -128,7 +128,6 @@ for i in range(len(abstracts)):
         """
         score_count_list = list(enumerate(score_count_list))
 
-
         # choice of CitTopic
         '''
         score_mean = np.mean(score_count_list)
