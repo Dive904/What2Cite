@@ -1,5 +1,3 @@
-# This script is used to implement the pipeline for only specific abstracts given in input in a list
-
 import pickle
 import numpy as np
 
@@ -9,8 +7,6 @@ from tensorflow_core.python.keras.models import load_model
 from src.fileutils import file_abstract
 from src.pipelineapplication import utils
 from src.lstm import lstm_utils
-from src.textsimilarity import ts_utils
-from src.topicmodeller import tm_utils
 
 # input
 cit_labelled_analyzed_pickle_path = "../../output/official/cit_labelled_with_final_topic_pickle.pickle"
@@ -18,15 +14,10 @@ lstm_model = "../../output/official/lstm.h5"
 tokenizer_model = "../../output/official/tokenizer.pickle"
 cit_labelled_path = "../../output/official/topics_cits_labelled_pickle.pickle"
 cit_topic_info_pickle_path = "../../output/official/cit_topic_info_pickle.pickle"
-glove_path = '../../input/glove.840B.300d.txt'
 cit_structure_pickle_path = "../../output/official/cit_structure_pickle.pickle"
 hittingplot_base_path = "../../output/hittingplots/"
 closedataset_path = "../../output/official/closedataset.txt"
 Percentile = 10
-emb_dim = 300
-P = 1
-Pt = 0.05
-J = 3
 N_papers = 1500
 t_for_true_prediction = 0.4  # probability threshold to consider a prediction as valid
 
@@ -90,10 +81,7 @@ print("Done ✓")
 
 # abstract = [{id = "...", title = "...", outCitations = ["..."], validPredictions = [("topic", prob)], missing = []}]
 
-# TODO: we should work in this loop to find a good method for CitTopic selection
 print("INFO: Analyzing", end="... ")
-# TODO: disable this line if you don't want to allow the document similarity
-# embeddings_dictionary = lstm_utils.get_embedding_dict(glove_path)
 heights_split = []
 for i in range(len(abstracts)):
     # at the end of this loop, every valid prediction will be extended with the index of reference CitTopics
@@ -110,29 +98,13 @@ for i in range(len(abstracts)):
 
     total_possible_cit_topics = total_possible_cit_topics * len(valid_predictions)
 
-    # TODO: disable this line if you don't want to allow the document similarity
-    # paper_abstract_emb = ts_utils.compute_embedding_vector(paper_abstract, embeddings_dictionary)
-
     for k in range(len(valid_predictions)):
         topic = valid_predictions[k][0]
         prob = valid_predictions[k][1]
         score_count_list = utils.all_score_function(topic, cit_topics, cit_structure)
-        """
-        score_count_list = []
-        for cit_topic in cit_topics:
-            score_count = 0
-            for cit in cit_topic:
-                score_list = cit_structure.get(cit)
-                score_count += score_list[topic]
-            score_count_list.append(score_count)
-        """
+
         score_count_list = list(enumerate(score_count_list))
 
-        # choice of CitTopic
-        '''
-        score_mean = np.mean(score_count_list)
-        score_count_list = list(filter(lambda x: x[1] > score_mean, score_count_list))
-        '''
         tmp = list(map(lambda x: x[0], score_count_list))
 
         # Create hitting plots
@@ -146,33 +118,13 @@ for i in range(len(abstracts)):
             height.append(len(t))
         bars = list(map(lambda x: str(x), index_score_count_list))
         path = hittingplot_base_path + abstracts[i]["id"] + "#" + str(topic) + ".png"
-        # utils.make_bar_plot(height, bars, title, path)
 
         heights_split.append((utils.split_list(height, Percentile), total_possible_cit_topics))
-        # TODO: if you don't want to allow the document similarity, disable this fraction of code
-        '''
-        tmp1 = []
-        for index in tmp:
-            cit_topic = cit_topics[index]
-            total = 0
-            for c in cit_topic:
-                abstract = cit_topic_info.get(c)[1]
-                if abstract is not None:
-                    abstract = lstm_utils.preprocess_text(abstract)
-                    abstract = ts_utils.compute_embedding_vector(abstract, embeddings_dictionary)
-                    cos = ts_utils.compute_cosine_similarity(paper_abstract_emb, abstract, emb_dim)
-                    total += cos
-            tmp1.append(total)
 
-        avg = np.mean(tmp1)
-        tmp2 = []
-        for w in range(len(tmp1)):
-            if tmp1[w] > avg:
-                tmp2.append(tmp[w])
-        tmp = tmp2
-        # end of fraction code of document similarity
-        '''
         valid_predictions[k] = (topic, prob, tmp)
+
+# abstract = [{id = "...", title = "...", outCitations = ["..."],
+#                                                   validPredictions = [(topic, prob, [index])], missing = []}]
 
 # create aggregate plot
 max_index = int(100 / Percentile)
@@ -190,9 +142,6 @@ total = list(map(lambda x: int(x), total))
 bars = [str(i + 1) for i in range(max_index)]
 utils.make_bar_plot(total, bars, "Total Hitting Plot - " + str(Percentile) + "% - " + str(N_papers) + " abstracts - #4",
                     hittingplot_total_path)
-
-# abstract = [{id = "...", title = "...", outCitations = ["..."],
-#                                                   validPredictions = [(topic, prob, [index])], missing = []}]
 
 for i in range(len(abstracts)):
     valid_predictions = abstracts[i]["validPredictions"]
