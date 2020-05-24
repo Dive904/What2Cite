@@ -13,6 +13,7 @@ tokenizer_model = "../../output/official/tokenizer.pickle"
 testset_path = "../../output/lstmdataset/testdataset_multilabel.csv"
 padding = ",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1"
 T = 0.4
+N = 3
 
 print("INFO: Extracting Test dataset", end="... ")
 abstracts_test = pd.read_csv(testset_path)
@@ -21,7 +22,6 @@ print("Done ✓")
 print("INFO: Preprocessing Test dataset", end="... ")
 X_test = []
 sentences = list(abstracts_test["text"])
-abstracts_test_labels = abstracts_test[[str(i) for i in range(40)]]
 
 with open(testset_path, "r", encoding="utf-8") as fp:
     lines = fp.readlines()
@@ -40,8 +40,7 @@ model = load_model(lstm_model)  # load model from single file
 with open(tokenizer_model, 'rb') as handle:  # get the tokenizer
     tokenizer = pickle.load(handle)
 
-X_test = X_test[:100]
-abstracts_test_labels = abstracts_test_labels[:100]
+labels = list(map(lambda x: x.index(1), labels))
 
 print("INFO: Tokenizing sequences", end="... ")
 seq = tokenizer.texts_to_sequences(X_test)
@@ -50,8 +49,34 @@ print("Done ✓")
 
 print("INFO: Predicting", end="... ")
 yhat = model.predict(seq)  # make predictions
-predictions = list(map(lambda x: utils.get_valid_predictions(x, T), yhat))
-print(len(predictions))
-for p in predictions:
-    print(p)
 print("Done ✓")
+
+predictions = []
+for y in yhat:
+    pr = list(enumerate(y))
+    pr.sort(key=lambda x: x[1], reverse=True)
+    predictions.append(pr[:N])
+
+cont = 0
+for i in range(len(predictions)):
+    p = predictions[i]
+    predicted_class = [x[0] for x in p]
+    if labels[i] in predicted_class:
+        cont += 1
+
+acc_1 = cont / len(predictions)
+
+predictions = list(map(lambda x: utils.get_valid_predictions(x, T), yhat))
+
+cont = 0
+for i in range(len(predictions)):
+    p = predictions[i]
+    predicted_class = [x[0] for x in p]
+    if labels[i] in predicted_class:
+        cont += 1
+
+acc_2 = cont / len(predictions)
+
+print("Accuracy with first " + str(N) + " elements: " + str(acc_1))
+print("Accuracy with threshold " + str(acc_2))
+
