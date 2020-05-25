@@ -292,6 +292,13 @@ def compute_hit_citations(cittopics, outcitations):
     return hit
 
 
+def get_n_predictions(predictions, n):
+    predictions = list(enumerate(predictions))
+    predictions.sort(key=lambda x: x[1], reverse=True)
+
+    return predictions[:n]
+
+
 def get_valid_predictions(predictions, t):
     """
     This function is used to get all valid prediction taking into account a input threshold for probability
@@ -301,6 +308,7 @@ def get_valid_predictions(predictions, t):
     """
     predictions = list(enumerate(predictions))
     res = list(filter(lambda x: x[1] > t, predictions))
+
     if len(res) == 0:
         predictions.sort(key=lambda x: x[1], reverse=True)
         res.append(predictions[0])
