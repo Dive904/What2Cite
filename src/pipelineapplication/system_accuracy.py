@@ -23,7 +23,8 @@ t_for_true_prediction = 0.4  # probability threshold to consider a prediction as
 N = 3
 
 # output
-hittingplot_total_path = "../../output/hittingplots/total_hitting_plot" + str(Percentile) + ".png"
+hittingplot_total_path = "../../output/hittingplots/total_hitting_plot" + \
+                         str(Percentile) + "_" + str(N_papers) + ".png"
 
 with open(cit_topic_info_pickle_path, 'rb') as handle:  # take the list of CitTopic score
     cit_topic_info = pickle.load(handle)
@@ -106,7 +107,7 @@ for i in range(len(abstracts)):
 
         # Create hitting plots
         title = abstracts[i]["id"] + " - " + str(topic)
-        score_count_list.sort(key=lambda x: x[1])
+        score_count_list.sort(key=lambda x: x[1], reverse=True)
         index_score_count_list = list(map(lambda x: x[0], score_count_list))
         height = [0 for index in index_score_count_list]
         for ii in range(len(index_score_count_list)):
@@ -136,8 +137,12 @@ for heights in heights_split:
     total_c += heights[1]
 
 total = utils.normalize_cit_count(total, total_c)
-total = list(map(lambda x: int(x), total))
-bars = [str(i + 1) for i in range(max_index)]
-utils.make_bar_plot(total, bars, "Total Hitting Plot - " + str(Percentile) + "% - " + str(N_papers) + " abstracts - #4",
+total_to_plot = list(map(lambda x: int(x), total))
+total_to_print = list(map(lambda x: np.round(x, 2), total))
+bars = ["P" + str(i + 1) for i in range(max_index)]
+utils.make_bar_plot(total_to_plot, bars, "Total Hitting Plot - " + str(Percentile) + "% - " +
+                    str(N_papers) + " abstracts - #4",
                     hittingplot_total_path)
 print("Done ✓")
+
+print(total_to_print)
