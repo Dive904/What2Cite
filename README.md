@@ -6,3 +6,9 @@ We propose a citation-centered  modeling approach which creates a semantic knowl
 
 * [Prof. Luigi Di Caro](https://luigidicaro.me/) (University of Turin) and
 * Davide Giosa (University of Turin)
+
+# License
+This code is released under a [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/).
+
+# Reference
+[1] Davide Giosa and Luigi Di Caro. What2Cite: Unveiling Topics and Citations Dependencies for Scientific Literature Exploration and Recommendation. EKAW 2020 (to appear).
