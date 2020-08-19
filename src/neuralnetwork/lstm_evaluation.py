@@ -4,7 +4,7 @@ from tensorflow_core.python.keras.models import load_model
 import pandas as pd
 import pickle
 
-from src.lstm import lstm_utils
+from src.neuralnetwork import lstm_utils
 
 maxlen = 200
 

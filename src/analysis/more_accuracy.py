@@ -6,10 +6,10 @@ from keras_preprocessing.sequence import pad_sequences
 
 from tensorflow_core.python.keras.models import load_model
 
-from src.lstm import lstm_utils
+from src.neuralnetwork import lstm_utils
 from src.pipelineapplication import utils
 
-lstm_model = "../../output/official/lstm.h5"
+lstm_model = "../../output/official/neuralnetwork.h5"
 tokenizer_model = "../../output/official/tokenizer.pickle"
 testset_path = "../../output/lstmdataset/testdataset_multilabel.csv"
 validationset_path = "../../output/lstmdataset/trainingdataset_multilabel.csv"

@@ -1,0 +1,47 @@
+This document will update with further instructions
+
+1. DATASET EXTRACTION ******
+
+First of all, you need to download the dataset from where we started. It can be downloaded from this site:
+http://s2-public-api-prod.us-west-2.elasticbeanstalk.com/corpus/download/
+Please Note: put the dataset in a single folder.
+When the download is finished, go to "src/fieldextractor/main.py"
+
+- In "dir_path" you can set the path to the folder
+containing the dataset.
+- In "fos", you can set the Field Of Study you're interested at.
+- In "start_filecontent_name" you can set the output folder
+
+Now, you can run the script to extract the dataset
+
+2. TOPIC MODELLING ON ABSTRACT ******
+
+Go to "src/topicmodeller/lda_abstracts.py"
+
+- In "semanticdataset_filname" put the same value of "start_filecontent_name"
+- In "batch_number" you can set the number of parts of dataset to extract for topic modelling
+
+3. NEURAL NETWORK TRAINING ******
+
+Go to "src/lstmdatasetcreator/train_and_test_dataset_multilabel.py" and use this script to create the dataset for
+neural network training. Then, go to "src/neuralnetwork/lstm_creator.py" to train the neural network. This script will
+save the model every epoch. For further training, go to "src/neuralnetwork/lstm_update.py".
+
+3. CITOPICS CREATION AND FINILAZING ******
+
+Go to "src/closedataset/create_close_dataset.py" to create the close dataset, that is a subset of the dataset where the
+papers has 2/3 of its citation in the dataset itself. After closedataset creation, go to "src/topicmodeller/lda_outcitations.py",
+check the input and output parameters and run.
+
+Go to "src/citations/cit_topic_dynamic_creator.py" and run. This script will create the CiTopics, so with different cardinality.
+
+Go to "src/citations/cit_topic_info_creator.py" and run.
+
+Go to "src/citations/cit_analyzer.py" and run.
+This script, will create a dictionary: {id_paper: [list of frequency for each topic]}
+
+4. RESULTS ******
+
+Go to "src/pipelineapplication/system_accuracy.py" and run to se the results.
+
+

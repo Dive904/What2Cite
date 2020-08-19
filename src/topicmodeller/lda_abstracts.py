@@ -1,4 +1,4 @@
-# This script is used to run LDA on paper abstracts and creating a first step - lstm dataset
+# This script is used to run LDA on paper abstracts and creating a first step - neuralnetwork dataset
 
 
 from sklearn.feature_extraction.text import CountVectorizer
@@ -13,17 +13,17 @@ import gc
 from src.topicmodeller import tm_utils
 
 # input
-batch_number = 90
-number_topic = 40
-number_words = 7
-semanticdataset_filname = "C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\"
+batch_number = 90  # the first part of the dataset
+number_topic = 40  # number of different topics
+number_words = 7  # number of words for every topic
+semanticdataset_filname = "C:\\Users\\Davide\\Desktop\\semanticdatasetextracted\\"  # input dataset
 
 # output
-ldamodel_filname = "../../output/official/lda_abstract.jlb"
-vectorizer_filname = "../../output/official/countvect_abstract.jlb"
-abstract_document_topic_filename = "../../output/doctopic/abstract_document_topic.csv"
-topics_filename = "../../output/lstmdataset/topics.txt"
-lstmdataset_filename = "../../output/lstmdataset/lstmdataset.txt"
+ldamodel_filname = "../../output/official/lda_abstract.jlb"  # lda model
+vectorizer_filname = "../../output/official/countvect_abstract.jlb"  # vectorizer model
+abstract_document_topic_filename = "../../output/doctopic/abstract_document_topic.csv"  # abstract with probabilities
+topics_filename = "../../output/lstmdataset/topics.txt"  # output topics
+lstmdataset_filename = "../../output/lstmdataset/lstmdataset.txt"  # dataset
 
 print("INFO: Extracting " + str(batch_number) + " batch abstract and preprocessing", end="... ")
 paper_info = tm_utils.extract_paper_info(semanticdataset_filname, end=batch_number)

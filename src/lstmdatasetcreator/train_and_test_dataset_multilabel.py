@@ -3,12 +3,16 @@ import csv
 from src.lstmdatasetcreator import utils
 from src.fileutils import file_abstract
 
-
-# threshold must not be higher than 2000
-threshold = 2000
+# input
+threshold = 2000  # must not be higher than 2000
 val_dataset_length_perc = 10  # per topic
 training_dataset_length_perc = 60  # per topic
 test_dataset_length_perc = 30  # per topic
+
+# output
+training_dataset_filename = "../../output/lstmdataset/trainingdataset_multilabel.csv"
+test_dataset_filename = "../../output/lstmdataset/testdataset_multilabel.csv"
+valdataset_filename = "../../output/lstmdataset/valdataset_multilabel.csv"
 
 number_topic = 40
 result_dataset = {}
@@ -64,7 +68,7 @@ for topic in result_dataset.keys():
 print("Done ✓")
 
 print("INFO: Writing training file", end="... ")
-with open("../../output/lstmdataset/trainingdataset_multilabel.csv", "w", newline='', encoding="utf-8") as train_file:
+with open(training_dataset_filename, "w", newline='', encoding="utf-8") as train_file:
     writer = csv.writer(train_file)
     writer.writerow(["text"] + labels)
     for topic in labels:
@@ -76,7 +80,7 @@ with open("../../output/lstmdataset/trainingdataset_multilabel.csv", "w", newlin
 print("Done ✓")
 
 print("INFO: Writing test file", end="... ")
-with open("../../output/lstmdataset/testdataset_multilabel.csv", "w", newline='', encoding="utf-8") as test_file:
+with open(test_dataset_filename, "w", newline='', encoding="utf-8") as test_file:
     writer = csv.writer(test_file)
     writer.writerow(["text"] + labels)
     for topic in labels:
@@ -88,7 +92,7 @@ with open("../../output/lstmdataset/testdataset_multilabel.csv", "w", newline=''
 print("Done ✓")
 
 print("INFO: Writing validation file", end="... ")
-with open("../../output/lstmdataset/valdataset_multilabel.csv", "w", newline='', encoding="utf-8") as val_file:
+with open(valdataset_filename, "w", newline='', encoding="utf-8") as val_file:
     writer = csv.writer(val_file)
     writer.writerow(["text"] + labels)
     for topic in labels:

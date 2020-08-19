@@ -46,7 +46,7 @@ for i in range(len(paper_info_2010)):
         if value:
             count += 1
     citations_len = len(citations)
-    if count < ((citations_len / 3) * 2):
+    if count < ((citations_len / 3) * 2):  # 2/3 of citation in the dataset
         to_skip += 1
         paper_info_2010[i]["keep"] = False
 

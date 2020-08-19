@@ -6,11 +6,11 @@ from tensorflow_core.python.keras.models import load_model
 
 from src.fileutils import file_abstract
 from src.pipelineapplication import utils
-from src.lstm import lstm_utils
+from src.neuralnetwork import lstm_utils
 
 # input
 cit_labelled_analyzed_pickle_path = "../../output/official/cit_labelled_with_final_topic_pickle.pickle"
-lstm_model = "../../output/official/lstm.h5"
+lstm_model = "../../output/official/neuralnetwork.h5"
 tokenizer_model = "../../output/official/tokenizer.pickle"
 cit_labelled_path = "../../output/official/topics_cits_labelled_pickle.pickle"
 cit_topic_info_pickle_path = "../../output/official/cit_topic_info_pickle.pickle"

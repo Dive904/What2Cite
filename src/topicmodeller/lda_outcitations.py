@@ -9,7 +9,6 @@ from src.fileutils import file_abstract
 from src.topicmodeller import tm_utils
 
 # input
-end_batch_number = 44
 number_topics = 750
 number_words = 50
 close_dataset = "../../output/closedataset/closedataset.txt"

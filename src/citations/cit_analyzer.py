@@ -10,14 +10,14 @@ from keras_preprocessing.sequence import pad_sequences
 
 from src.fileutils import file_abstract
 from src.citations import cit_utils
-from src.lstm import lstm_utils
+from src.neuralnetwork import lstm_utils
 from src.pipelineapplication import utils
 from src.topicmodeller import tm_utils
 
 # input
 close_dataset = "../../output/closedataset/closedataset.txt"
 topic_citations_filename = "../../output/official/topics_cits.txt"
-lstm_model = "../../output/official/lstm.h5"
+lstm_model = "../../output/official/neuralnetwork.h5"
 tokenizer_model = "../../output/official/tokenizer.pickle"
 topic_number = 40
 t_for_true_prediction = 0.4  # probability threshold to consider a prediction as valid

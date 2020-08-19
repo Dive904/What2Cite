@@ -3,7 +3,7 @@ import pickle
 from keras.engine.saving import load_model
 from keras_preprocessing.sequence import pad_sequences
 
-from src.lstm import lstm_utils
+from src.neuralnetwork import lstm_utils
 from src.pipelineapplication import utils
 
 text = "The continuous evolution of research has led to an exponential growth of the  scientific literature. " \
@@ -12,7 +12,7 @@ text = "The continuous evolution of research has led to an exponential growth of
        "capturing meaningful and labeled relations between articles based on both topics and latent citation " \
        "dependencies."
 
-lstm_model = "../../output/official/lstm.h5"
+lstm_model = "../../output/official/neuralnetwork.h5"
 tokenizer_model = "../../output/official/tokenizer.pickle"
 cit_structure_pickle_path = "../../output/official/cit_structure_pickle.pickle"
 cit_labelled_path = "../../output/official/topics_cits_labelled_pickle.pickle"

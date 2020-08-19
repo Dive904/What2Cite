@@ -5,9 +5,9 @@ from keras.preprocessing.sequence import pad_sequences
 from tensorflow_core.python.keras.models import load_model
 from src.pipelineapplication import utils
 
-from src.lstm import lstm_utils
+from src.neuralnetwork import lstm_utils
 
-lstm_model = "../../output/official/lstm.h5"
+lstm_model = "../../output/official/neuralnetwork.h5"
 tokenizer_model = "../../output/official/tokenizer.pickle"
 
 text = utils.get_abstracts_to_analyze()

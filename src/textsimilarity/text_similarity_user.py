@@ -1,4 +1,4 @@
-from src.lstm import lstm_utils
+from src.neuralnetwork import lstm_utils
 from src.pipelineapplication import utils
 from src.textsimilarity import ts_utils
 

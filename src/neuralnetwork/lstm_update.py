@@ -1,26 +1,16 @@
-# https://stackabuse.com/python-for-nlp-multi-label-text-classification-with-keras/ <-- tutorial
-from keras import regularizers
-from numpy import asarray
-from numpy import zeros
 import keras
 
-import keras.layers as kl
-
 from keras.preprocessing.sequence import pad_sequences
-from keras.models import Sequential
-from keras.preprocessing.text import Tokenizer
+from tensorflow_core.python.keras.models import load_model
 
 import matplotlib.pyplot as plt
 import pandas as pd
 import pickle
 
-from src.lstm import lstm_utils
+from src.neuralnetwork import lstm_utils
 
-glove_path = '../../input/glove.840B.300d.txt'
-embedding_col_number = 300
-n_epoch = 20
+n_epoch = 6
 bacth_size = 128
-n_words_tokenizer = 35000
 maxlen = 200
 
 print("INFO: Extracting Training dataset", end="... ")
@@ -62,8 +52,8 @@ print("Done ✓", end="\n\n")
 
 abstracts_val_labels = abstracts_validation[[str(i) for i in range(40)]]
 
-tokenizer = Tokenizer(num_words=n_words_tokenizer)
-tokenizer.fit_on_texts(X_train + X_val)
+with open('../../output/modeltrain/tokenizer.pickle', 'rb') as handle:
+    tokenizer = pickle.load(handle)
 
 print("INFO: Tokenizing sequences", end="... ")
 X_train = tokenizer.texts_to_sequences(X_train)
@@ -79,32 +69,9 @@ X_test = pad_sequences(X_test, padding='post', maxlen=maxlen)
 X_val = pad_sequences(X_val, padding='post', maxlen=maxlen)
 print("Done ✓")
 
-print("INFO: Embedding words", end="...")
-embeddings_dictionary = lstm_utils.get_embedding_dict(glove_path)
+model = load_model("../../output/modeltrain/train20/lstmfinal.h5")
 
-embedding_matrix = zeros((vocab_size, embedding_col_number))
-for word, index in tokenizer.word_index.items():
-    embedding_vector = embeddings_dictionary.get(word)
-    if embedding_vector is not None:
-        embedding_matrix[index] = embedding_vector
-print(" Done ✓")
-
-# 71% acc
-model = Sequential()
-model.add(kl.Embedding(vocab_size, embedding_col_number, weights=[embedding_matrix], trainable=False))
-model.add(kl.Dropout(0.5))
-model.add(kl.Bidirectional(kl.LSTM(550, activation='tanh')))
-model.add(kl.Dropout(0.4))
-model.add(kl.Dense(40, activation='softmax',
-                   activity_regularizer=regularizers.l1(0.01),
-                   kernel_regularizer=regularizers.l2(0.01)))
-
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-
-checkpoint = keras.callbacks.ModelCheckpoint('../../output/modeltrain/lstm{epoch:08d}.h5', period=1)
-
-with open("../../output/modeltrain/tokenizer.pickle", "wb") as handle:
-    pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
+checkpoint = keras.callbacks.ModelCheckpoint('../../output/modeltrain/neuralnetwork{epoch:08d}.h5', period=1)
 
 history = model.fit(X_train, abstracts_train_labels, batch_size=bacth_size, epochs=n_epoch, verbose=1,
                     validation_data=(X_val, abstracts_val_labels),
